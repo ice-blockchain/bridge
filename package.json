@@ -6,7 +6,7 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate",
+    "generate": "NODE_OPTIONS=--openssl-legacy-provider nuxt generate",
     "lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
     "lint": "npm lint:js"
   },
@@ -41,7 +41,6 @@
     "eslint-plugin-nuxt": "2.0.0",
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-vue": "7.12.1",
-    "fibers": "5.0.0",
     "lint-staged": "10.5.3",
     "nuxt-compress": "5.0.0",
     "postcss-functions": "4.0.2",
