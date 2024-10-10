@@ -11,13 +11,13 @@ The `tonweb` library is employed for interacting with the ION blockchain. It pro
 ### Example Usage
 
 ```typescript
-import TonWeb from 'tonweb';
+import IonWeb from 'tonweb';
 
 // Initialize HTTP provider
-const provider = new TonWeb.HttpProvider('https://wallet.toncenter.com/api/v2/jsonRPC');
+const provider = new IonWeb.HttpProvider('https://wallet.toncenter.com/api/v2/jsonRPC');
 
-// Create TonWeb instance with provider
-const tonWeb = new TonWeb(provider);
+// Create IonWeb instance with provider
+const tonWeb = new IonWeb(provider);
 
 // Fetch balance of a given address
 async function getBalance(address: string) {

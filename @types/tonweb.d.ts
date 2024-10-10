@@ -24,7 +24,7 @@ declare module "tonweb" {
         call(address: string, method: string | number, params?: any[][]): Promise<any>
     }
 
-    declare class TonWeb {
+    declare class IonWeb {
         constructor(provider: HttpProvider)
         provider: HttpProvider
 
@@ -40,5 +40,5 @@ declare module "tonweb" {
         static HttpProvider: typeof HttpProvider
     }
 
-    export default TonWeb;
+    export default IonWeb;
 }

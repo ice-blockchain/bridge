@@ -57,7 +57,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Web3 from 'web3';
-import TonWeb from 'tonweb';
+import IonWeb from 'tonweb';
 import WTON from '~/assets/WTON.json';
 import {ethers} from "ethers";
 import {Contract} from 'web3-eth-contract';
@@ -65,7 +65,7 @@ import {AbiItem} from 'web3-utils';
 import { toUnit, fromUnit, getNumber, getBool, decToHex, parseAddressFromDec } from '~/utils/helpers';
 import {PARAMS} from '~/utils/constants';
 
-const BN = TonWeb.utils.BN;
+const BN = IonWeb.utils.BN;
 
 declare interface IEthToTon {
     transactionHash: string,
@@ -108,7 +108,7 @@ declare interface IProvider {
     myEthAddress: string,
     wtonContract: Contract,
     web3: Web3,
-    tonweb: TonWeb,
+    tonweb: IonWeb,
     feeFlat: typeof BN,
     feeFactor: typeof BN,
     feeBase: typeof BN
@@ -423,7 +423,7 @@ export default Vue.extend({
             return Web3.utils.sha3(encodedParams) as string;
         },
         serializeEthToTon(ethToTon: IEthToTon) {
-            const bits = new TonWeb.boc.BitString(8 + 256 + 16 + 8 + 256 + 64);
+            const bits = new IonWeb.boc.BitString(8 + 256 + 16 + 8 + 256 + 64);
             bits.writeUint(0, 8); // vote op
             bits.writeUint(new BN(ethToTon.transactionHash.substr(2), 16), 256);
             bits.writeInt(ethToTon.logIndex, 16);
@@ -492,7 +492,7 @@ export default Vue.extend({
 
             const getRawMessageBytes = (logMsg: any): Uint8Array | null => {
                 const message = logMsg.message.substr(0, logMsg.message.length - 1); // remove '\n' from end
-                const bytes = TonWeb.utils.base64ToBytes(message);
+                const bytes = IonWeb.utils.base64ToBytes(message);
                 if (bytes.length !== 28) {
                   return null;
                 }
@@ -501,7 +501,7 @@ export default Vue.extend({
 
             const getTextMessageBytes = (logMsg: any): Uint8Array | null => {
               const message =  logMsg.msg_data?.text;
-              const textBytes = TonWeb.utils.base64ToBytes(message);
+              const textBytes = IonWeb.utils.base64ToBytes(message);
               const bytes = new Uint8Array(textBytes.length + 4);
               bytes.set(textBytes, 4);
               return bytes;
@@ -530,10 +530,10 @@ export default Vue.extend({
                         continue;
                     }
 
-                    const destinationAddress = this.makeAddress('0x' + TonWeb.utils.bytesToHex(bytes.slice(0, 20)));
-                    const amountHex = TonWeb.utils.bytesToHex(bytes.slice(20, 28));
+                    const destinationAddress = this.makeAddress('0x' + IonWeb.utils.bytesToHex(bytes.slice(0, 20)));
+                    const amountHex = IonWeb.utils.bytesToHex(bytes.slice(20, 28));
                     const amount = new BN(amountHex, 16);
-                    const senderAddress = new TonWeb.utils.Address(t.in_msg.source);
+                    const senderAddress = new IonWeb.utils.Address(t.in_msg.source);
 
                     const addressFromInMsg = t.in_msg.message.slice('swapTo#'.length);
                     if (destinationAddress.toLowerCase() !== addressFromInMsg.toLowerCase()) {
@@ -554,9 +554,9 @@ export default Vue.extend({
                         tx: {
                             address_: { // sender address
                                 workchain: senderAddress.wc,
-                                address_hash: '0x' + TonWeb.utils.bytesToHex(senderAddress.hashPart),
+                                address_hash: '0x' + IonWeb.utils.bytesToHex(senderAddress.hashPart),
                             },
-                            tx_hash: '0x' + TonWeb.utils.bytesToHex(TonWeb.utils.base64ToBytes(t.transaction_id.hash)),
+                            tx_hash: '0x' + IonWeb.utils.bytesToHex(IonWeb.utils.base64ToBytes(t.transaction_id.hash)),
                             lt: t.transaction_id.lt,
                         }
                     };
@@ -669,9 +669,9 @@ export default Vue.extend({
             const toAddress = this.toAddress;
             const amount = this.amount;
 
-            const addressTon = new TonWeb.utils.Address(toAddress);
+            const addressTon = new IonWeb.utils.Address(toAddress);
             const wc = addressTon.wc;
-            const hashPart = TonWeb.utils.bytesToHex(addressTon.hashPart);
+            const hashPart = IonWeb.utils.bytesToHex(addressTon.hashPart);
             const amountUnit = toUnit(amount);
 
             let receipt;
@@ -781,7 +781,7 @@ export default Vue.extend({
                         console.error("Error on newBlockHeaders", error);
                     });
 
-                const tonweb = new TonWeb(new TonWeb.HttpProvider(this.params.tonCenterUrl, {apiKey: 'ba68682c292bf1ad6150319d94670d36a81313f08fe67592c99e43c8f718d298'}));
+                const tonweb = new IonWeb(new IonWeb.HttpProvider(this.params.tonCenterUrl, {apiKey: 'ba68682c292bf1ad6150319d94670d36a81313f08fe67592c99e43c8f718d298'}));
 
                 const bridgeData = (await tonweb.provider.call(this.params.tonBridgeAddress, 'get_bridge_data', [])).stack;
 
@@ -832,7 +832,7 @@ export default Vue.extend({
                     return;
                 }
             } else {
-                if (!TonWeb.utils.Address.isValid(this.toAddress)) {
+                if (!IonWeb.utils.Address.isValid(this.toAddress)) {
                     alert(this.$t(`Bridge.networks.ton.errors.invalidAddress`) as string);
                     return;
                 }

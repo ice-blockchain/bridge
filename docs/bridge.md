@@ -12,7 +12,7 @@ The project primarily interacts with the ION and Ethereum blockchains. The inter
 
 ### Main Libraries and Tools
 
-- **TonWeb**: This library is used for interacting with the ION blockchain.
+- **IonWeb**: This library is used for interacting with the ION blockchain.
 - **ethers.js**: A complete and compact library to interact with Ethereum's blockchain, utilized for making Ethereum transactions.
 - **axios**: Used for handling HTTP requests.
 
@@ -65,18 +65,18 @@ export const PARAMS: IParams = {
 
 ### Interacting with ION Blockchain
 
-To interact with the ION blockchain, you will utilize the `TonWeb` library, which provides comprehensive methods for sending transactions and querying blockchain data.
+To interact with the ION blockchain, you will utilize the `IonWeb` library, which provides comprehensive methods for sending transactions and querying blockchain data.
 
 ### Example: Fetching Balance
 
 ```typescript
-import TonWeb from 'tonweb';
+import IonWeb from 'tonweb';
 
 // Initialize HTTP provider
-const provider = new TonWeb.HttpProvider('https://wallet.toncenter.com/api/v2/jsonRPC');
+const provider = new IonWeb.HttpProvider('https://wallet.toncenter.com/api/v2/jsonRPC');
 
-// Create TonWeb instance with provider
-const tonWeb = new TonWeb(provider);
+// Create IonWeb instance with provider
+const tonWeb = new IonWeb(provider);
 
 // Fetch balance of a given address
 async function getBalance(address: string) {

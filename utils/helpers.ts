@@ -1,4 +1,4 @@
-import TonWeb from 'tonweb';
+import IonWeb from 'tonweb';
 
 export { toUnit, fromUnit, getNumber, getBool, decToHex, parseAddressFromDec, supportsLocalStorage };
 
@@ -28,7 +28,7 @@ function getBool(pair: Array<string>): boolean {
 }
 
 function decToHex(dec: number): string {
-    return '0x' + new TonWeb.utils.BN(dec).toString(16);
+    return '0x' + new IonWeb.utils.BN(dec).toString(16);
 }
 
 function parseAddressFromDec(data: any): string {
