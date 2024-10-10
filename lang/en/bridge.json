@@ -36,14 +36,14 @@
             "main": {
                 "name": "Ethereum",
                 "full": "Ethereum Network",
-                "coin": "TONCOIN (ERC20)",
-                "coinShort": "TONCOIN"
+                "coin": "ION (ERC20)",
+                "coinShort": "ION"
             },
             "test" : {
                 "name": "Ethereum Goerli",
                 "full": "Ethereum Goerli",
-                "coin": "TONCOIN (ERC20)",
-                "coinShort": "TONCOIN"
+                "coin": "ION (ERC20)",
+                "coinShort": "ION"
             }
         },
         "bsc": {
@@ -60,14 +60,14 @@
             "main": {
                 "name": "Binance Smart Chain",
                 "full": "BSC Network",
-                "coin": "TONCOIN (BEP-20)",
-                "coinShort": "TONCOIN"
+                "coin": "ION (BEP-20)",
+                "coinShort": "ION"
             },
             "test" : {
                 "name": "BSC Testnet",
                 "full": "BSC Testnet",
-                "coin": "TONCOIN (BEP-20)",
-                "coinShort": "TONCOIN"
+                "coin": "ION (BEP-20)",
+                "coinShort": "ION"
             }
         }
     },
@@ -80,7 +80,7 @@
     "documentation": "Documentation",
 
     "transfer": "Transfer",
-    "getToncoin": "Get TONCOIN",
+    "getToncoin": "Get ION",
     "done": "Done",
     "cancel": "Cancel",
 
@@ -98,7 +98,7 @@
         "notValidAmount": "Amount is not valid number",
         "amountBelow10": "Amount must be at least 10 ION",
         "needPersonalAddress": "Please enter YOUR address to receive",
-        "toncoinBalance": "You have only <BALANCE> TONCOIN",
+        "toncoinBalance": "You have only <BALANCE> ION",
         "installMetamask": "Please install MetaMask",
         "wrongMetamaskNetwork": "Set chain to <NETWORK> in Metamask"
     }
