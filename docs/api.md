@@ -4,9 +4,9 @@
 
 This project utilizes several APIs to support its functionality, including blockchain interaction, localization, and data fetching. Below, you'll find a detailed description of the APIs in use, accompanied by code fragments illustrating how they are implemented within the project.
 
-## TON Web API
+## ION Web API
 
-The `tonweb` library is employed for interacting with the TON blockchain. It provides several methods for querying blockchain state and sending transactions.
+The `tonweb` library is employed for interacting with the ION blockchain. It provides several methods for querying blockchain state and sending transactions.
 
 ### Example Usage
 

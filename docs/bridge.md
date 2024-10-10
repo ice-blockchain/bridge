@@ -6,13 +6,13 @@ This section of the documentation describes how bridge calls are implemented in 
 
 ## Key Components
 
-### TON and Ethereum Interaction
+### ION and Ethereum Interaction
 
-The project primarily interacts with the TON and Ethereum blockchains. The interaction is facilitated through smart contracts and several API calls to handle various processes, including sending transactions, fetching gas prices, and monitoring transaction statuses.
+The project primarily interacts with the ION and Ethereum blockchains. The interaction is facilitated through smart contracts and several API calls to handle various processes, including sending transactions, fetching gas prices, and monitoring transaction statuses.
 
 ### Main Libraries and Tools
 
-- **TonWeb**: This library is used for interacting with the TON blockchain.
+- **TonWeb**: This library is used for interacting with the ION blockchain.
 - **ethers.js**: A complete and compact library to interact with Ethereum's blockchain, utilized for making Ethereum transactions.
 - **axios**: Used for handling HTTP requests.
 
@@ -63,9 +63,9 @@ export const PARAMS: IParams = {
 
 ## Implementing Bridge Calls
 
-### Interacting with TON Blockchain
+### Interacting with ION Blockchain
 
-To interact with the TON blockchain, you will utilize the `TonWeb` library, which provides comprehensive methods for sending transactions and querying blockchain data.
+To interact with the ION blockchain, you will utilize the `TonWeb` library, which provides comprehensive methods for sending transactions and querying blockchain data.
 
 ### Example: Fetching Balance
 
@@ -119,11 +119,11 @@ async function getWtonBalance(address: string) {
 
 ## Comprehensive Example
 
-Below is a comprehensive example that demonstrates the interaction between TON and Ethereum blockchains using the bridge mechanisms outlined above.
+Below is a comprehensive example that demonstrates the interaction between ION and Ethereum blockchains using the bridge mechanisms outlined above.
 
-### Example: Token Swap from Ethereum to TON
+### Example: Token Swap from Ethereum to ION
 
-1. **Prepare TON Transaction URL**
+1. **Prepare ION Transaction URL**
 
     ```typescript
     function prepareTonTransferUrl(toAddress: string, amount: number, text: string): string {
@@ -163,11 +163,11 @@ Below is a comprehensive example that demonstrates the interaction between TON a
         // Step 1: Send ETH Transaction
         const ethTxResponse = await sendEthTransaction(amount, PARAMS.networks.eth.main.tonCollectorAddress);
         
-        // Step 2: Prepare TON Transfer URL
+        // Step 2: Prepare ION Transfer URL
         const tonTransferUrl = prepareTonTransferUrl(tonAddress, amount, `swapTo#${ethAddress}`);
         
-        // Output TON Transfer URL
-        console.log('TON Transfer URL:', tonTransferUrl);
+        // Output ION Transfer URL
+        console.log('ION Transfer URL:', tonTransferUrl);
     }
     ```
 

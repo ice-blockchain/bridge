@@ -2,28 +2,28 @@
     "testnet": "TESTNET",
     "networks": {
         "ton": {
-            "transactionCompleted": "TON transaction completed successfully",
+            "transactionCompleted": "ION transaction completed successfully",
             "transactionSendAmount": "Please send <AMOUNT> <FROM_COIN>s to bridge smart-contract",
             "transactionSendFromPersonal": "Send from your personal wallet.",
             "transactionSendNotFromExchanges": "Do not send directly from exchanges and bots!",
             "errors": {
-                "invalidAddress": "Not valid TON address"
+                "invalidAddress": "Not valid ION address"
             },
             "main": {
-                "name": "TON Network",
-                "full": "TON Network",
+                "name": "ION Network",
+                "full": "ION Network",
                 "coin": "Toncoin",
                 "coinShort": "Toncoin"
             },
             "test" : {
-                "name": "TON Testnet",
-                "full": "TON Testnet",
+                "name": "ION Testnet",
+                "full": "ION Testnet",
                 "coin": "Toncoin",
                 "coinShort": "Toncoin"
             }
         },
         "eth": {
-            "pageTitle": "TON-ETH Bridge",
+            "pageTitle": "ION-ETH Bridge",
             "gasFee": "Ethereum gas fee ~ <FEE> ETH",
             "transactionCompleted": "Ethereum transaction completed successfully",
             "transactionWait": "Please wait for the Ethereum transaction to be processed",
@@ -47,7 +47,7 @@
             }
         },
         "bsc": {
-            "pageTitle": "TON-BSC Bridge",
+            "pageTitle": "ION-BSC Bridge",
             "gasFee": "BSC gas fee ~ <FEE> BNB",
             "transactionCompleted": "BSC transaction completed successfully",
             "transactionWait": "Please wait for the BSC transaction to be processed",
@@ -71,10 +71,10 @@
             }
         }
     },
-    "amountOfTon": "Amount of TON:",
+    "amountOfTon": "Amount of ION:",
     "addressInputLabel": "Address to receive in <NETWORK>:",
-    "bridgeFeeAbove10": "Bridge fee - <FEE> TON",
-    "bridgeFeeBelow10": "Bridge fee - 5 TON + 0.25% of amount",
+    "bridgeFeeAbove10": "Bridge fee - <FEE> ION",
+    "bridgeFeeBelow10": "Bridge fee - 5 ION + 0.25% of amount",
     "sourceCode": "Source Code",
     "howItWorks": "How it works",
     "documentation": "Documentation",
@@ -96,7 +96,7 @@
 
     "errors": {
         "notValidAmount": "Amount is not valid number",
-        "amountBelow10": "Amount must be at least 10 TON",
+        "amountBelow10": "Amount must be at least 10 ION",
         "needPersonalAddress": "Please enter YOUR address to receive",
         "toncoinBalance": "You have only <BALANCE> TONCOIN",
         "installMetamask": "Please install MetaMask",
