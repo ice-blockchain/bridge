@@ -3,14 +3,15 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
+    "dev": "NODE_OPTIONS=--openssl-legacy-provider nuxt",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider nuxt build",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider nuxt start",
     "generate": "NODE_OPTIONS=--openssl-legacy-provider nuxt generate",
     "lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
     "lint": "npm lint:js"
   },
   "dependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@nuxt/content": "1.11.1",
     "@nuxtjs/axios": "5.13.6",
     "@nuxtjs/router": "1.5.0",
@@ -23,7 +24,7 @@
     "lodash.debounce": "4.0.8",
     "nuxt": "2.15.7",
     "nuxt-i18n": "6.28.1",
-    "tonweb": "github:ice-adrastos/tonweb#feature/re-branding",
+    "tonweb": "github:ice-adrastos/tonweb#1d2a5977",
     "web3": "1.8.0"
   },
   "devDependencies": {
