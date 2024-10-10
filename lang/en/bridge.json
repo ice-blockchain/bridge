@@ -12,14 +12,14 @@
             "main": {
                 "name": "ION Network",
                 "full": "ION Network",
-                "coin": "Toncoin",
-                "coinShort": "Toncoin"
+                "coin": "ION",
+                "coinShort": "ION"
             },
             "test" : {
                 "name": "ION Testnet",
                 "full": "ION Testnet",
-                "coin": "Toncoin",
-                "coinShort": "Toncoin"
+                "coin": "ION",
+                "coinShort": "ION"
             }
         },
         "eth": {
