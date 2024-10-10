@@ -6,12 +6,12 @@ This project utilizes several APIs to support its functionality, including block
 
 ## ION Web API
 
-The `tonweb` library is employed for interacting with the ION blockchain. It provides several methods for querying blockchain state and sending transactions.
+The `ionweb` library is employed for interacting with the ION blockchain. It provides several methods for querying blockchain state and sending transactions.
 
 ### Example Usage
 
 ```typescript
-import IonWeb from 'tonweb';
+import IonWeb from 'ionweb';
 
 // Initialize HTTP provider
 const provider = new IonWeb.HttpProvider('https://wallet.toncenter.com/api/v2/jsonRPC');
@@ -29,7 +29,7 @@ async function getBalance(address: string) {
 ### File Reference
 
 - `./utils/helpers.ts`
-- `./@types/tonweb.d.ts`
+- `./@types/ionweb.d.ts`
 
 ## Axios for HTTP Requests
 

@@ -70,7 +70,7 @@ To interact with the ION blockchain, you will utilize the `IonWeb` library, whic
 ### Example: Fetching Balance
 
 ```typescript
-import IonWeb from 'tonweb';
+import IonWeb from 'ionweb';
 
 // Initialize HTTP provider
 const provider = new IonWeb.HttpProvider('https://wallet.toncenter.com/api/v2/jsonRPC');

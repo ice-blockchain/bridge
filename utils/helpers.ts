@@ -1,4 +1,4 @@
-import IonWeb from 'tonweb';
+import IonWeb from 'ionweb';
 
 export { toUnit, fromUnit, getNumber, getBool, decToHex, parseAddressFromDec, supportsLocalStorage };
 

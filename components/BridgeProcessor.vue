@@ -57,7 +57,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Web3 from 'web3';
-import IonWeb from 'tonweb';
+import IonWeb from 'ionweb';
 import WTON from '~/assets/WTON.json';
 import {ethers} from "ethers";
 import {Contract} from 'web3-eth-contract';
@@ -108,7 +108,7 @@ declare interface IProvider {
     myEthAddress: string,
     wtonContract: Contract,
     web3: Web3,
-    tonweb: IonWeb,
+    ionweb: IonWeb,
     feeFlat: typeof BN,
     feeFactor: typeof BN,
     feeBase: typeof BN
@@ -479,7 +479,7 @@ export default Vue.extend({
         },
         async getSwap(myAmount: number, myToAddress: string, myCreateTime: number): Promise<null | ISwapData> {
             console.log('getTransactions', this.params.tonBridgeAddress, this.lt && this.hash ? 1 : (this.isRecover ? 200 : 40), this.lt || undefined, this.hash || undefined, undefined, this.lt && this.hash ? true : undefined);
-            const transactions = await this.provider!.tonweb.provider.getTransactions(this.params.tonBridgeAddress, this.lt && this.hash ? 1 : (this.isRecover ? 200 : 40), this.lt || undefined, this.hash || undefined, undefined, this.lt && this.hash ? true : undefined);
+            const transactions = await this.provider!.ionweb.provider.getTransactions(this.params.tonBridgeAddress, this.lt && this.hash ? 1 : (this.isRecover ? 200 : 40), this.lt || undefined, this.hash || undefined, undefined, this.lt && this.hash ? true : undefined);
             console.log('ton txs', transactions.length);
 
             const findLogOutMsg = (outMessages?: any[]): any => {
@@ -590,7 +590,7 @@ export default Vue.extend({
         async getEthVote(voteId: string): Promise<null | IVoteEth[]> {
             console.log('getEthVote ', voteId);
 
-            const result = await this.provider!.tonweb.provider.call(this.params.tonCollectorAddress, 'get_external_voting_data', [['num', voteId]]);
+            const result = await this.provider!.ionweb.provider.call(this.params.tonCollectorAddress, 'get_external_voting_data', [['num', voteId]]);
             if (result.exit_code === 309) {
                 return null;
             }
@@ -612,7 +612,7 @@ export default Vue.extend({
         async getTonVote(queryId: string): Promise<null | number[]> {
             console.log('getTonVote ', queryId);
 
-            const result = await this.provider!.tonweb.provider.call(this.params.tonMultisigAddress, 'get_query_state', [['num', queryId]]);
+            const result = await this.provider!.ionweb.provider.call(this.params.tonMultisigAddress, 'get_query_state', [['num', queryId]]);
 
             let a, b;
             try {
@@ -781,9 +781,9 @@ export default Vue.extend({
                         console.error("Error on newBlockHeaders", error);
                     });
 
-                const tonweb = new IonWeb(new IonWeb.HttpProvider(this.params.tonCenterUrl, {apiKey: 'ba68682c292bf1ad6150319d94670d36a81313f08fe67592c99e43c8f718d298'}));
+                const ionweb = new IonWeb(new IonWeb.HttpProvider(this.params.tonCenterUrl, {apiKey: 'ba68682c292bf1ad6150319d94670d36a81313f08fe67592c99e43c8f718d298'}));
 
-                const bridgeData = (await tonweb.provider.call(this.params.tonBridgeAddress, 'get_bridge_data', [])).stack;
+                const bridgeData = (await ionweb.provider.call(this.params.tonBridgeAddress, 'get_bridge_data', [])).stack;
 
                 if (bridgeData.length !== 8) throw new Error('Invalid bridge data')
                 const stateFlags = getNumber(bridgeData[0]);
@@ -800,7 +800,7 @@ export default Vue.extend({
                     myEthAddress,
                     web3,
                     wtonContract,
-                    tonweb,
+                    ionweb,
                     oraclesTotal,
                     feeFlat: feeFlat.add(feeNetwork),
                     feeFactor,

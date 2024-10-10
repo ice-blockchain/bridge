@@ -1,4 +1,4 @@
-declare module "tonweb" {
+declare module "ionweb" {
     import { BN } from 'types-bn'
 
     declare class Address {

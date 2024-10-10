@@ -24,7 +24,7 @@
     "lodash.debounce": "4.0.8",
     "nuxt": "2.15.7",
     "nuxt-i18n": "6.28.1",
-    "tonweb": "github:ice-adrastos/tonweb#c28e7315",
+    "ionweb": "github:ice-adrastos/tonweb#c28e7315",
     "web3": "1.8.0"
   },
   "devDependencies": {
