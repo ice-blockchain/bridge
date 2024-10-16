@@ -94,7 +94,7 @@ import { supportsLocalStorage } from '~/utils/helpers';
 import { PARAMS } from '~/utils/constants';
 import BridgeProcessor from '~/components/BridgeProcessor.vue'
 
-const PAIRS = ['eth', 'bsc'];
+const PAIRS = [/*'eth',*/ 'bsc'];
 
 declare interface IComponentData {
     getPairGasFee__debounced: () => void,
@@ -136,7 +136,7 @@ export default Vue.extend({
             hash: '',
 
             isFromTon: true,
-            pair: 'eth',
+            pair: 'bsc', // Initially: 'eth'
             amountInner: '',
             toAddress: '',
 

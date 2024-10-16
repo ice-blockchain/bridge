@@ -785,6 +785,8 @@ export default Vue.extend({
 
                 const bridgeData = (await ionweb.provider.call(this.params.tonBridgeAddress, 'get_bridge_data', [])).stack;
 
+                console.log("Bridge data", bridgeData);
+
                 if (bridgeData.length !== 8) throw new Error('Invalid bridge data')
                 const stateFlags = getNumber(bridgeData[0]);
                 const totalLocked = getNumber(bridgeData[1]);
