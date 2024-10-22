@@ -674,6 +674,8 @@ export default Vue.extend({
             const hashPart = IonWeb.utils.bytesToHex(addressTon.hashPart);
             const amountUnit = toUnit(amount);
 
+            console.log(`Address hash: 0x${hashPart}`);
+
             let receipt;
 
             try {
@@ -765,6 +767,7 @@ export default Vue.extend({
                 const oraclesTotal = (await wtonContract.methods.getFullOracleSet().call()).length;
 
                 if (!(oraclesTotal > 0)) {
+                    alert("Total oracles should be more than 0");
                     return null;
                 }
 
