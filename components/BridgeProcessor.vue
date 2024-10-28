@@ -693,12 +693,12 @@ export default Vue.extend({
             }
 
             if (receipt.status) {
-                console.log('receipt', receipt);
+                console.log('Transaction receipt', receipt);
 
                 this.state.blockNumber = receipt.blockNumber;
                 this.ethToTon = {
                     transactionHash: receipt.transactionHash,
-                    logIndex: receipt.events.SwapEthToTon.logIndex,
+                    logIndex: receipt.events.SwapEthToIon.logIndex,
                     blockNumber: this.state.blockNumber,
                     blockTime: 0,
                     blockHash: '',
@@ -712,7 +712,7 @@ export default Vue.extend({
 
                 this.state.step = 2;
             } else {
-                console.error('transaction fail', receipt);
+                console.error('Transaction failed', receipt);
             }
         },
         onDoneClick(): void {

@@ -337,6 +337,8 @@ export default Vue.extend({
             this.isFromTon = !this.isFromTon;
         },
         async getPairGasFee(): Promise<void> {
+
+            /*
             let data;
             let gasPrice = 0;
 
@@ -367,6 +369,7 @@ export default Vue.extend({
             }
 
             this.gasPrice = gasPrice > 0 ? gasPrice : this.params.defaultGwei;
+             */
         }
     }
 })
