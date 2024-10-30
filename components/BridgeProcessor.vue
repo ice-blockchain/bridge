@@ -435,6 +435,8 @@ export default Vue.extend({
         },
         getQueryId(ethToTon: IEthToTon): typeof BN {
 
+            console.log(`Calculating 'getQueryId' for ${JSON.stringify(ethToTon)}`);
+
             // web3@1.3.4 has an error in the algo for computing SHA
             // it doesn't strictly check input string for valid HEX relying only for 0x prefix
             // but the query string is formed that way: 0xBLOCKHASH + '_' + 0xTRANSACTIONHASH + '_' + LOGINDEX
