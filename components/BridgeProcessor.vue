@@ -463,7 +463,13 @@ export default Vue.extend({
             const VERSION = 2;
             const timeout = ethToTon.blockTime + MULTISIG_QUERY_TIMEOUT + VERSION;
 
-            const query_id = Web3.utils.sha3(getLegacyQueryString(ethToTon.blockHash + '_' + ethToTon.transactionHash + '_' + String(ethToTon.logIndex)))!.substr(2, 8); // get first 32 bit
+            // v.1.0
+            // const query_id = Web3.utils.sha3(getLegacyQueryString(ethToTon.blockHash + '_' + ethToTon.transactionHash + '_' + String(ethToTon.logIndex)))!.substr(2, 8); // get first 32 bit
+
+            const input = getLegacyQueryString(ethToTon.blockHash + '_' + ethToTon.transactionHash + '_' + String(ethToTon.logIndex));
+            console.log(`getQueryId input ${input}`);
+            const query_id = Web3.utils.sha3(input)!.substr(2, 8); // get first 32 bit
+            console.log(`getQueryId query_id ${query_id}`);
 
             return new BN(timeout).mul(new BN(4294967296)).add(new BN(query_id, 16));
         },
