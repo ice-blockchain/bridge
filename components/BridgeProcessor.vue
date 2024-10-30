@@ -398,6 +398,7 @@ export default Vue.extend({
 
             if (this.state.step === 3) {
                 this.state.votes = this.isFromTon ? await this.getEthVote(this.state.swapId) : await this.getTonVote(this.state.queryId);
+                console.log(`Comparing ${this.provider!.oraclesTotal * 2 / 3} desired votes to ${this.state.votes!.length} factual votes`);
                 if (this.state.votes && this.state.votes!.length >= this.provider!.oraclesTotal * 2 / 3) {
                     this.state.step = this.isFromTon ? 4 : 5;
                 }
