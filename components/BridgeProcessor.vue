@@ -610,7 +610,7 @@ export default Vue.extend({
             return status.signatures;
         },
         async getTonVote(queryId: string): Promise<null | number[]> {
-            console.log('getTonVote ', queryId);
+            console.log(`${this.params.tonMultisigAddress}~getTonVote `, queryId);
 
             const result = await this.provider!.ionweb.provider.call(this.params.tonMultisigAddress, 'get_query_state', [['num', queryId]]);
 

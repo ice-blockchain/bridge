@@ -8,7 +8,7 @@ export const PARAMS: IParams = {
                 "wTonAddress": "0x6BFc16f717Da0868f7Cf8Fb7AdFAa1402710182c", // "0x1B615Fb55d329b19C2d3f56943a1D972EFc717a3", // ION test one deployment
                 "tonBridgeAddress": "Ef_ADy7BfTbw-0Feq8pYyDSZuNBRAgtO14KV2Ieyp73Q74Nd",
                 "tonCollectorAddress": "EQB91-zbCZDGGtVngKdyXB7Cnbm_DKVXJQsHyzDn3cZSFEuI",
-                "tonMultisigAddress": "kf-qCSy4FfUiEgacwNmOfDPTdBUJpyZV0jrJITjpmVh3dpWh",
+                "tonMultisigAddress": "kf_miriTiQY4bvYz1WV-D2tezJFHxTeRYFaLiC7GeAUpHWFI",
                 "tonCenterUrl": "https://23.29.127.148:83/jsonRPC",
                 "chainId": 56,
                 "blocksConfirmations": 12,
@@ -22,7 +22,7 @@ export const PARAMS: IParams = {
                 "wTonAddress": "0x6BFc16f717Da0868f7Cf8Fb7AdFAa1402710182c", // "0x1B615Fb55d329b19C2d3f56943a1D972EFc717a3", // ION test one deployment
                 "tonBridgeAddress": "Ef_ADy7BfTbw-0Feq8pYyDSZuNBRAgtO14KV2Ieyp73Q74Nd",
                 "tonCollectorAddress": "EQB91-zbCZDGGtVngKdyXB7Cnbm_DKVXJQsHyzDn3cZSFEuI",
-                "tonMultisigAddress": "kf-qCSy4FfUiEgacwNmOfDPTdBUJpyZV0jrJITjpmVh3dpWh",
+                "tonMultisigAddress": "kf_miriTiQY4bvYz1WV-D2tezJFHxTeRYFaLiC7GeAUpHWFI",
                 "tonCenterUrl": "https://23.29.127.148:83/jsonRPC",
                 "chainId": 97,
                 "blocksConfirmations": 12,
