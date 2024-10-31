@@ -64,6 +64,7 @@ import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
 import { toUnit, fromUnit, getNumber, getBool, decToHex, parseAddressFromDec } from '~/utils/helpers';
 import {PARAMS} from '~/utils/constants';
+import keccak256 from 'keccak256'
 
 const BN = IonWeb.utils.BN;
 
@@ -459,16 +460,26 @@ export default Vue.extend({
                 return strArr.join('');
             }
 
+            function hexToUint8Array(hex: string): Uint8Array {
+
+                // Remove 0x prefix if present
+                const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex;
+
+                const bytes = new Uint8Array(cleanHex.length / 2);
+                for (let i = 0; i < bytes.length; i++) {
+                    bytes[i] = parseInt(cleanHex.substr(i * 2, 2), 16);
+                }
+
+                return bytes;
+            }
+
             const MULTISIG_QUERY_TIMEOUT = 30 * 24 * 60 * 60; // 30 days
             const VERSION = 2;
             const timeout = ethToTon.blockTime + MULTISIG_QUERY_TIMEOUT + VERSION;
 
-            // v.1.0
-            // const query_id = Web3.utils.sha3(getLegacyQueryString(ethToTon.blockHash + '_' + ethToTon.transactionHash + '_' + String(ethToTon.logIndex)))!.substr(2, 8); // get first 32 bit
-
             const input = getLegacyQueryString(ethToTon.blockHash + '_' + ethToTon.transactionHash + '_' + String(ethToTon.logIndex));
             console.log(`getQueryId input ${input}`);
-            const query_id = Web3.utils.sha3(new BN(input.slice(2), 16))!.substr(2, 8); // get first 32 bit
+            const query_id = keccak256(hexToUint8Array(input)).toString('hex').substr(2, 8); // get first 32 bit
             console.log(`getQueryId query_id ${query_id}`);
 
             return new BN(timeout).mul(new BN(4294967296)).add(new BN(query_id, 16));
