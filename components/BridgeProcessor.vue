@@ -882,11 +882,14 @@ export default Vue.extend({
 
             const account = await connect();
 
+            const message = `swapTo#${this.toAddress}`;
+
             // Send transaction
             const result = await window.ton.send('ton_sendTransaction', {
                 from: account,
                 value: String(toUnit(this.amount)),
-                to: this.params.tonBridgeAddress
+                to: this.params.tonBridgeAddress,
+                data: message
             });
 
             console.log('Transaction sent:', result);
