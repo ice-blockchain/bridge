@@ -17,6 +17,17 @@
                 </div>
                 <div class="BridgeProcessor-info-text" v-else>{{ getStepInfoText1.text }}</div>
             </div>
+            <div class="BridgeProcessor-infoLine">
+                <div class="BridgeProcessor-info-text">OR</div>
+            </div>
+            <div class="BridgeProcessor-infoLine">
+                <div class="BridgeProcessor-info-text">
+                <button
+                    class="BridgeProcessor-transact"
+                    v-if="state.step === 1"
+                    @click="onTransactClick">Make a transaction using `IONMask`</button>
+                </div>
+            </div>
             <div class="BridgeProcessor-infoLine" v-if="!isFromTon">
                 <div
                     class="BridgeProcessor-info-icon"
@@ -133,6 +144,12 @@ declare interface IComponentData {
     provider: IProvider | null,
     state: IState,
     ethToTon: IEthToTon | null
+}
+
+declare global {
+    interface Window {
+        ton?: any;
+    }
 }
 
 export default Vue.extend({
@@ -835,6 +852,46 @@ export default Vue.extend({
                 return res;
             }
         },
+        async onTransactClick(): Promise<void> {
+
+            if (!this.amount) {
+
+                console.log(`onTransactClick - amount not set`);
+                return;
+            }
+
+            console.log(`onTransactClick`);
+
+            if (typeof window.ton !== 'undefined') {
+                console.log('OpenMask is installed!');
+            }
+
+            const connect = async () => {
+                const provider = window.ton;
+                try {
+                    const accounts = await provider.send("ton_requestAccounts");
+                    const account = accounts[0];
+
+                    console.log(`Using ION account ${account}`);
+
+                    return account;
+                } catch (e) {
+                    console.error(e);
+                }
+            };
+
+            const account = await connect();
+
+            // Send transaction
+            const result = await window.ton.send('ton_sendTransaction', {
+                from: account,
+                value: String(toUnit(this.amount)),
+                to: this.params.tonBridgeAddress
+            });
+
+            console.log('Transaction sent:', result);
+            return result;
+        },
         async onTransferClick(): Promise<void> {
             if (isNaN(this.amount)) {
                 alert(this.$t('Bridge.errors.notValidAmount') as string);
@@ -897,6 +954,7 @@ export default Vue.extend({
 
 @{r} {
     &-transfer,
+    &-transact,
     &-getTonCoin,
     &-done,
     &-cancel {
