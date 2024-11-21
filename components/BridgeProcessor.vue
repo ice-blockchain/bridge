@@ -433,13 +433,17 @@ export default Vue.extend({
             }
 
             if (this.pair === 'bsc' || this.isTestnet) {
+                const hashedObject = [0xDA7A, this.params.wTonAddress, d.receiver, d.amount, d.tx.address_.workchain, d.tx.address_.address_hash, d.tx.tx_hash, d.tx.lt];
                 encodedParams = web3.eth.abi.encodeParameters(
                     ['int', 'address', 'address', 'uint256', 'int8', 'bytes32', 'bytes32', 'uint64'],
-                    [0xDA7A, this.params.wTonAddress, d.receiver, d.amount, d.tx.address_.workchain, d.tx.address_.address_hash, d.tx.tx_hash, d.tx.lt]
-                )
+                    hashedObject
+                );
+                console.log('Hashed object', hashedObject);
             }
 
-            return Web3.utils.sha3(encodedParams) as string;
+            const hash = Web3.utils.sha3(encodedParams) as string;
+            console.log('Calculated hash', hash);
+            return hash;
         },
         serializeEthToTon(ethToTon: IEthToTon) {
             const bits = new IonWeb.boc.BitString(8 + 256 + 16 + 8 + 256 + 64);
