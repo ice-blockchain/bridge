@@ -17,15 +17,14 @@
                 </div>
                 <div class="BridgeProcessor-info-text" v-else>{{ getStepInfoText1.text }}</div>
             </div>
-            <div class="BridgeProcessor-infoLine">
+            <div class="BridgeProcessor-infoLine" v-if="isFromTon && state.step === 1">
                 <div class="BridgeProcessor-info-text">OR</div>
             </div>
-            <div class="BridgeProcessor-infoLine">
+            <div class="BridgeProcessor-infoLine" v-if="isFromTon && state.step === 1">
                 <div class="BridgeProcessor-info-text">
                 <button
                     class="BridgeProcessor-transact"
-                    v-if="state.step === 1"
-                    @click="onTransactClick">Make a transaction using `IONMask`</button>
+                      @click="onTransactClick">Make a transaction using `IONMask`</button>
                 </div>
             </div>
             <div class="BridgeProcessor-infoLine" v-if="!isFromTon">
