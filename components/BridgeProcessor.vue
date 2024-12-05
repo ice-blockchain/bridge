@@ -539,7 +539,7 @@ export default Vue.extend({
             }
 
             const getTextMessageBytes = (logMsg: any): Uint8Array | null => {
-                const message =  logMsg.msg_data?.text;
+                const message = logMsg.msg_data?.text;
                 const textBytes = IonWeb.utils.base64ToBytes(message);
                 const bytes = new Uint8Array(textBytes.length + 4);
                 bytes.set(textBytes, 4);
@@ -581,6 +581,15 @@ export default Vue.extend({
                     console.log('ION transactions count:', transactions.length);
 
                     for (const t of transactions) {
+                        // Check if transaction is newer than the swap start time
+                        // `t.utime` is in seconds, convert to milliseconds before comparing.
+                        if ((t.utime * 1000) < myCreateTime) {
+                            // This transaction is older than when we initiated the swap, skip it.
+                            // Sleep 1 second asynchronously before continuing
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                            continue;
+                        }
+
                         const logMsg = findLogOutMsg(t.out_msgs);
                         if (logMsg) {
                             const bytes = getMessageBytes(logMsg);
