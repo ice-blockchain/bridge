@@ -518,12 +518,48 @@ export default Vue.extend({
             return '0x' + hex;
         },
         async getSwap(myAmount: number, myToAddress: string, myCreateTime: number): Promise<null | ISwapData> {
-            try {
-                // Fetch the current block number
-                const currentBlock = await this.provider!.ionweb.provider.getCurrentBlock();
-                const startingLt = currentBlock.logical_time;
 
-                let lt = startingLt;
+            const findLogOutMsg = (outMessages?: any[]): any => {
+                if (!outMessages) return null;
+                for (const outMsg of outMessages) {
+                    if (outMsg.destination === '') return outMsg;
+                }
+                return null;
+            }
+
+            const getRawMessageBytes = (logMsg: any): Uint8Array | null => {
+                const message = logMsg.message.substr(0, logMsg.message.length - 1); // remove '\n' from end
+                const bytes = IonWeb.utils.base64ToBytes(message);
+                if (bytes.length !== 28) {
+                    return null;
+                }
+                return bytes;
+            }
+
+            const getTextMessageBytes = (logMsg: any): Uint8Array | null => {
+                const message =  logMsg.msg_data?.text;
+                const textBytes = IonWeb.utils.base64ToBytes(message);
+                const bytes = new Uint8Array(textBytes.length + 4);
+                bytes.set(textBytes, 4);
+                return bytes;
+            }
+
+            const getMessageBytes = (logMsg: any): Uint8Array | null => {
+                const msgType = logMsg.msg_data['@type'];
+                if (msgType === 'msg.dataText') {
+                    return getTextMessageBytes(logMsg);
+                } else if (msgType === 'msg.dataRaw') {
+                    return getRawMessageBytes(logMsg);
+                } else {
+                    console.error('Unknown log msg type ' + msgType);
+                    return null;
+                }
+            }
+
+            try {
+                // Fetch the current account state to get the latest logical time (lt)
+                const accountState = await this.provider!.ionweb.provider.getAddressInfo(this.params.tonBridgeAddress);
+                let lt = accountState.last_transaction_id.lt;
 
                 while (true) {
                     // Request only one transaction starting from the current logical time
@@ -541,9 +577,9 @@ export default Vue.extend({
                     console.log('ton txs', transactions.length);
 
                     for (const t of transactions) {
-                        const logMsg = this.findLogOutMsg(t.out_msgs);
+                        const logMsg = findLogOutMsg(t.out_msgs);
                         if (logMsg) {
-                            const bytes = this.getMessageBytes(logMsg);
+                            const bytes = getMessageBytes(logMsg);
                             if (bytes === null) continue;
 
                             const destinationAddress = this.makeAddress('0x' + IonWeb.utils.bytesToHex(bytes.slice(0, 20)));
