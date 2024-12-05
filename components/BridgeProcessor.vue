@@ -518,98 +518,78 @@ export default Vue.extend({
             return '0x' + hex;
         },
         async getSwap(myAmount: number, myToAddress: string, myCreateTime: number): Promise<null | ISwapData> {
-            console.log('getTransactions', this.params.tonBridgeAddress, this.lt && this.hash ? 1 : (this.isRecover ? 200 : 40), this.lt || undefined, this.hash || undefined, undefined, this.lt && this.hash ? true : undefined);
-            const transactions = await this.provider!.ionweb.provider.getTransactions(this.params.tonBridgeAddress, this.lt && this.hash ? 1 : (this.isRecover ? 200 : 40), this.lt || undefined, this.hash || undefined, undefined, this.lt && this.hash ? true : undefined);
-            console.log('ton txs', transactions.length);
+            try {
+                // Fetch the current block number
+                const currentBlock = await this.provider!.ionweb.provider.getCurrentBlock();
+                const startingLt = currentBlock.logical_time;
 
-            const findLogOutMsg = (outMessages?: any[]): any => {
-                if (!outMessages) return null;
-                for (const outMsg of outMessages) {
-                    if (outMsg.destination === '') return outMsg;
-                }
-                return null;
-            }
+                let lt = startingLt;
 
-            const getRawMessageBytes = (logMsg: any): Uint8Array | null => {
-                const message = logMsg.message.substr(0, logMsg.message.length - 1); // remove '\n' from end
-                const bytes = IonWeb.utils.base64ToBytes(message);
-                if (bytes.length !== 28) {
-                  return null;
-                }
-                return bytes;
-            }
+                while (true) {
+                    // Request only one transaction starting from the current logical time
+                    const transactions = await this.provider!.ionweb.provider.getTransactions(
+                        this.params.tonBridgeAddress,
+                        1,
+                        lt,
+                        undefined,
+                        undefined,
+                        true
+                    );
 
-            const getTextMessageBytes = (logMsg: any): Uint8Array | null => {
-              const message =  logMsg.msg_data?.text;
-              const textBytes = IonWeb.utils.base64ToBytes(message);
-              const bytes = new Uint8Array(textBytes.length + 4);
-              bytes.set(textBytes, 4);
-              return bytes;
-            }
+                    if (transactions.length === 0) break;
 
-            const getMessageBytes = (logMsg: any): Uint8Array | null => {
-                const msgType = logMsg.msg_data['@type'];
-                if (msgType === 'msg.dataText') {
-                  return getTextMessageBytes(logMsg);
-                } else if (msgType === 'msg.dataRaw') {
-                  return getRawMessageBytes(logMsg);
-                } else {
-                  console.error('Unknown log msg type ' + msgType);
-                  return null;
-                }
-             }
+                    console.log('ton txs', transactions.length);
 
-            for (const t of transactions) {
-                const logMsg = findLogOutMsg(t.out_msgs);
-                if (logMsg) {
-                    if (!this.isRecover && !(this.lt && this.hash)) {
-                        if (t.utime * 1000 < myCreateTime) continue;
-                    }
-                    const bytes = getMessageBytes(logMsg);
-                    if (bytes === null) {
-                        continue;
-                    }
+                    for (const t of transactions) {
+                        const logMsg = this.findLogOutMsg(t.out_msgs);
+                        if (logMsg) {
+                            const bytes = this.getMessageBytes(logMsg);
+                            if (bytes === null) continue;
 
-                    const destinationAddress = this.makeAddress('0x' + IonWeb.utils.bytesToHex(bytes.slice(0, 20)));
-                    const amountHex = IonWeb.utils.bytesToHex(bytes.slice(20, 28));
-                    const amount = new BN(amountHex, 16);
-                    const senderAddress = new IonWeb.utils.Address(t.in_msg.source);
+                            const destinationAddress = this.makeAddress('0x' + IonWeb.utils.bytesToHex(bytes.slice(0, 20)));
+                            const amountHex = IonWeb.utils.bytesToHex(bytes.slice(20, 28));
+                            const amount = new BN(amountHex, 16);
+                            const senderAddress = new IonWeb.utils.Address(t.in_msg.source);
 
-                    const addressFromInMsg = t.in_msg.message.slice('swapTo#'.length);
-                    if (destinationAddress.toLowerCase() !== addressFromInMsg.toLowerCase()) {
-                        console.error('address from in_msg doesnt match ', addressFromInMsg, destinationAddress);
-                        continue;
-                    }
-                    const amountFromInMsg = new BN(t.in_msg.value);
-                    const amountFromInMsgAfterFee = amountFromInMsg.sub(this.getFeeAmount(amountFromInMsg));
-                    if (!amount.eq(amountFromInMsgAfterFee)) {
-                        console.error('amount from in_msg doesnt match ', amount.toString(), amountFromInMsgAfterFee.toString(), amountFromInMsg.toString());
-                        continue;
-                    }
+                            const addressFromInMsg = t.in_msg.message.slice('swapTo#'.length);
+                            if (destinationAddress.toLowerCase() !== addressFromInMsg.toLowerCase()) continue;
 
-                    const event: ISwapData = {
-                        type: 'SwapTonToEth',
-                        receiver: destinationAddress,
-                        amount: amount.toString(),
-                        tx: {
-                            address_: { // sender address
-                                workchain: senderAddress.wc,
-                                address_hash: '0x' + IonWeb.utils.bytesToHex(senderAddress.hashPart),
-                            },
-                            tx_hash: '0x' + IonWeb.utils.bytesToHex(IonWeb.utils.base64ToBytes(t.transaction_id.hash)),
-                            lt: t.transaction_id.lt,
+                            const amountFromInMsg = new BN(t.in_msg.value);
+                            const amountFromInMsgAfterFee = amountFromInMsg.sub(this.getFeeAmount(amountFromInMsg));
+                            if (!amount.eq(amountFromInMsgAfterFee)) continue;
+
+                            const event: ISwapData = {
+                                type: 'SwapTonToEth',
+                                receiver: destinationAddress,
+                                amount: amount.toString(),
+                                tx: {
+                                    address_: {
+                                        workchain: senderAddress.wc,
+                                        address_hash: '0x' + IonWeb.utils.bytesToHex(senderAddress.hashPart),
+                                    },
+                                    tx_hash: '0x' + IonWeb.utils.bytesToHex(IonWeb.utils.base64ToBytes(t.transaction_id.hash)),
+                                    lt: t.transaction_id.lt,
+                                }
+                            };
+
+                            console.log(JSON.stringify(event));
+
+                            const myAmountNano = new BN(myAmount * 1e9);
+                            const amountAfterFee = myAmountNano.sub(this.getFeeAmount(myAmountNano));
+
+                            if (amount.eq(amountAfterFee) && event.receiver.toLowerCase() === myToAddress.toLowerCase()) {
+                                return event;
+                            }
                         }
-                    };
-                   console.log(JSON.stringify(event));
-
-                    const myAmountNano = new BN(myAmount * 1e9);
-                    const amountAfterFee = myAmountNano.sub(this.getFeeAmount(myAmountNano));
-
-                    if (amount.eq(amountAfterFee) && event.receiver.toLowerCase() === myToAddress.toLowerCase()) {
-                        return event;
                     }
+
+                    // Move to the next logical time block
+                    lt = transactions[0].transaction_id.lt;
                 }
+            } catch (error) {
+                console.error('Error in getSwap:', error);
             }
+
             return null;
         },
         parseEthSignature(data: any) {
