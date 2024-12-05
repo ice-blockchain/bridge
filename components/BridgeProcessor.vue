@@ -415,9 +415,11 @@ export default Vue.extend({
 
             if (this.state.step === 3) {
                 this.state.votes = this.isFromTon ? await this.getEthVote(this.state.swapId) : await this.getTonVote(this.state.queryId);
-                console.log(`Comparing ${this.provider!.oraclesTotal * 2 / 3} desired votes to ${this.state.votes!.length} factual votes`);
-                if (this.state.votes && this.state.votes!.length >= this.provider!.oraclesTotal * 2 / 3) {
-                    this.state.step = this.isFromTon ? 4 : 5;
+                if (this.state.votes) {
+                    console.log(`Comparing ${this.provider!.oraclesTotal * 2 / 3} desired votes to ${this.state.votes!.length} factual votes`);
+                    if (this.state.votes && this.state.votes!.length >= this.provider!.oraclesTotal * 2 / 3) {
+                        this.state.step = this.isFromTon ? 4 : 5;
+                    }
                 }
             }
         },
@@ -572,9 +574,11 @@ export default Vue.extend({
                         true
                     );
 
-                    if (transactions.length === 0) break;
+                    if (transactions.length === 0) {
+                        break;
+                    }
 
-                    console.log('ton txs', transactions.length);
+                    console.log('ION transactions count:', transactions.length);
 
                     for (const t of transactions) {
                         const logMsg = findLogOutMsg(t.out_msgs);
@@ -588,11 +592,15 @@ export default Vue.extend({
                             const senderAddress = new IonWeb.utils.Address(t.in_msg.source);
 
                             const addressFromInMsg = t.in_msg.message.slice('swapTo#'.length);
-                            if (destinationAddress.toLowerCase() !== addressFromInMsg.toLowerCase()) continue;
+                            if (destinationAddress.toLowerCase() !== addressFromInMsg.toLowerCase()) {
+                                continue;
+                            }
 
                             const amountFromInMsg = new BN(t.in_msg.value);
                             const amountFromInMsgAfterFee = amountFromInMsg.sub(this.getFeeAmount(amountFromInMsg));
-                            if (!amount.eq(amountFromInMsgAfterFee)) continue;
+                            if (!amount.eq(amountFromInMsgAfterFee)) {
+                                continue;
+                            }
 
                             const event: ISwapData = {
                                 type: 'SwapTonToEth',
@@ -608,7 +616,7 @@ export default Vue.extend({
                                 }
                             };
 
-                            console.log(JSON.stringify(event));
+                            console.log("Swap event:", JSON.stringify(event));
 
                             const myAmountNano = new BN(myAmount * 1e9);
                             const amountAfterFee = myAmountNano.sub(this.getFeeAmount(myAmountNano));
