@@ -2,7 +2,6 @@
     <main class="Bridge">
         <div class="Bridge-testnetWarning" v-if="isTestnet">{{$t('Bridge.testnet')}}</div>
         <div class="menu">
-
             <img src="~assets/pics/ice-open-network-logo.svg" alt="Ice Open Network" class="logo"/>
 
             <div class="tabs">
@@ -26,7 +25,90 @@
         </div>
         <div class="Bridge-content">
             <div class="Bridge-form">
-                <div class="Bridge-switchers" :class="{isFromTon}" :key="isFromTon">
+
+                <h1>ION Bridge</h1>
+
+                <div class="Bridge-inputWrapper form-group form-group-1">
+                    <div class="input-field">
+                        <img src="~assets/pics/binance-icon.svg" class="token" alt="Wrapped ION" :style="{display: !isFromTon ? 'inline' : 'none'}"/>
+                        <img src="~assets/pics/ice-icon.svg" class="token" alt="ION" :style="{display: isFromTon ? 'inline' : 'none'}"/>
+                        <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
+                        <div>
+                            <span class='normal'>Enter {{isFromTon ? 'ION' : 'Wrapped ION'}} amount</span>
+                            <input
+                                :disabled="isInterfaceBlocked"
+                                type="number"
+                                id="amountInput"
+                                v-model="amountInner" min="10"/>
+                        </div>
+                        <span class="max">MAX</span>
+                    </div>
+                </div>
+
+                <button
+                    class="Bridge-switcher-arrow"
+                    :disabled="isInterfaceBlocked"
+                    @click="toggleFromTon"></button>
+
+                <div class="Bridge-inputWrapper form-group form-group-2">
+                    <div class="input-field">
+                        <img src="~assets/pics/binance-icon.svg" class="token" alt="Wrapped ION" :style="{display: isFromTon ? 'inline' : 'none'}"/>
+                        <img src="~assets/pics/ice-icon.svg" class="token" alt="ION" :style="{display: !isFromTon ? 'inline' : 'none'}"/>
+                        <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
+                        <div>
+                            <span class='normal'>You receive {{isFromTon ? 'Wrapped ION' : 'ION'}}</span>
+                            <input
+                                :disabled="isInterfaceBlocked"
+                                type="number"
+                                id="amountInput"
+                                v-model="amountInner" min="10"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="Bridge-inputWrapper form-group form-group-3">
+                    <div class="input-field">
+                        <img src="~assets/pics/wallet-icon.svg" class="token" alt="ION"/>
+                        <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
+                        <div>
+                            <span>Address you receive in {{isFromTon ? 'BSC' : 'ION'}} Network</span>
+                            <input
+                                :disabled="isInterfaceBlocked"
+                                type="text"
+                                id="toInput"
+                                v-model="toAddress"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="Bridge-pairFee">
+                    <span>BSC gas fee</span>
+                    <span>{{pairFee}} BNB</span>
+                </div>
+                <div class="Bridge-bridgeFee">
+                    <span>Bridge fee</span>
+                    <span>{{bridgeFee}}</span>
+                </div>
+
+                <BridgeProcessor
+                    ref="bridgeProcessor"
+                    :key="pair"
+                    :is-testnet="isTestnet"
+                    :is-recover="isRecover"
+                    :lt="lt"
+                    :hash="hash"
+                    :is-from-ton="isFromTon"
+                    :pair="pair"
+                    :amount="amount"
+                    :to-address="toAddress"
+                    @interface-blocked="onInterfaceBlocked"
+                    @state-changed="getPairGasFee__debounced"
+                    @reset-state="resetState"
+                    @save-state="saveState"
+                    @delete-state="deleteState"
+                />
+
+                <div class="Bridge-switchers" :class="{isFromTon}" :key="isFromTon" style="display: none;">
                     <div class="Bridge-switcher">
                         <div class="Bridge-switcherTitle" :class="{disabled: isInterfaceBlocked}">
                             <span>{{tonNetworkName}}&nbsp;▾</span>
@@ -58,52 +140,13 @@
                         <div class="Bridge-switcherAnno"><a :href="pairNetworkCoinUrl" target="_blank">{{pairNetworkCoin}}</a></div>
                     </div>
                 </div>
+            </div>
 
-                <div class="Bridge-inputWrapper">
-                    <label for="amountInput">{{$t('Bridge.amountOfTon')}}</label><br>
-                    <input
-                        :disabled="isInterfaceBlocked"
-                        type="number"
-                        id="amountInput"
-                        v-model="amountInner">
-                </div>
-
-                <div class="Bridge-inputWrapper">
-                    <label for="toInput" id="toInputLabel">{{addressInputLabel}}</label><br>
-                    <input
-                        :disabled="isInterfaceBlocked"
-                        type="text"
-                        id="toInput"
-                        v-model="toAddress">
-                </div>
-
-                <div class="Bridge-pairFee">{{pairFee}}</div>
-                <div class="Bridge-bridgeFee">{{bridgeFee}}</div>
-
-                <BridgeProcessor
-                    ref="bridgeProcessor"
-                    :key="pair"
-                    :is-testnet="isTestnet"
-                    :is-recover="isRecover"
-                    :lt="lt"
-                    :hash="hash"
-                    :is-from-ton="isFromTon"
-                    :pair="pair"
-                    :amount="amount"
-                    :to-address="toAddress"
-                    @interface-blocked="onInterfaceBlocked"
-                    @state-changed="getPairGasFee__debounced"
-                    @reset-state="resetState"
-                    @save-state="saveState"
-                    @delete-state="deleteState"
-                /></BridgeProcessor>
-
-                <div class="description-form">
-                    <img src="~assets/pics/description-icon.svg" alt="Help"/>
-                    <div>
-                        <h2>How does it work?</h2>
-                        <span>If you have any questions, then check out our detailed guide on how it works</span>
-                    </div>
+            <div class="description-form">
+                <img src="~assets/pics/description-icon.svg" alt="Help"/>
+                <div>
+                    <h2>How does it work?</h2>
+                    <span>If you have any questions, then check out our detailed guide on how it works</span>
                 </div>
             </div>
         </div>
@@ -202,7 +245,11 @@ export default Vue.extend({
             const n = this.gasPrice ? this.gasPrice / this.params.defaultGwei : 1;
             const fee = this.isFromTon ? (this.params.coinsPerGweiTo * n) : (this.params.coinsPerGweiFrom * n);
 
-            return (this.$t(`Bridge.networks.${this.pair}.gasFee`) as string).replace('<FEE>', fee.toFixed(4));
+            // v.1.0
+            // return (this.$t(`Bridge.networks.${this.pair}.gasFee`) as string).replace('<FEE>', fee.toFixed(4));
+
+            // v.2.0
+            return fee.toFixed(4);
         },
         amount: {
             get(): number {
@@ -216,9 +263,14 @@ export default Vue.extend({
         },
         bridgeFee(): string {
             if (!isNaN(this.amount) && this.amount >= 10) {
-                return (this.$t('Bridge.bridgeFeeAbove10') as string).replace('<FEE>', String(5 + (this.amount - 5) * (0.25 / 100)));
+                // v.1.0
+                // return (this.$t('Bridge.bridgeFeeAbove10') as string).replace('<FEE>', String(5 + (this.amount - 5) * (0.25 / 100)));
+
+                // v.2.0
+                return String(5 + (this.amount - 5) * (0.25 / 100));
             } else {
-                return this.$t('Bridge.bridgeFeeBelow10') as string;
+                // return this.$t('Bridge.bridgeFeeBelow10') as string;
+                return '5 ION + 0.25% of amount';
             }
         },
         fromPairs(): string[] {
@@ -416,7 +468,7 @@ export default Vue.extend({
         top: 0;
         color: white;
         width: 100%;
-        padding: 8px 0;
+        padding: 0px 0;
         text-align: center;
         background: red;
         font-weight: bold;
@@ -603,14 +655,27 @@ export default Vue.extend({
 
     &-switcher-arrow {
         cursor: pointer;
-        background-image: url('~assets/pics/arrow.svg');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        width: 32px;
-        height: 32px;
-        margin-left: 16px;
-        margin-right: 16px;
+        box-sizing: border-box;
+
+        /* Auto layout */
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+        gap: 10px;
+
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        left: calc(50% - 40px/2 + 80px);
+        top: 147px;
+
+        background: #FFFFFF url('~assets/pics/arrow-icon.svg') center center no-repeat;
+        border: 1px solid #CCCCCC;
+        border-radius: 14px;
+
+        z-index: 1;
 
         &[disabled] {
             cursor: default;
@@ -628,8 +693,6 @@ export default Vue.extend({
             font-size: 18px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            margin-top: 8px;
-            margin-bottom: 20px;
             -webkit-appearance: none;
 
             &[disabled] {
@@ -639,13 +702,52 @@ export default Vue.extend({
     }
 
     &-pairFee {
-        color: #666666;
-        margin-bottom: 4px;
+        /* Auto layout */
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+
+        position: absolute;
+        width: 350px;
+        height: 18px;
+        left: 55px;
+        top: 335px;
     }
 
     &-bridgeFee {
-        color: #666666;
-        margin-bottom: 10px;
+        /* Auto layout */
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0;
+        gap: 4px;
+
+        position: absolute;
+        width: 350px;
+        height: 18px;
+        left: 55px;
+        top: 365px;
+    }
+
+    &-bridgeFee span:nth-child(2), &-pairFee span:nth-child(2) {
+        /* 0.00 BNB */
+        height: 18px;
+
+        /* Mainnet/Body (600) */
+        font-family: 'Noto Sans',serif;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 13px;
+        line-height: 18px;
+        /* identical to box height, or 138% */
+        display: flex;
+        align-items: center;
+
+        color: #000000;
     }
 
     &-footer {
@@ -811,6 +913,21 @@ export default Vue.extend({
     border-radius: 16px;
 }
 
+h1 {
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 31px;
+    align-items: center;
+    color: #0E0E0E;
+
+    position: relative;
+    width: 204px;
+    height: 31px;
+    top: 62px;
+}
+
 /* Description form styling */
 .description-form {
     box-sizing: border-box;
@@ -821,13 +938,12 @@ export default Vue.extend({
     align-items: center;
     padding: 12px 20px;
     gap: 16px;
-    margin-top: 17px;
-    margin-bottom: 117px;
 
-    position: relative;
+    position: absolute;
     width: 460px;
     height: 89px;
     left: calc(50% - 460px/2);
+    top: 762px;
 
     background: #FFFFFF;
     box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.05);
@@ -938,6 +1054,213 @@ export default Vue.extend({
     cursor: pointer;
 }
 
+/* Swap form styling */
+.Bridge-form {
+    position: absolute;
+    background-color: #fff;
+    padding: 0;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.1);
+    width: 460px;
+    height: 501px;
+    top: 234px;
+}
+
+.form-group {
+    width: 350px;
+    height: 58px;
+    left: calc(50% - 350px / 2);
+}
+
+.form-group-1 {
+    position: absolute;
+    top: 101px;
+}
+
+.form-group-1.insufficient-balance .input-field {
+    border-color: #ff4d4f;
+}
+
+.form-group-1.insufficient-balance .max {
+    color: #ff4d4f;
+}
+
+.form-group-1.insufficient-balance .normal {
+    display: none;
+}
+
+.form-group-1 .alert {
+    display: none;
+}
+
+.form-group-1.insufficient-balance .alert {
+    display: block;
+    color: #ff4d4f;
+}
+
+.form-group-2 {
+    position: absolute;
+    top: 175px;
+}
+
+.form-group-3 {
+    position: absolute;
+    top: 257px;
+}
+
+.form-group-3 input {
+    width: 260px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    color: #34495e; /* Darker blue-gray */
+    margin-bottom: 8px;
+}
+
+.input-field {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-style: solid;
+    border-color: #cccccc;
+    border-width: 1px;
+    border-radius: 12px;
+    padding: 0;
+    width: 350px;
+    height: 58px;
+}
+
+.input-field .max {
+    width: 30px;
+    height: 18px;
+    margin-left: 16px;
+    margin-right: 16px;
+
+    /* Mainnet/Body (600) */
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
+    /* identical to box height, or 138% */
+    display: flex;
+    align-items: center;
+
+    color: #9A9A9A;
+    cursor: pointer;
+}
+
+.input-field input {
+    border: none;
+    background: transparent;
+    flex: 1;
+    outline: none;
+    padding: 0;
+
+    /* Mainnet/Body (600) */
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
+
+    /* identical to box height, or 138% */
+    display: flex;
+    align-items: center;
+
+    color: #0E0E0E;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+}
+
+.input-field .token {
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 16px;
+    color: #2C3E50;
+}
+
+.input-field .vertical-line-1 {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.input-field input::placeholder {
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
+    color: #9A9A9A;
+}
+
+.input-field span {
+    /* Terms */
+    height: 16px;
+
+    /* Mainnet/Caption (500) */
+    font-family: 'Noto Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+
+    color: #9A9A9A;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+/* Styling for the Swap button */
+.swap-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 0;
+    gap: 8px;
+    background-color: #B8BCCA;
+    border-radius: 16px;
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+    color: #FFFFFF;
+    border-width: 0;
+
+    position: absolute;
+    width: 350px;
+    height: 58px;
+    left: calc(50% - 350px / 2);
+    top: 287px;
+    bottom: 51px;
+}
+
+/* Hover effect for the Swap button */
+.swap-button:hover {
+    background-color: #357ABD; /* Darker blue on hover */
+}
+
+/* Disabled state styling for the Swap button */
+.swap-button:disabled {
+    background-color: #cccccc; /* Noticeably gray */
+    color: #666666; /* Dark gray text */
+    cursor: not-allowed;
+}
+
+/**
+ Styles for icons.
+ */
 .meme-icon-white {
     stroke: white;
 }

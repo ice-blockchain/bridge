@@ -1,7 +1,7 @@
 <template>
     <div class="BridgeProcessor">
         <button
-            class="BridgeProcessor-transfer"
+            class="BridgeProcessor-transfer transfer-button"
             v-if="state.step === 0"
             @click="onTransferClick">{{$t('Bridge.transfer')}}</button>
 
@@ -1005,7 +1005,6 @@ export default Vue.extend({
         line-height: 19px;
         border: none;
         padding: 15px 35px 14px;
-        margin-top: 20px;
 
         .isPointer &:hover,
         .isTouch &:active {
@@ -1096,4 +1095,43 @@ export default Vue.extend({
         }
     }
 }
+
+/* Styling for the Swap button */
+.transfer-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 0;
+    gap: 8px;
+    background-color: #B8BCCA;
+    border-radius: 16px;
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+    color: #FFFFFF;
+    border-width: 0;
+
+    position: absolute;
+    width: 350px;
+    height: 58px;
+    left: calc(50% - 350px / 2);
+    top: 403px;
+    bottom: 51px;
+}
+
+/* Hover effect for the Swap button */
+.transfer-button:hover {
+    background-color: #357ABD; /* Darker blue on hover */
+}
+
+/* Disabled state styling for the Swap button */
+.transfer-button:disabled {
+    background-color: #cccccc; /* Noticeably gray */
+    color: #666666; /* Dark gray text */
+    cursor: not-allowed;
+}
+
 </style>
