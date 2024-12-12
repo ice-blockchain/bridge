@@ -1,8 +1,30 @@
 <template>
     <main class="Bridge">
         <div class="Bridge-testnetWarning" v-if="isTestnet">{{$t('Bridge.testnet')}}</div>
+        <div class="menu">
+
+            <img src="~assets/pics/ice-open-network-logo.svg" alt="Ice Open Network" class="logo"/>
+
+            <div class="tabs">
+                <button class="swap-tab" @click="openSwap()">
+                    <img src="~assets/pics/meme-markers.svg" class="meme-icon-blue" alt="Swap" />
+                    Swap
+                </button>
+
+                <button class="bridge-tab">
+                    <img src="~assets/pics/bridge-icon.svg" class="bridge-icon-gray" alt="Bridge" />
+                    Bridge
+                </button>
+            </div>
+
+            <div class="connect-wallet-container">
+                <button class="connect-wallet-button" @click="connectWallet()">
+                    <img src="~assets/pics/plus-icon.svg" alt="Connect wallet"/>
+                    Connect wallet
+                </button>
+            </div>
+        </div>
         <div class="Bridge-content">
-            <div class="Bridge-img" :class="{isFromTon}"></div>
             <div class="Bridge-form">
                 <div class="Bridge-switchers" :class="{isFromTon}" :key="isFromTon">
                     <div class="Bridge-switcher">
@@ -76,11 +98,12 @@
                     @delete-state="deleteState"
                 /></BridgeProcessor>
 
-                <div class="Bridge-footer">
-                    v2.11,
-                    <a href="https://github.com/ton-blockchain/bridge" target="_blank">{{$t('Bridge.sourceCode')}}</a>,
-<!--                    <a href="https://ton.org/how-it-works/bridge" target="_blank">{{$t('Bridge.howItWorks')}}</a>,-->
-                    <a href="https://github.com/ton-blockchain/TIPs/issues/24" target="_blank">{{$t('Bridge.documentation')}}</a>.
+                <div class="description-form">
+                    <img src="~assets/pics/description-icon.svg" alt="Help"/>
+                    <div>
+                        <h2>How does it work?</h2>
+                        <span>If you have any questions, then check out our detailed guide on how it works</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -260,6 +283,13 @@ export default Vue.extend({
     },
 
     methods: {
+        openSwap() {
+            // TODO: Move this to settings, when possible
+            window.open('https://swap.staging.ice.io', '__empty');
+        },
+        connectWallet() {
+            alert(";)");
+        },
         onPairClick(switchDirection: boolean, toPair: string): void {
             if (this.isInterfaceBlocked) {
                 return
@@ -635,4 +665,284 @@ export default Vue.extend({
         }
     }
 }
+
+.menu {
+    box-sizing: border-box;
+
+    position: relative;
+    width: 1392px;
+    height: 80px;
+    left: calc(50% - 1392px/2);
+    top: 24px;
+
+    background: #FFFFFF;
+    box-shadow: 0 0 21px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+}
+
+.menu img {
+    width: 188px;
+    height: 40px;
+    left: 16px;
+}
+
+.menu img.logo {
+    position: absolute;
+    width: 188px;
+    height: 40px;
+    left: 16px;
+    top: calc(50% - 40px/2);
+}
+
+.menu .tabs {
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+    gap: 12px;
+
+    position: absolute;
+    width: 268px;
+    height: 48px;
+    left: calc(50% - 268px/2);
+    top: calc(50% - 48px/2);
+}
+
+.menu .bridge-tab {
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 24px;
+    gap: 6px;
+
+    width: 133px;
+    height: 48px;
+
+    background: #F5F7FF;
+    border-radius: 16px;
+    border-width: 0;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 23px;
+    color: #0166FF;
+}
+
+.menu .bridge-tab img {
+    width: 23px;
+    height: 24px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.menu .swap-tab {
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 24px;
+    gap: 6px;
+
+    width: 123px;
+    height: 48px;
+
+    background: white;
+    border-radius: 16px;
+    border-width: 0;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 23px;
+    text-align: center;
+
+    color: #9A9A9A;
+
+    cursor: pointer;
+}
+
+.menu .swap-tab img {
+    /* Frame */
+    width: 24px;
+    height: 24px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.menu .connect-wallet-button {
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 24px;
+    gap: 8px;
+
+    width: 189px;
+    height: 48px;
+
+    background: #0166FF;
+    border: 1.2px solid #0166FF;
+    border-radius: 16px;
+}
+
+/* Description form styling */
+.description-form {
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 16px;
+    margin-top: 17px;
+    margin-bottom: 117px;
+
+    position: relative;
+    width: 460px;
+    height: 89px;
+    left: calc(50% - 460px/2);
+
+    background: #FFFFFF;
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+}
+
+/* How does it work? */
+.description-form h2 {
+
+    margin: 0;
+
+    /* Mainnet/Title (600) */
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 23px;
+    display: flex;
+    align-items: center;
+
+    color: #0E0E0E;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+/* If you have any questions, then check out our detailed guide on how it works */
+.description-form span {
+
+    /* Mainnet/Body 2 (400) */
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+
+    color: #727689;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+
+/* Container for the Connect Wallet button */
+.connect-wallet-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+/* Styling for the Connect Wallet button */
+.connect-wallet-button {
+    padding: 8px 16px;
+    font-size: 13px;
+    background-color: #4A90E2; /* Cool blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.connect-wallet-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.disconnect-wallet-button {
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 8px;
+
+    position: absolute;
+    width: 189px;
+    height: 48px;
+    top: 53px;
+
+    background: #FFFFFF;
+    box-shadow: -2px -2px 16px rgba(29, 70, 235, 0.1);
+    border-radius: 16px;
+    border-width: 0;
+
+    /* Mainnet/Subtitle (600) */
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+
+    color: #FD4E4E;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+
+    cursor: pointer;
+}
+
+.meme-icon-white {
+    stroke: white;
+}
+
+.meme-icon-blue {
+    stroke: #0166FF;
+}
+
 </style>
