@@ -883,6 +883,7 @@ export default Vue.extend({
     position: absolute;
     top: 20px;
     right: 20px;
+    display: none;
 }
 
 /* Styling for the Connect Wallet button */

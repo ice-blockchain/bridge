@@ -5,7 +5,7 @@ export const PARAMS: IParams = {
             "main": {
                 "getGasUrl": "https://gbsc.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle",
                 "explorerUrl": "https://bscscan.com/token/<ADDRESS>",
-                "wTonAddress": "0x1B615Fb55d329b19C2d3f56943a1D972EFc717a3",
+                "wTonAddress": "0xc632928ab4fc995e04b4d66da62c28ce56e2bd73",
                 "tonBridgeAddress": "Ef_IkSbsYpMv8ZO6XFMsfIoqTn9OSRA-BU5-rKxIh_xfY0fz",
                 "tonCollectorAddress": "EQB91-zbCZDGGtVngKdyXB7Cnbm_DKVXJQsHyzDn3cZSFEuI",
                 "tonMultisigAddress": "kf-sw1ve4zYbX7-48loRWut-HNyVq65NbkRueXFETpcUvLDT",
@@ -19,7 +19,7 @@ export const PARAMS: IParams = {
             "test": {
                 "getGasUrl": "https://gbsc.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle",
                 "explorerUrl": "https://testnet.bscscan.com/token/<ADDRESS>",
-                "wTonAddress": "0x1B615Fb55d329b19C2d3f56943a1D972EFc717a3",
+                "wTonAddress": "0xc632928ab4fc995e04b4d66da62c28ce56e2bd73",
                 "tonBridgeAddress": "Ef_IkSbsYpMv8ZO6XFMsfIoqTn9OSRA-BU5-rKxIh_xfY0fz",
                 "tonCollectorAddress": "EQB91-zbCZDGGtVngKdyXB7Cnbm_DKVXJQsHyzDn3cZSFEuI",
                 "tonMultisigAddress": "kf-sw1ve4zYbX7-48loRWut-HNyVq65NbkRueXFETpcUvLDT",
