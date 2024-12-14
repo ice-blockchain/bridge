@@ -461,11 +461,10 @@ export default Vue.extend({
         },
         useMaximumTokenAmount: async function() {
 
-            console.log(`Is from ION:`, this.isFromTon);
-
             const self = this;
 
             const initProvider = async function() {
+
                 // Check if MetaMask (Ethereum provider) is available
                 const ethereum = (window as any).ethereum;
                 if (!ethereum) {
@@ -508,7 +507,6 @@ export default Vue.extend({
                 };
             }
 
-
             // Ensure provider is initialized
             if (!this.provider) {
                 this.provider = await initProvider();
@@ -519,6 +517,7 @@ export default Vue.extend({
             }
 
             if (this.isFromTon) {
+
                 // Fetch the TON account from TonMask
                 if (typeof window.ton === 'undefined') {
                     alert(this.$t('Bridge.errors.installTonMask') as string);
@@ -536,31 +535,23 @@ export default Vue.extend({
                 }
 
                 // Get balance info from IonWeb
-                try {
-                    const info = await this.provider.ionweb.provider.getAddressInfo(account);
-                    // info.balance is in nanoTON, convert it to ION
-                    const tonBalance = parseFloat(info.balance) / 1e9;
-                    console.log(`Current TON balance: ${tonBalance} ION`);
+                const info = await this.provider.ionweb.provider.getAddressInfo(account);
+                // info.balance is in nanoTON, convert it to ION
+                const tonBalance = parseFloat(info.balance) / 1e9;
+                console.log(`Current TON balance: ${tonBalance} ION`);
 
-                    // Set the input amount to the fetched balance
-                    this.amount = tonBalance;
-                } catch (error) {
-                    console.error('Failed to fetch TON balance:', error);
-                }
+                // Set the input amount to the fetched balance
+                this.amount = tonBalance;
 
             } else {
                 // Fetch ICE (Wrapped ION) balance via MetaMask (wtonContract)
-                try {
-                    const rawBalance = await this.provider.wtonContract.methods.balanceOf(this.provider.myEthAddress).call();
-                    // rawBalance is a string in the smallest unit. Use fromUnit() to convert:
-                    const iceBalance = parseFloat(fromUnit(Number(rawBalance)));
-                    console.log(`Current ICE balance: ${iceBalance} WTON`);
+                const rawBalance = await this.provider.wtonContract.methods.balanceOf(this.provider.myEthAddress).call();
+                // rawBalance is a string in the smallest unit. Use fromUnit() to convert:
+                const iceBalance = parseFloat(fromUnit(Number(rawBalance)));
+                console.log(`Current ICE balance: ${iceBalance} WTON`);
 
-                    // Set the input amount to the fetched balance
-                    this.amount = iceBalance;
-                } catch (error) {
-                    console.error('Failed to fetch ICE balance:', error);
-                }
+                // Set the input amount to the fetched balance
+                this.amount = iceBalance;
             }
         }
     }
