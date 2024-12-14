@@ -161,3 +161,8 @@ svg {
 [tabindex="-1"]:focus:not(:focus-visible) {
     outline: 0 !important;
 }
+
+html {
+    background-color: #F5F7FF;
+}
+
