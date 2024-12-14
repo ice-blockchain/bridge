@@ -41,7 +41,7 @@
                                 id="amountInput"
                                 v-model="amountInner" min="10"/>
                         </div>
-                        <span class="max">MAX</span>
+                        <span class="max" @click="useMaximumTokenAmount()">MAX</span>
                     </div>
                 </div>
 
@@ -452,6 +452,12 @@ export default Vue.extend({
 
             this.gasPrice = gasPrice > 0 ? gasPrice : this.params.defaultGwei;
              */
+        },
+        useMaximumTokenAmount() {
+
+            console.log(`Is from ION:`, this.isFromTon);
+
+            // TODO: When `this.isFromTon` is `true` - load the current TON amount from the OpenMask wallet. When it is `false` - load the maximum ICE token amount from the MetaMask wallet. And then, display these value to console.
         }
     }
 })
