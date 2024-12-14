@@ -159,6 +159,12 @@ import lodashDebounce from 'lodash.debounce';
 import { supportsLocalStorage } from '~/utils/helpers';
 import { PARAMS } from '~/utils/constants';
 import BridgeProcessor from '~/components/BridgeProcessor.vue'
+import Web3 from 'web3';
+import IonWeb from 'ionweb';
+import WTON from '~/assets/WTON.json';
+import {AbiItem} from 'web3-utils';
+import { fromUnit } from '~/utils/helpers';
+const BN = IonWeb.utils.BN;
 
 const PAIRS = [/*'eth',*/ 'bsc'];
 
@@ -453,11 +459,109 @@ export default Vue.extend({
             this.gasPrice = gasPrice > 0 ? gasPrice : this.params.defaultGwei;
              */
         },
-        useMaximumTokenAmount() {
+        useMaximumTokenAmount: async function() {
 
             console.log(`Is from ION:`, this.isFromTon);
 
-            // TODO: When `this.isFromTon` is `true` - load the current TON amount from the OpenMask wallet. When it is `false` - load the maximum ICE token amount from the MetaMask wallet. And then, display these value to console.
+            const self = this;
+
+            const initProvider = async function() {
+                // Check if MetaMask (Ethereum provider) is available
+                const ethereum = (window as any).ethereum;
+                if (!ethereum) {
+                    console.error('Metamask not installed');
+                    return null;
+                }
+
+                // Request accounts from MetaMask
+                let myEthAddress: string;
+                try {
+                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                    myEthAddress = accounts[0];
+                } catch (error) {
+                    console.error('Failed to get accounts from MetaMask:', error);
+                    return null;
+                }
+
+                // Initialize Web3
+                const web3 = new Web3(ethereum);
+
+                // Initialize WTON Contract
+                const wtonContract = new web3.eth.Contract(WTON as AbiItem[], self.params.wTonAddress);
+
+                // Initialize IonWeb for TON network
+                const ionweb = new IonWeb(new IonWeb.HttpProvider(
+                    self.params.tonCenterUrl,
+                ));
+
+                // Build and return the provider object
+                return {
+                    oraclesTotal: 0,        // Not strictly needed for max amount retrieval
+                    blockNumber: 0,
+                    myEthAddress,
+                    wtonContract,
+                    web3,
+                    ionweb,
+                    feeFlat: new BN(0),     // Not strictly needed for max amount retrieval
+                    feeFactor: new BN(0),   // Not strictly needed for max amount retrieval
+                    feeBase: new BN(0)      // Not strictly needed for max amount retrieval
+                };
+            }
+
+
+            // Ensure provider is initialized
+            if (!this.provider) {
+                this.provider = await initProvider();
+                if (!this.provider) {
+                    console.error('Provider not initialized, cannot fetch balances.');
+                    return;
+                }
+            }
+
+            if (this.isFromTon) {
+                // Fetch the TON account from TonMask
+                if (typeof window.ton === 'undefined') {
+                    alert(this.$t('Bridge.errors.installTonMask') as string);
+                    return;
+                }
+
+                let account: string;
+                try {
+                    const accounts = await window.ton.send("ton_requestAccounts");
+                    account = accounts[0];
+                    console.log(`Using ION/Ton account ${account}`);
+                } catch (e) {
+                    console.error('Failed to get TonMask account:', e);
+                    return;
+                }
+
+                // Get balance info from IonWeb
+                try {
+                    const info = await this.provider.ionweb.provider.getAddressInfo(account);
+                    // info.balance is in nanoTON, convert it to ION
+                    const tonBalance = parseFloat(info.balance) / 1e9;
+                    console.log(`Current TON balance: ${tonBalance} ION`);
+
+                    // Set the input amount to the fetched balance
+                    this.amount = tonBalance;
+                } catch (error) {
+                    console.error('Failed to fetch TON balance:', error);
+                }
+
+            } else {
+                // Fetch ICE (Wrapped ION) balance via MetaMask (wtonContract)
+                try {
+                    const rawBalance = await this.provider.wtonContract.methods.balanceOf(this.provider.myEthAddress).call();
+                    // rawBalance is a string in the smallest unit. Use fromUnit() to convert:
+                    const iceBalance = parseFloat(fromUnit(Number(rawBalance)));
+                    console.log(`Current ICE balance: ${iceBalance} WTON`);
+
+                    // Set the input amount to the fetched balance
+                    this.amount = iceBalance;
+                } catch (error) {
+                    console.error('Failed to fetch ICE balance:', error);
+                }
+            }
         }
     }
 })
