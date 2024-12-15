@@ -547,7 +547,7 @@ export default Vue.extend({
                 // Fetch ICE (Wrapped ION) balance via MetaMask (wtonContract)
                 const rawBalance = await this.provider.wtonContract.methods.balanceOf(this.provider.myEthAddress).call();
                 // rawBalance is a string in the smallest unit. Use fromUnit() to convert:
-                const iceBalance = parseFloat(fromUnit(Number(rawBalance)));
+                const iceBalance = parseFloat("" + fromUnit(Number(rawBalance)));
                 console.log(`Current ICE balance: ${iceBalance} WTON`);
 
                 // Set the input amount to the fetched balance
