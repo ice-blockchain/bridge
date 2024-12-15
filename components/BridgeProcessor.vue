@@ -348,7 +348,7 @@ export default Vue.extend({
     },
 
     methods: {
-        classForStep(step): string {
+        classForStep(step: number): string {
             if (this.state.step <= step) {
                 return 'step-pending';
             } else if (this.state.step > step) {
@@ -357,20 +357,14 @@ export default Vue.extend({
 
             return 'step-error';
         },
-        pendingStep(step): boolean {
-            if (this.state.step === step) {
-                return true;
-            }
+        pendingStep(step: number): boolean {
+            return this.state.step === step;
         },
-        completedStep(step): boolean {
-            if (this.state.step > step) {
-                return true;
-            }
+        completedStep(step: number): boolean {
+            return this.state.step > step;
         },
-        futureStep(step): boolean {
-          if (this.state.step < step) {
-              return true;
-          }
+        futureStep(step: number): boolean {
+            return this.state.step < step;
         },
         resetState(): void {
             this.state.swapId = '';

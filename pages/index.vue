@@ -182,7 +182,9 @@ declare interface IComponentData {
     amountInner: string,
     toAddress: string,
 
-    isInterfaceBlocked: boolean
+    isInterfaceBlocked: boolean,
+
+    provider: any
 }
 
 export default Vue.extend({
@@ -199,6 +201,8 @@ export default Vue.extend({
 
     data(): IComponentData {
         return {
+            provider: undefined,
+
             getPairGasFee__debounced: () => {},
             gasPrice: 0,
 
