@@ -5,61 +5,53 @@
             v-if="state.step === 0"
             @click="onTransferClick">{{$t('Bridge.transfer')}}</button>
 
-        <div class="BridgeProcessor-infoWrapper" v-else>
-            <div class="BridgeProcessor-infoLine">
-                <div
-                    class="BridgeProcessor-info-icon"
-                    :class="{'none': state.step < 1, 'pending': state.step === 1, 'done': state.step > 1}"></div>
-                <div class="BridgeProcessor-info-text" v-if="!getStepInfoText1.isOnlyText">
-                    {{ getStepInfoText1.sendAmount }}<br/>
-                    <a :href="getStepInfoText1.url" target="_blank">{{ getStepInfoText1.url }}</a>
-                    <div class="note">{{ getStepInfoText1.sendFromPersonal }} <b>{{ getStepInfoText1.sendNotFromExchanges }}</b></div>
-                </div>
-                <div class="BridgeProcessor-info-text" v-else>{{ getStepInfoText1.text }}</div>
-            </div>
-            <div class="BridgeProcessor-infoLine" v-if="isFromTon && state.step === 1">
-                <div class="BridgeProcessor-info-text">OR</div>
-            </div>
-            <div class="BridgeProcessor-infoLine" v-if="isFromTon && state.step === 1">
-                <div class="BridgeProcessor-info-text">
-                <button
-                    class="BridgeProcessor-transact"
-                      @click="onTransactClick">Make a transaction using `IONMask`</button>
+        <div class="BridgeProcessor-infoWrapper notifications-area" v-else>
+            <div :class="`notification ${classForStep(1)}`">
+                <div>
+                    <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(1) />
+                    <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(1) />
+                    Transaction in {{isFromTon ? 'IONMask' : 'MetaMask'}}
                 </div>
             </div>
-            <div class="BridgeProcessor-infoLine" v-if="!isFromTon">
-                <div
-                    class="BridgeProcessor-info-icon"
-                    :class="{'none': state.step < 2, 'pending': state.step === 2, 'done': state.step > 2}"></div>
-                <div class="BridgeProcessor-info-text">{{ getStepInfoText2 }}</div>
+            <div :class="`notification ${classForStep(2)}`" v-if="!isFromTon">
+                <div>
+                    <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(2) />
+                    <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(2) />
+                    <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=futureStep(2) />
+                    {{ getStepInfoText2 }}
+                </div>
             </div>
-            <div class="BridgeProcessor-infoLine">
-                <div
-                    class="BridgeProcessor-info-icon"
-                    :class="{'none': state.step < 3, 'pending': state.step === 3, 'done': state.step > 3}"></div>
-                <div class="BridgeProcessor-info-text">{{ getStepInfoText3 }}</div>
+            <div :class="`notification ${classForStep(3)}`">
+                <div>
+                    <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(3) />
+                    <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(3) />
+                    <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=futureStep(3) />
+                    {{ getStepInfoText3 }}
+                </div>
             </div>
-            <div class="BridgeProcessor-infoLine">
-                <div
-                    class="BridgeProcessor-info-icon"
-                    :class="{'none': state.step < 4, 'pending': state.step === 4, 'done': state.step > 4}"></div>
-                <div class="BridgeProcessor-info-text">{{ getStepInfoText4 }}</div>
+            <div :class="`notification ${classForStep(4)}`">
+                <div>
+                    <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(4) />
+                    <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(4) />
+                    <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=futureStep(4) />
+                    {{ getStepInfoText4 }}
+                </div>
             </div>
         </div>
 
         <button
             v-if="isGetTonCoinVisible"
-            class="BridgeProcessor-getTonCoin"
+            class="BridgeProcessor-getTonCoin get-button"
             @click="mint">{{$t('Bridge.getToncoin')}}</button>
 
         <button
             v-if="isDoneVisible"
-            class="BridgeProcessor-done"
+            class="BridgeProcessor-done done-button"
             @click="onDoneClick">{{$t('Bridge.done')}}</button>
 
         <button
             v-if="isCancelVisible"
-            class="BridgeProcessor-cancel"
+            class="BridgeProcessor-cancel cancel-button"
             @click="onCancelClick">{{$t('Bridge.cancel')}}</button>
     </div>
 </template>
@@ -356,6 +348,30 @@ export default Vue.extend({
     },
 
     methods: {
+        classForStep(step): string {
+            if (this.state.step <= step) {
+                return 'step-pending';
+            } else if (this.state.step > step) {
+                return 'step-completed';
+            }
+
+            return 'step-error';
+        },
+        pendingStep(step): boolean {
+            if (this.state.step === step) {
+                return true;
+            }
+        },
+        completedStep(step): boolean {
+            if (this.state.step > step) {
+                return true;
+            }
+        },
+        futureStep(step): boolean {
+          if (this.state.step < step) {
+              return true;
+          }
+        },
         resetState(): void {
             this.state.swapId = '';
             this.state.queryId = '0';
@@ -979,6 +995,7 @@ export default Vue.extend({
 
             if (this.isFromTon) {
                 this.saveState();
+                await this.onTransactClick();
             } else {
                 await this.burn();
             }
@@ -1097,7 +1114,7 @@ export default Vue.extend({
 }
 
 /* Styling for the Swap button */
-.transfer-button {
+.transfer-button, .cancel-button, .get-button, .done-button {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -1134,4 +1151,76 @@ export default Vue.extend({
     cursor: not-allowed;
 }
 
+.notifications-area {
+    width: 236px;
+    margin-left: 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height to center vertically */
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    z-index: 10;
+}
+
+.notification {
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+
+    background: #FFFFFF;
+    border-radius: 16px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    width: 100%;
+    height: 44px;
+    color: black;
+    margin-bottom: 10px;
+    text-align: center;
+
+    /* Mainnet/Subtitle 3 (400) */
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.notification div {
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 10px 7px;
+    gap: 4px;
+
+    width: 100%;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    vertical-align: middle;
+}
+
+.notification-status-icon {
+    /* icon/block_checkbox_on */
+    width: 24px;
+    height: 24px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
 </style>

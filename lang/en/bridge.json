@@ -50,9 +50,9 @@
             "pageTitle": "ION-BSC Bridge",
             "gasFee": "BSC gas fee ~ <FEE> BNB",
             "transactionCompleted": "BSC transaction completed successfully",
-            "transactionWait": "Please wait for the BSC transaction to be processed",
-            "transactionSend": "Please send BSC transaction in Metamask",
-            "blocksConfirmations": "Collected <COUNT> BSC block confirmations",
+            "transactionWait": "Wait for BSC transaction",
+            "transactionSend": "Send BSC transaction in MetaMask",
+            "blocksConfirmations": "<COUNT> BSC blocks",
             "errors": {
                 "invalidAddress": "Not valid BSC address",
                 "lowBalance": "You need to have BNB on your wallet to pay for gas in the BSC network"
@@ -85,13 +85,13 @@
     "cancel": "Cancel",
 
 
-    "blocksConfirmationsCollected": "The confirmations of the blocks are collected",
-    "blocksConfirmationsWaiting": "Wait a bit for the blocks confirmations",
-    "oraclesConfirmations": "Collected <COUNT> confirmations of oracles",
-    "oraclesConfirmationsCollected": "The confirmations of the oracles are collected",
-    "oraclesConfirmationsWaiting": "Wait a bit for the oracles to confirm the transfer",
-    "getCoinsByMetamask": "Get <TO_COIN>s by metamask",
-    "coinsSent": "<TO_COIN>s have been sent to your address",
+    "blocksConfirmationsCollected": "Blocks confirmed",
+    "blocksConfirmationsWaiting": "Wait block confirmations",
+    "oraclesConfirmations": "<COUNT> oracles voted",
+    "oraclesConfirmationsCollected": "Oracles voted",
+    "oraclesConfirmationsWaiting": "Wait for oracles",
+    "getCoinsByMetamask": "Get <TO_COIN>s by MetaMask",
+    "coinsSent": "<TO_COIN>s sent to you",
     "getCoins": "Get <TO_COIN>s in <TO_NETWORK>",
 
     "errors": {
