@@ -37,7 +37,7 @@
                             <span class='normal'>Enter {{isFromTon ? 'ION' : 'Wrapped ION'}} amount</span>
                             <input
                                 :disabled="isInterfaceBlocked"
-                                type="number"
+                                type="text"
                                 id="amountInput"
                                 v-model="amountInner" min="10"/>
                         </div>
@@ -59,7 +59,7 @@
                             <span class='normal'>You receive {{isFromTon ? 'Wrapped ION' : 'ION'}}</span>
                             <input
                                 :disabled="isInterfaceBlocked"
-                                type="number"
+                                type="text"
                                 id="amountInput"
                                 v-model="amountInner" min="10"/>
                         </div>
@@ -787,25 +787,6 @@ export default Vue.extend({
         }
     }
 
-    &-inputWrapper {
-        width: 100%;
-
-        input {
-            line-height: 36px;
-            width: 100%;
-            max-width: 500px;
-            padding: 8px;
-            font-size: 18px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            -webkit-appearance: none;
-
-            &[disabled] {
-                color: gray;
-            }
-        }
-    }
-
     &-pairFee {
         /* Auto layout */
         display: flex;
@@ -1238,10 +1219,15 @@ h1 {
 }
 
 .input-field .max {
-    width: 30px;
+    width: 47px;
     height: 18px;
-    margin-left: 16px;
-    margin-right: 16px;
+    margin-left: auto;
+    /**
+     For some reason, in this site, this gives the opposite result, unlike in the Swap site.
+     */
+    /*
+    padding-left: 17px;
+     */
 
     /* Mainnet/Body (600) */
     font-family: 'Noto Sans', serif;
