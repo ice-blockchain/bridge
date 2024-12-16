@@ -23,7 +23,7 @@
             }
         },
         "eth": {
-            "pageTitle": "ION-ETH Bridge",
+            "pageTitle": "ION Bridge",
             "gasFee": "Ethereum gas fee ~ <FEE> ETH",
             "transactionCompleted": "Ethereum transaction completed successfully",
             "transactionWait": "Please wait for the Ethereum transaction to be processed",
@@ -47,7 +47,7 @@
             }
         },
         "bsc": {
-            "pageTitle": "ION-BSC Bridge",
+            "pageTitle": "ION Bridge",
             "gasFee": "BSC gas fee ~ <FEE> BNB",
             "transactionCompleted": "BSC transaction completed successfully",
             "transactionWait": "Wait for BSC transaction",

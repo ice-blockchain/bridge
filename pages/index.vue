@@ -277,10 +277,10 @@ export default Vue.extend({
                 // return (this.$t('Bridge.bridgeFeeAbove10') as string).replace('<FEE>', String(5 + (this.amount - 5) * (0.25 / 100)));
 
                 // v.2.0
-                return String(5 + (this.amount - 5) * (0.25 / 100));
+                return String(0.5 + (this.amount - 0.5) * (0.25 / 100));
             } else {
                 // return this.$t('Bridge.bridgeFeeBelow10') as string;
-                return '5 ION + 0.25% of amount';
+                return '0.5 ION + 0.25% of amount';
             }
         },
         fromPairs(): string[] {
