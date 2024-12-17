@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { primaryInput } from 'detect-it';
+import { primaryInput } from 'detect-it'
 
 export default Vue.extend({
     name: 'LayoutDefault',
@@ -14,40 +14,52 @@ export default Vue.extend({
     head(): object {
         return {
             htmlAttrs: {
-              lang: 'en',
-              translate: 'no'
+                lang: 'en',
+                translate: 'no',
             },
             meta: [
                 {
                     hid: 'google',
                     name: 'google',
-                    content: 'notranslate'
-                }
+                    content: 'notranslate',
+                },
+            ],
+            link: [
+                {
+                    // Include the `Noto Sans` font
+                    rel: 'stylesheet',
+                    href: 'https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap',
+                },
             ],
         }
     },
 
     mounted() {
         // for active/hovers on touch/mouse devices
-        document.documentElement.classList.add(primaryInput === 'touch' ? 'isTouch' : 'isPointer');
-    }
-});
+        document.documentElement.classList.add(
+            primaryInput === 'touch' ? 'isTouch' : 'isPointer'
+        )
+    },
+})
 </script>
 
 <style lang="less">
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        font-family: 'Helvetica', 'Arial', 'sans-serif';
-        -webkit-text-size-adjust: 100%;
-    }
+body {
+    font-family: 'Noto Sans', sans-serif;
+    -webkit-text-size-adjust: 100%;
+}
 
-    a, a:hover, a:after, a:active, a:focus {
-        color: #1d98dc;
-        text-decoration: none;
-        word-break: break-all;
-    }
-
+a,
+a:hover,
+a:after,
+a:active,
+a:focus {
+    color: #1d98dc;
+    text-decoration: none;
+    word-break: break-all;
+}
 </style>
