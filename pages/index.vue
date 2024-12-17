@@ -34,7 +34,7 @@
                         <img src="~assets/pics/ice-icon.svg" class="token" alt="ION" :style="{display: isFromTon ? 'inline' : 'none'}"/>
                         <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
                         <div>
-                            <span class='normal'>Enter {{isFromTon ? 'ION' : 'Wrapped ION'}} amount</span>
+                            <span class='normal'>Enter {{isFromTon ? 'ICE' : 'Wrapped ICE'}} amount</span>
                             <input
                                 :disabled="isInterfaceBlocked"
                                 type="text"
@@ -56,7 +56,7 @@
                         <img src="~assets/pics/ice-icon.svg" class="token" alt="ION" :style="{display: !isFromTon ? 'inline' : 'none'}"/>
                         <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
                         <div>
-                            <span class='normal'>You receive {{isFromTon ? 'Wrapped ION' : 'ION'}}</span>
+                            <span class='normal'>You receive {{isFromTon ? 'Wrapped ICE' : 'ICE'}}</span>
                             <input
                                 :disabled="isInterfaceBlocked"
                                 type="text"
@@ -277,10 +277,10 @@ export default Vue.extend({
                 // return (this.$t('Bridge.bridgeFeeAbove10') as string).replace('<FEE>', String(5 + (this.amount - 5) * (0.25 / 100)));
 
                 // v.2.0
-                return String(0.5 + (this.amount - 0.5) * (0.25 / 100));
+                return String(0.5 + (this.amount - 0.5) * (0.25 / 100)) + ' ICE';
             } else {
                 // return this.$t('Bridge.bridgeFeeBelow10') as string;
-                return '0.5 ION + 0.25% of amount';
+                return '0.5 ICE + 0.25% of amount';
             }
         },
         fromPairs(): string[] {
