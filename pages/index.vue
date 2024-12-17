@@ -41,7 +41,7 @@
                                 id="amountInput"
                                 v-model="amountInner" min="10"/>
                         </div>
-                        <span class="max" @click="useMaximumTokenAmount()">MAX</span>
+                        <span class="max" v-if="!isFromTon" @click="useMaximumTokenAmount()">MAX</span>
                     </div>
                 </div>
 
