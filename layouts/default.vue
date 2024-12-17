@@ -19,6 +19,12 @@ export default Vue.extend({
             },
             meta: [
                 {
+                    hid: 'description',
+                    name: 'description',
+                    content:
+                        'Seamlessly transfer ICE between ION and BSC networks with the ION Bridge. Enjoy a secure, user-friendly token swap experience and easily manage your wallet.',
+                },
+                {
                     hid: 'google',
                     name: 'google',
                     content: 'notranslate',
