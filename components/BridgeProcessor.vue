@@ -11,6 +11,7 @@
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(1) />
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(1) />
                     Transaction in {{isFromTon ? 'IONMask' : 'MetaMask'}}
+                    <dots-cycler v-if=pendingStep(1) />
                 </div>
             </div>
             <div :class="`notification ${classForStep(2)}`" v-if="!isFromTon">
@@ -19,6 +20,7 @@
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(2) />
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=futureStep(2) />
                     {{ getStepInfoText2 }}
+                    <dots-cycler v-if=pendingStep(2) />
                 </div>
             </div>
             <div :class="`notification ${classForStep(3)}`">
@@ -27,6 +29,7 @@
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(3) />
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=futureStep(3) />
                     {{ getStepInfoText3 }}
+                    <dots-cycler v-if=pendingStep(3) />
                 </div>
             </div>
             <div :class="`notification ${classForStep(4)}`">
@@ -35,6 +38,7 @@
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(4) />
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=futureStep(4) />
                     {{ getStepInfoText4 }}
+                    <dots-cycler v-if=pendingStep(4) />
                 </div>
             </div>
         </div>
@@ -67,6 +71,7 @@ import {AbiItem} from 'web3-utils';
 import { toUnit, fromUnit, getNumber, getBool, decToHex, parseAddressFromDec } from '~/utils/helpers';
 import {PARAMS} from '~/utils/constants';
 import keccak256 from 'keccak256'
+import DotsCycler from './DotsCycler.vue'
 
 const BN = IonWeb.utils.BN;
 
@@ -144,6 +149,9 @@ declare global {
 }
 
 export default Vue.extend({
+    components: {
+        DotsCycler
+    },
     props: {
         isTestnet: {
             type: Boolean,
@@ -1146,7 +1154,7 @@ export default Vue.extend({
 }
 
 .notifications-area {
-    width: 236px;
+    width: 246px;
     left: calc(50% - 1392px/2);
     box-sizing: border-box;
     display: flex;
