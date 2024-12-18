@@ -354,7 +354,6 @@ export default Vue.extend({
 
     methods: {
         onAmountChange(formattedValue: string) {
-            // For now, simply store the formatted value in amountInner:
             this.amountInner = formattedValue.replace(",", "");
         },
         openSwap() {
