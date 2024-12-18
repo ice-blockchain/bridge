@@ -56,9 +56,16 @@ export default {
     },
     methods: {
         allowOnlyNumeric(event) {
-            // Allow only digits 0-9
             const char = String.fromCharCode(event.which)
-            if (!/[0-9]/.test(char)) {
+            // Allow digits and decimal point
+            if (!/[0-9.]/.test(char)) {
+                event.preventDefault()
+                return
+            }
+
+            // If it's a decimal point, ensure no other decimal point is present
+            const currentValue = event.target.value
+            if (char === '.' && currentValue.includes('.')) {
                 event.preventDefault()
             }
         },
@@ -69,11 +76,20 @@ export default {
             }
         },
         formatWithCommas(num) {
-            const str = num.toString()
-            return str.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            if (!num) return num
+            // Handle fractional numbers
+            const parts = num.split('.')
+            const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+            if (parts.length > 1) {
+                // If there's a fractional part, keep it as is
+                return integerPart + '.' + parts[1]
+            } else {
+                return integerPart
+            }
         },
         removeNonNumeric(str) {
-            return str.replace(/[^0-9]/g, '')
+            return str.replace(/[^0-9.]/g, '')
         },
         handleChange(event) {
             const inputVal = event.target.value
