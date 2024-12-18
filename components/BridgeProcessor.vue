@@ -1147,7 +1147,7 @@ export default Vue.extend({
 
 .notifications-area {
     width: 236px;
-    margin-left: 24px;
+    left: calc(50% - 1392px/2);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -1155,7 +1155,6 @@ export default Vue.extend({
     align-items: center;
     height: 100vh; /* Full height to center vertically */
     position: fixed;
-    left: 0;
     top: 0;
     overflow-y: auto; /* Allow scrolling if content overflows */
     z-index: 10;
