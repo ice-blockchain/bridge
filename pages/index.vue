@@ -35,11 +35,14 @@
                         <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
                         <div>
                             <span class='normal'>Enter {{isFromTon ? 'ICE' : 'Wrapped ICE'}} amount</span>
-                            <input
+                            <thousands-number-input
+                                :initial-value="amountInner"
+                                :read-only="isInterfaceBlocked"
                                 :disabled="isInterfaceBlocked"
-                                type="text"
-                                id="amountInput"
-                                v-model="amountInner" min="10"/>
+                                @change="onAmountChange"
+                                :visible="true"
+                                class="amount-input"
+                            />
                         </div>
                         <span class="max" v-if="!isFromTon" @click="useMaximumTokenAmount()">MAX</span>
                     </div>
@@ -57,11 +60,14 @@
                         <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
                         <div>
                             <span class='normal'>You receive {{isFromTon ? 'Wrapped ICE' : 'ICE'}}</span>
-                            <input
+                            <thousands-number-input
+                                :initial-value="amountInner"
+                                :read-only="isInterfaceBlocked"
                                 :disabled="isInterfaceBlocked"
-                                type="text"
-                                id="amountInput"
-                                v-model="amountInner" min="10"/>
+                                @change="onAmountChange"
+                                :visible="true"
+                                class="amount-input"
+                            />
                         </div>
                     </div>
                 </div>
@@ -165,6 +171,7 @@ import WTON from '~/assets/WTON.json';
 import {AbiItem} from 'web3-utils';
 import { fromUnit } from '~/utils/helpers';
 const BN = IonWeb.utils.BN;
+import ThousandsNumberInput from './ThousandsNumberInput.vue';
 
 const PAIRS = [/*'eth',*/ 'bsc'];
 
@@ -190,7 +197,8 @@ declare interface IComponentData {
 export default Vue.extend({
 
     components: {
-        BridgeProcessor
+        BridgeProcessor,
+        ThousandsNumberInput
     },
 
     head(): object {
@@ -345,6 +353,10 @@ export default Vue.extend({
     },
 
     methods: {
+        onAmountChange(formattedValue: string) {
+            // For now, simply store the formatted value in amountInner:
+            this.amountInner = formattedValue.replace(",", "");
+        },
         openSwap() {
             // TODO: Move this to settings, when possible
             window.open('https://swap.staging.ice.io', '__empty');
