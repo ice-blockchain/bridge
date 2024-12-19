@@ -1048,7 +1048,13 @@ export default Vue.extend({
 
             if (this.isFromTon) {
                 this.saveState();
-                await this.onTransactClick();
+                try {
+                    await this.onTransactClick();
+                } catch (error) {
+                    console.error(error);
+
+                    this.resetState();
+                }
             } else {
                 await this.burn();
             }
