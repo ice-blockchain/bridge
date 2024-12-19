@@ -567,8 +567,8 @@ export default Vue.extend({
     methods: {
         async calculateHasEnoughICE(value) {
             // Do not trigger, when the value is not set
-            if(!value) {
-                return true;
+            if (!value) {
+                return true
             }
 
             if (!this.accountAddress) {
@@ -741,6 +741,13 @@ export default Vue.extend({
                     console.error('Failed to connect to MetaMask:', error)
                     alert('Failed to connect to MetaMask. Please try again.')
                 }
+            }
+
+            // Trigger amount validation after successful connection
+            if (this.amountInner) {
+                this.calculateHasEnoughICE(this.amountInner).then((enough) => {
+                    this.hasEnoughICE = enough
+                })
             }
         },
         onPairClick(switchDirection: boolean, toPair: string): void {
