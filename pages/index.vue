@@ -29,18 +29,19 @@
                 <h1>ION Bridge</h1>
 
                 <div class="Bridge-inputWrapper form-group form-group-1">
-                    <div class="input-field">
+                    <div class="input-field" @click="onInputClicked">
                         <img src="~assets/pics/binance-icon.svg" class="token" alt="Wrapped ION" :style="{display: !isFromTon ? 'inline' : 'none'}"/>
                         <img src="~assets/pics/ice-icon.svg" class="token" alt="ION" :style="{display: isFromTon ? 'inline' : 'none'}"/>
                         <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
                         <div>
-                            <span class='normal'>Enter {{isFromTon ? 'ICE' : 'Wrapped ICE'}} amount</span>
+                            <span :class="{normal: true, initial: !isAmountInputVisible}">Enter {{isFromTon ? 'ICE' : 'Wrapped ICE'}} amount</span>
+                            <span class='alert'>Insufficient ICE balance</span>
                             <thousands-number-input
                                 :initial-value="amountInner"
                                 :read-only="isInterfaceBlocked"
                                 :disabled="isInterfaceBlocked"
                                 @change="onAmountChange"
-                                :visible="true"
+                                :visible="isAmountInputVisible"
                                 class="amount-input"
                             />
                         </div>
@@ -59,13 +60,13 @@
                         <img src="~assets/pics/ice-icon.svg" class="token" alt="ION" :style="{display: !isFromTon ? 'inline' : 'none'}"/>
                         <img src="~assets/pics/vertical-line-1.svg" class="vertical-line-1" alt=""/>
                         <div>
-                            <span class='normal'>You receive {{isFromTon ? 'Wrapped ICE' : 'ICE'}}</span>
+                            <span :class="{normal: true, initial: !shouldShowResultingAmount}">You receive {{isFromTon ? 'Wrapped ICE' : 'ICE'}}</span>
                             <thousands-number-input
-                                :initial-value="amountInner"
+                                :initial-value="amountInnerMinusFee"
                                 :read-only="isInterfaceBlocked"
                                 :disabled="isInterfaceBlocked"
                                 @change="onAmountChange"
-                                :visible="true"
+                                :visible="shouldShowResultingAmount"
                                 class="amount-input"
                             />
                         </div>
@@ -190,8 +191,10 @@ declare interface IComponentData {
     toAddress: string,
 
     isInterfaceBlocked: boolean,
+    isAmountInputVisible: boolean,
+    isResultingAmountInputVisible: boolean,
 
-    provider: any
+    provider: any,
 }
 
 export default Vue.extend({
@@ -224,11 +227,20 @@ export default Vue.extend({
             amountInner: '',
             toAddress: '',
 
-            isInterfaceBlocked: false
+            isInterfaceBlocked: false,
+            isAmountInputVisible: false,
+            isResultingAmountInputVisible: false
         }
     },
 
     computed: {
+        shouldShowResultingAmount() {
+            const value = this.amountInner as String;
+            return value.trim() !== '' && Number(value.replace(/,/g, '')) > 0;
+        },
+        amountInnerMinusFee(): string {
+            return `${Number(this.amountInner) - this.bridgeFeeNumeric}`;
+        },
         netTypeName(): string {
             return this.isTestnet ? 'test' : 'main';
         },
@@ -290,6 +302,12 @@ export default Vue.extend({
                 // return this.$t('Bridge.bridgeFeeBelow10') as string;
                 return '0.5 ICE + 0.25% of amount';
             }
+        },
+        bridgeFeeNumeric(): number {
+            if (!isNaN(this.amount) && this.amount >= 10) {
+                return 0.5 + (this.amount - 0.5) * (0.25 / 100);
+            }
+            return 0;
         },
         fromPairs(): string[] {
             return PAIRS;
@@ -353,6 +371,13 @@ export default Vue.extend({
     },
 
     methods: {
+        onInputClicked() {
+            this.isAmountInputVisible = true;
+            this.$nextTick(() => {
+                // TODO: Use Vue's $refs instead of React useRef
+                // this.$refs.amountInput.focus();
+            });
+        },
         onAmountChange(formattedValue: string) {
             this.amountInner = formattedValue.replace(",", "");
         },
@@ -1320,6 +1345,12 @@ h1 {
     flex: none;
     order: 0;
     flex-grow: 0;
+}
+
+.input-field .normal.initial {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
 }
 
 /* Styling for the Swap button */
