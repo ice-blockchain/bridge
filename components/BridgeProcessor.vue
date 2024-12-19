@@ -381,10 +381,18 @@ export default Vue.extend({
     },
 
     methods: {
+        // Clear any existing timeout first
+        unScheduleReset() {
+            if (this.alertTimeout) {
+                clearTimeout(this.alertTimeout);
+                this.alertTimeout = 0;
+            }
+        },
         scheduleReset(): void {
             // Clear any existing timeout first
             if (this.alertTimeout) {
                 clearTimeout(this.alertTimeout);
+                this.alertTimeout = 0;
             }
 
             // Set new timeout to reset state after 30 seconds
@@ -1032,6 +1040,8 @@ export default Vue.extend({
                     return;
                 }
             }
+
+            this.unScheduleReset();
 
             this.state.createTime = Date.now();
             this.state.step = 1;
