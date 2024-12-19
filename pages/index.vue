@@ -31,12 +31,29 @@
             </div>
 
             <div class="connect-wallet-container">
-                <button class="connect-wallet-button" @click="connectWallet()">
+                <button
+                    class="connect-wallet-button"
+                    @click="connectWallet()"
+                    v-if="!isConnected"
+                >
                     <img
                         src="~assets/pics/plus-icon.svg"
                         alt="Connect wallet"
                     />
                     Connect wallet
+                </button>
+                <button
+                    class="connect-wallet-button"
+                    @click="showDisconnectMenu()"
+                    v-if="isConnected"
+                >
+                    <img src="~assets/pics/wallet-icon-2.svg" alt="Wallet" />
+                    {{ shortenAddress(accountAddress) }}
+                    <img src="~assets/pics/drop-icon.svg" alt="Wallet" />
+                </button>
+                <button class="disconnect-wallet-button" @click="disconnectWallet()" v-if="isDisconnectMenuVisible">
+                    <img src="~assets/pics/disconnect-icon.svg" alt="Disconnect Wallet" class="disconnect" />
+                    Disconnect
                 </button>
             </div>
         </div>
@@ -325,6 +342,10 @@ declare interface IComponentData {
     isAmountInputVisible: boolean
     isAddressInputVisible: boolean
     isResultingAmountInputVisible: boolean
+    isConnected: boolean
+    isDisconnectMenuVisible: boolean
+
+    accountAddress: string
 
     provider: any
 }
@@ -362,6 +383,10 @@ export default Vue.extend({
             isAmountInputVisible: false,
             isAddressInputVisible: false,
             isResultingAmountInputVisible: false,
+            isConnected: false,
+            isDisconnectMenuVisible: false,
+
+            accountAddress: '',
         }
     },
 
@@ -518,6 +543,27 @@ export default Vue.extend({
     },
 
     methods: {
+        disconnectWallet() {
+
+            console.log('disconnectWallet');
+
+            // TODO: Clear the corresponding cached provider (`IONMask` or `MetaMask`) to forget the connection
+
+            this.isConnected = false;
+            this.accountAddress = '';
+            this.isDisconnectMenuVisible = false;
+        },
+        showDisconnectMenu() {
+            this.isDisconnectMenuVisible = !this.isDisconnectMenuVisible
+        },
+        // Helper function to shorten the displayed address
+        shortenAddress(address) {
+            if (!address) {
+                return ''
+            }
+
+            return `${address.slice(0, 5)}...${address.slice(-5)}`
+        },
         onAmountInputClicked() {
             this.isAmountInputVisible = true
             this.$nextTick(() => {
@@ -541,8 +587,90 @@ export default Vue.extend({
             // TODO: Move this to settings, when possible
             window.open('https://swap.staging.ice.io', '__empty')
         },
-        connectWallet() {
-            alert(';)')
+        async connectWallet() {
+            if (this.isFromTon) {
+                // Check if IONMask is installed
+                if (typeof window.ton === 'undefined') {
+                    // TODO: Use alerts having the desired UI design
+                    alert('Please, install the `IONMask` browser extension')
+                    return
+                }
+
+                try {
+                    // Request ION accounts
+                    const accounts = await window.ton.send(
+                        'ton_requestAccounts'
+                    )
+
+                    if (accounts && accounts.length > 0) {
+                        this.isConnected = true
+
+                        // You might want to store the connected account
+                        const account = accounts[0]
+                        console.log(
+                            'Connected to IONMask with account:',
+                            account
+                        )
+
+                        this.accountAddress = account
+
+                        // Initialize IonWeb if needed
+                        const ionweb = new IonWeb(
+                            new IonWeb.HttpProvider(this.params.tonCenterUrl)
+                        )
+                        this.provider = {
+                            ...this.provider,
+                            ionweb,
+                            tonAccount: account,
+                        } as any
+                    }
+                } catch (error) {
+                    console.error('Failed to connect to IONMask:', error)
+                    alert('Failed to connect to IONMask. Please try again.')
+                }
+            } else {
+                // Check if MetaMask is installed
+                if (typeof window.ethereum === 'undefined') {
+                    alert('Please install MetaMask to connect your wallet')
+                    return
+                }
+
+                try {
+                    // Request Ethereum accounts
+                    const accounts = await window.ethereum.request({
+                        method: 'eth_requestAccounts',
+                    })
+
+                    if (accounts && accounts.length > 0) {
+                        this.isConnected = true
+                        const account = accounts[0]
+                        console.log(
+                            'Connected to MetaMask with account:',
+                            account
+                        )
+
+                        this.accountAddress = account
+
+                        // Initialize Web3 and contracts
+                        const web3 = new Web3(window.ethereum)
+                        const wtonContract = new web3.eth.Contract(
+                            WTON as AbiItem[],
+                            this.params.wTonAddress
+                        )
+
+                        // Update provider with necessary instances
+                        this.provider = {
+                            ...this.provider,
+                            web3,
+                            wtonContract,
+                            myEthAddress: account,
+                        } as any
+                    }
+                } catch (error) {
+                    console.error('Failed to connect to MetaMask:', error)
+                    alert('Failed to connect to MetaMask. Please try again.')
+                }
+            }
         },
         onPairClick(switchDirection: boolean, toPair: string): void {
             if (this.isInterfaceBlocked) {
@@ -1209,13 +1337,13 @@ export default Vue.extend({
     width: 189px;
     height: 48px;
 
-    background: #0166FF;
-    border: 1px solid #0166FF;
+    background: #0166ff;
+    border: 1px solid #0166ff;
     border-radius: 16px;
 }
 
 .menu .connect-wallet-button:hover {
-    background-color: #357ABD; /* Darker blue on hover */
+    background-color: #357abd; /* Darker blue on hover */
 }
 
 h1 {
@@ -1354,6 +1482,11 @@ h1 {
     flex-grow: 0;
 
     cursor: pointer;
+}
+
+.disconnect-wallet-button img {
+    width: 24px;
+    height: 24px;
 }
 
 /* Swap form styling */
