@@ -1154,7 +1154,7 @@ export default Vue.extend({
 }
 
 .notifications-area {
-    width: 246px;
+    width: 256px;
     left: calc(50% - 1392px/2);
     box-sizing: border-box;
     display: flex;
