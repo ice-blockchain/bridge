@@ -140,7 +140,8 @@ declare interface IComponentData {
     updateStateInterval: null | ReturnType<typeof setInterval>,
     provider: IProvider | null,
     state: IState,
-    ethToTon: IEthToTon | null
+    ethToTon: IEthToTon | null,
+    alertTimeout: number,
 }
 
 declare global {
@@ -201,6 +202,7 @@ export default Vue.extend({
             updateStateInterval: null,
             provider: null,
             ethToTon: null,
+            alertTimeout: 0,
 
             state: {
                 swapId: '',
@@ -379,6 +381,17 @@ export default Vue.extend({
     },
 
     methods: {
+        scheduleReset(): void {
+            // Clear any existing timeout first
+            if (this.alertTimeout) {
+                clearTimeout(this.alertTimeout);
+            }
+
+            // Set new timeout to reset state after 30 seconds
+            this.alertTimeout = setTimeout(() => {
+                this.resetState();
+            }, 30000);
+        },
         classForStep(step: number): string {
             if (this.state.step <= step) {
                 return 'step-pending';
@@ -459,7 +472,11 @@ export default Vue.extend({
                 if (this.state.votes) {
                     console.log(`Comparing ${this.provider!.oraclesTotal * 2 / 3} desired votes to ${this.state.votes!.length} factual votes`);
                     if (this.state.votes && this.state.votes!.length >= this.provider!.oraclesTotal * 2 / 3) {
-                        this.state.step = this.isFromTon ? 4 : 5;
+                        const newStep = this.isFromTon ? 4 : 5;
+                        if (newStep === 5) {
+                            this.scheduleReset();
+                        }
+                        this.state.step = newStep;
                     }
                 }
             }
@@ -774,6 +791,7 @@ export default Vue.extend({
             if (receipt.status) {
                 this.state.step = 5;
                 this.deleteState();
+                this.scheduleReset();
             } else {
                 console.error('transaction fail', receipt);
             }
