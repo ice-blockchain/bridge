@@ -55,6 +55,10 @@ export default {
         },
     },
     methods: {
+        // Directly call `focus` on the component's input element
+        focus() {
+            this.$el.focus();
+        },
         allowOnlyNumeric(event) {
             const char = String.fromCharCode(event.which)
             // Allow digits and decimal point

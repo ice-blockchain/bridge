@@ -37,6 +37,7 @@
                             <span :class="{normal: true, initial: !isAmountInputVisible}">Enter {{isFromTon ? 'ICE' : 'Wrapped ICE'}} amount</span>
                             <span class='alert'>Insufficient ICE balance</span>
                             <thousands-number-input
+                                ref="amountInput"
                                 :initial-value="amountInner"
                                 :read-only="isInterfaceBlocked"
                                 :disabled="isInterfaceBlocked"
@@ -374,8 +375,9 @@ export default Vue.extend({
         onInputClicked() {
             this.isAmountInputVisible = true;
             this.$nextTick(() => {
-                // TODO: Use Vue's $refs instead of React useRef
-                // this.$refs.amountInput.focus();
+                if (this.$refs.amountInput) {
+                    this.$refs.amountInput.focus();
+                }
             });
         },
         onAmountChange(formattedValue: string) {
