@@ -68,8 +68,14 @@
         <div class="Bridge-content">
             <div class="Bridge-form">
                 <h1>ION Bridge</h1>
-
-                <div class="Bridge-inputWrapper form-group form-group-1">
+                <div
+                    :class="{
+                        'Bridge-inputWrapper': true,
+                        'form-group': true,
+                        'form-group-1': true,
+                        'insufficient-balance': !hasEnoughICE,
+                    }"
+                >
                     <div class="input-field" @click="onAmountInputClicked">
                         <img
                             src="~assets/pics/binance-icon.svg"
@@ -358,6 +364,7 @@ declare interface IComponentData {
     isResultingAmountInputVisible: boolean
     isConnected: boolean
     isDisconnectMenuVisible: boolean
+    hasEnoughICE: boolean
 
     accountAddress: string
 
@@ -388,7 +395,7 @@ export default Vue.extend({
             lt: 0,
             hash: '',
 
-            isFromTon: true,
+            isFromTon: false,
             pair: 'bsc', // Initially: 'eth'
             amountInner: '',
             toAddress: '',
@@ -399,6 +406,7 @@ export default Vue.extend({
             isResultingAmountInputVisible: false,
             isConnected: false,
             isDisconnectMenuVisible: false,
+            hasEnoughICE: true,
 
             accountAddress: '',
         }
@@ -557,6 +565,54 @@ export default Vue.extend({
     },
 
     methods: {
+        async calculateHasEnoughICE(value) {
+            // Do not trigger, when the value is not set
+            if(!value) {
+                return true;
+            }
+
+            if (!this.accountAddress) {
+                return false
+            }
+
+            if (this.isFromTon) {
+                // Handle TON network balance check
+                if (!this.provider?.ionweb) {
+                    return false
+                }
+
+                // Get balance info from IonWeb for TON network
+                const info = await this.provider.ionweb.provider.getAddressInfo(
+                    this.accountAddress
+                )
+                // Convert balance from nanoTON to TON
+                const balance = parseFloat(info.balance) / 1e9
+
+                // Remove commas from the entered value and convert to number
+                const amount = parseFloat(value.replace(/,/g, '') || '0')
+
+                return amount <= balance
+            } else {
+                // Handle BSC network balance check
+                if (!this.provider?.wtonContract) {
+                    return false
+                }
+
+                // Get balance from the WTON contract
+                const balance = await this.provider.wtonContract.methods
+                    .balanceOf(this.accountAddress)
+                    .call()
+                const decimals = await this.provider.wtonContract.methods
+                    .decimals()
+                    .call()
+
+                // Convert the entered value to Wei (assuming 18 decimals)
+                const cleanedValue = value.replace(/,/g, '') || '0'
+                const balanceInEther = Number(balance) / Math.pow(10, decimals)
+
+                return Number(cleanedValue) <= balanceInEther
+            }
+        },
         // Reset general connection state
         async disconnectWallet() {
             this.provider = undefined
@@ -593,6 +649,10 @@ export default Vue.extend({
         },
         onAmountChange(formattedValue: string) {
             this.amountInner = formattedValue.replace(',', '')
+            this.calculateHasEnoughICE(this.amountInner).then((enough) => {
+                console.log('Has enough ICE', enough)
+                this.hasEnoughICE = enough
+            })
         },
         openSwap() {
             // TODO: Move this to settings, when possible
@@ -1548,6 +1608,7 @@ h1 {
 .form-group-1.insufficient-balance .alert {
     display: block;
     color: #ff4d4f;
+    text-align: left;
 }
 
 .form-group-2 {
