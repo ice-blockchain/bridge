@@ -557,11 +557,9 @@ export default Vue.extend({
     },
 
     methods: {
-        disconnectWallet() {
-            console.log('disconnectWallet')
-
-            // TODO: Clear the corresponding cached provider (`IONMask` or `MetaMask`) to forget the connection
-
+        // Reset general connection state
+        async disconnectWallet() {
+            this.provider = undefined
             this.isConnected = false
             this.accountAddress = ''
             this.isDisconnectMenuVisible = false
