@@ -225,6 +225,8 @@
                     :is-from-ton="isFromTon"
                     :pair="pair"
                     :amount="amount"
+                    :has-enough-ice="this.hasEnoughICE"
+                    :is-connected="this.isConnected"
                     :to-address="toAddress"
                     @interface-blocked="onInterfaceBlocked"
                     @state-changed="getPairGasFee__debounced"

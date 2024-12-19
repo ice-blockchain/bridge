@@ -3,6 +3,7 @@
         <button
             class="BridgeProcessor-transfer transfer-button"
             v-if="state.step === 0"
+            :disabled="!isSwapValid"
             @click="onTransferClick">{{$t('Bridge.transfer')}}</button>
 
         <div class="BridgeProcessor-infoWrapper notifications-area" v-else>
@@ -161,6 +162,14 @@ export default Vue.extend({
             type: Boolean,
             required: true
         },
+        hasEnoughIce: {
+            type: Boolean,
+            required: true,
+        },
+        isConnected: {
+          type: Boolean,
+          required: true
+        },
         lt: {
             type: Number,
             required: true
@@ -208,6 +217,20 @@ export default Vue.extend({
     },
 
     computed: {
+        isSwapValid() {
+
+            // Return false if not connected or already swapping
+            if (!this.isConnected) {
+                return false;
+            }
+
+            // Check if amount is empty or zero
+            if (!this.amount) {
+                return false;
+            }
+
+            return this.hasEnoughIce;
+        },
         netTypeName(): string {
             return this.isTestnet ? 'test' : 'main';
         },
@@ -1123,7 +1146,7 @@ export default Vue.extend({
     align-items: center;
     padding: 12px 0;
     gap: 8px;
-    background-color: #B8BCCA;
+    background-color: #0166FF;
     border-radius: 16px;
     font-family: 'Noto Sans', serif;
     font-style: normal;
