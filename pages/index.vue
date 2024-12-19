@@ -51,8 +51,16 @@
                     {{ shortenAddress(accountAddress) }}
                     <img src="~assets/pics/drop-icon.svg" alt="Wallet" />
                 </button>
-                <button class="disconnect-wallet-button" @click="disconnectWallet()" v-if="isDisconnectMenuVisible">
-                    <img src="~assets/pics/disconnect-icon.svg" alt="Disconnect Wallet" class="disconnect" />
+                <button
+                    class="disconnect-wallet-button"
+                    @click="disconnectWallet()"
+                    v-if="isDisconnectMenuVisible"
+                >
+                    <img
+                        src="~assets/pics/disconnect-icon.svg"
+                        alt="Disconnect Wallet"
+                        class="disconnect"
+                    />
                     Disconnect
                 </button>
             </div>
@@ -324,6 +332,12 @@ const BN = IonWeb.utils.BN
 
 const PAIRS = [/*'eth',*/ 'bsc']
 
+declare global {
+    interface Window {
+        ethereum?: any
+    }
+}
+
 declare interface IComponentData {
     getPairGasFee__debounced: () => void
     gasPrice: number
@@ -544,14 +558,13 @@ export default Vue.extend({
 
     methods: {
         disconnectWallet() {
-
-            console.log('disconnectWallet');
+            console.log('disconnectWallet')
 
             // TODO: Clear the corresponding cached provider (`IONMask` or `MetaMask`) to forget the connection
 
-            this.isConnected = false;
-            this.accountAddress = '';
-            this.isDisconnectMenuVisible = false;
+            this.isConnected = false
+            this.accountAddress = ''
+            this.isDisconnectMenuVisible = false
         },
         showDisconnectMenu() {
             this.isDisconnectMenuVisible = !this.isDisconnectMenuVisible
@@ -894,6 +907,9 @@ export default Vue.extend({
 </script>
 
 <style lang="less" scoped>
+.Bridge {
+}
+
 @r: .Bridge;
 
 @{r} {
@@ -1057,7 +1073,7 @@ export default Vue.extend({
             word-break: break-word;
             white-space: normal;
 
-            transition: all 0 ease-in-out;
+            transition: all;
             opacity: 0;
             visibility: hidden;
 
@@ -1314,7 +1330,6 @@ export default Vue.extend({
     `Connect Wallet` button.
  */
 .menu .connect-wallet-button {
-
     font-family: 'Noto Sans', serif;
     font-style: normal;
     font-weight: 600;
