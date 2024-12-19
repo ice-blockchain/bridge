@@ -1,270 +1,136 @@
 <template>
-    <main class="Bridge">
-        <div class="Bridge-testnetWarning" v-if="isTestnet">
-            {{ $t('Bridge.testnet') }}
-        </div>
-        <div class="menu">
-            <img
-                src="~assets/pics/ice-open-network-logo.svg"
-                alt="Ice Open Network"
-                class="logo"
-            />
-
-            <div class="tabs">
-                <button class="swap-tab" @click="openSwap()">
-                    <img
-                        src="~assets/pics/meme-markers.svg"
-                        class="meme-icon-blue"
-                        alt="Swap"
-                    />
-                    Swap
-                </button>
-
-                <button class="bridge-tab">
-                    <img
-                        src="~assets/pics/bridge-icon.svg"
-                        class="bridge-icon-gray"
-                        alt="Bridge"
-                    />
-                    Bridge
-                </button>
+    <MobileWrapper>
+        <main class="Bridge">
+            <div class="Bridge-testnetWarning" v-if="isTestnet">
+                {{ $t('Bridge.testnet') }}
             </div>
-
-            <div class="connect-wallet-container">
-                <button
-                    class="connect-wallet-button"
-                    @click="connectWallet()"
-                    v-if="!isConnected"
-                >
-                    <img
-                        src="~assets/pics/plus-icon.svg"
-                        alt="Connect wallet"
-                    />
-                    Connect wallet
-                </button>
-                <button
-                    class="connect-wallet-button"
-                    @click="showDisconnectMenu()"
-                    v-if="isConnected"
-                >
-                    <img src="~assets/pics/wallet-icon-2.svg" alt="Wallet" />
-                    {{ shortenAddress(accountAddress) }}
-                    <img src="~assets/pics/drop-icon.svg" alt="Wallet" />
-                </button>
-                <button
-                    class="disconnect-wallet-button"
-                    @click="disconnectWallet()"
-                    v-if="isDisconnectMenuVisible"
-                >
-                    <img
-                        src="~assets/pics/disconnect-icon.svg"
-                        alt="Disconnect Wallet"
-                        class="disconnect"
-                    />
-                    Disconnect
-                </button>
-            </div>
-        </div>
-        <div class="Bridge-content">
-            <div class="Bridge-form">
-                <h1>ION Bridge</h1>
-                <div
-                    :class="{
-                        'Bridge-inputWrapper': true,
-                        'form-group': true,
-                        'form-group-1': true,
-                        'insufficient-balance': !hasEnoughICE,
-                    }"
-                >
-                    <div class="input-field" @click="onAmountInputClicked">
-                        <img
-                            src="~assets/pics/binance-icon.svg"
-                            class="token"
-                            alt="Wrapped ION"
-                            :style="{ display: !isFromTon ? 'inline' : 'none' }"
-                        />
-                        <img
-                            src="~assets/pics/ice-icon.svg"
-                            class="token"
-                            alt="ION"
-                            :style="{ display: isFromTon ? 'inline' : 'none' }"
-                        />
-                        <img
-                            src="~assets/pics/vertical-line-1.svg"
-                            class="vertical-line-1"
-                            alt=""
-                        />
-                        <div>
-                            <span
-                                :class="{
-                                    normal: true,
-                                    initial: !isAmountInputVisible,
-                                }"
-                                >Enter
-                                {{ isFromTon ? 'ICE' : 'Wrapped ICE' }}
-                                amount</span
-                            >
-                            <span class="alert">Insufficient ICE balance</span>
-                            <thousands-number-input
-                                ref="amountInput"
-                                :initial-value="amountInner"
-                                :read-only="isInterfaceBlocked"
-                                :disabled="isInterfaceBlocked"
-                                @change="onAmountChange"
-                                :visible="isAmountInputVisible"
-                                class="amount-input"
-                            />
-                        </div>
-                        <span
-                            class="max"
-                            v-if="!isFromTon"
-                            @click="useMaximumTokenAmount()"
-                            >MAX</span
-                        >
-                    </div>
-                </div>
-
-                <button
-                    class="Bridge-switcher-arrow"
-                    :disabled="isInterfaceBlocked"
-                    @click="toggleFromTon"
-                ></button>
-
-                <div class="Bridge-inputWrapper form-group form-group-2">
-                    <div class="input-field">
-                        <img
-                            src="~assets/pics/binance-icon.svg"
-                            class="token"
-                            alt="Wrapped ION"
-                            :style="{ display: isFromTon ? 'inline' : 'none' }"
-                        />
-                        <img
-                            src="~assets/pics/ice-icon.svg"
-                            class="token"
-                            alt="ION"
-                            :style="{ display: !isFromTon ? 'inline' : 'none' }"
-                        />
-                        <img
-                            src="~assets/pics/vertical-line-1.svg"
-                            class="vertical-line-1"
-                            alt=""
-                        />
-                        <div>
-                            <span
-                                :class="{
-                                    normal: true,
-                                    initial: !shouldShowResultingAmount,
-                                }"
-                                >You receive
-                                {{ isFromTon ? 'Wrapped ICE' : 'ICE' }}</span
-                            >
-                            <thousands-number-input
-                                :initial-value="amountInnerMinusFee"
-                                :read-only="isInterfaceBlocked"
-                                :disabled="isInterfaceBlocked"
-                                @change="onAmountChange"
-                                :visible="shouldShowResultingAmount"
-                                class="amount-input"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="Bridge-inputWrapper form-group form-group-3">
-                    <div class="input-field" @click="onAddressInputClicked">
-                        <img
-                            src="~assets/pics/wallet-icon.svg"
-                            class="token"
-                            alt="ION"
-                        />
-                        <img
-                            src="~assets/pics/vertical-line-1.svg"
-                            class="vertical-line-1"
-                            alt=""
-                        />
-                        <div>
-                            <span
-                                :class="{
-                                    normal: true,
-                                    initial: !isAddressInputVisible,
-                                }"
-                                >Address you receive in
-                                {{ isFromTon ? 'BSC' : 'ION' }} Network</span
-                            >
-                            <input
-                                ref="addressInput"
-                                :disabled="isInterfaceBlocked"
-                                type="text"
-                                id="toInput"
-                                :class="{
-                                    'thousands-number-input': true,
-                                    visible: isAddressInputVisible,
-                                }"
-                                v-model="toAddress"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="Bridge-pairFee">
-                    <span>BSC gas fee</span>
-                    <span>{{ pairFee }} BNB</span>
-                </div>
-                <div class="Bridge-bridgeFee">
-                    <span>Bridge fee</span>
-                    <span>{{ bridgeFee }}</span>
-                </div>
-
-                <BridgeProcessor
-                    ref="bridgeProcessor"
-                    :key="pair"
-                    :is-testnet="isTestnet"
-                    :is-recover="isRecover"
-                    :lt="lt"
-                    :hash="hash"
-                    :is-from-ton="isFromTon"
-                    :pair="pair"
-                    :amount="amount"
-                    :has-enough-ice="this.hasEnoughICE"
-                    :is-connected="this.isConnected"
-                    :to-address="toAddress"
-                    @interface-blocked="onInterfaceBlocked"
-                    @state-changed="getPairGasFee__debounced"
-                    @reset-state="resetState"
-                    @save-state="saveState"
-                    @delete-state="deleteState"
+            <div class="menu">
+                <img
+                    src="~assets/pics/ice-open-network-logo.svg"
+                    alt="Ice Open Network"
+                    class="logo"
                 />
 
-                <div
-                    class="Bridge-switchers"
-                    :class="{ isFromTon }"
-                    :key="isFromTon"
-                    style="display: none"
-                >
-                    <div class="Bridge-switcher">
-                        <div
-                            class="Bridge-switcherTitle"
-                            :class="{ disabled: isInterfaceBlocked }"
-                        >
-                            <span>{{ tonNetworkName }}&nbsp;▾</span>
-                            <ul class="Bridge-switcherList">
-                                <li
-                                    v-for="item in fromPairs"
-                                    :key="item"
-                                    @click="onPairClick(true, item)"
+                <div class="tabs">
+                    <button class="swap-tab" @click="openSwap()">
+                        <img
+                            src="~assets/pics/meme-markers.svg"
+                            class="meme-icon-blue"
+                            alt="Swap"
+                        />
+                        Swap
+                    </button>
+
+                    <button class="bridge-tab">
+                        <img
+                            src="~assets/pics/bridge-icon.svg"
+                            class="bridge-icon-gray"
+                            alt="Bridge"
+                        />
+                        Bridge
+                    </button>
+                </div>
+
+                <div class="connect-wallet-container">
+                    <button
+                        class="connect-wallet-button"
+                        @click="connectWallet()"
+                        v-if="!isConnected"
+                    >
+                        <img
+                            src="~assets/pics/plus-icon.svg"
+                            alt="Connect wallet"
+                        />
+                        Connect wallet
+                    </button>
+                    <button
+                        class="connect-wallet-button"
+                        @click="showDisconnectMenu()"
+                        v-if="isConnected"
+                    >
+                        <img
+                            src="~assets/pics/wallet-icon-2.svg"
+                            alt="Wallet"
+                        />
+                        {{ shortenAddress(accountAddress) }}
+                        <img src="~assets/pics/drop-icon.svg" alt="Wallet" />
+                    </button>
+                    <button
+                        class="disconnect-wallet-button"
+                        @click="disconnectWallet()"
+                        v-if="isDisconnectMenuVisible"
+                    >
+                        <img
+                            src="~assets/pics/disconnect-icon.svg"
+                            alt="Disconnect Wallet"
+                            class="disconnect"
+                        />
+                        Disconnect
+                    </button>
+                </div>
+            </div>
+            <div class="Bridge-content">
+                <div class="Bridge-form">
+                    <h1>ION Bridge</h1>
+                    <div
+                        :class="{
+                            'Bridge-inputWrapper': true,
+                            'form-group': true,
+                            'form-group-1': true,
+                            'insufficient-balance': !hasEnoughICE,
+                        }"
+                    >
+                        <div class="input-field" @click="onAmountInputClicked">
+                            <img
+                                src="~assets/pics/binance-icon.svg"
+                                class="token"
+                                alt="Wrapped ION"
+                                :style="{
+                                    display: !isFromTon ? 'inline' : 'none',
+                                }"
+                            />
+                            <img
+                                src="~assets/pics/ice-icon.svg"
+                                class="token"
+                                alt="ION"
+                                :style="{
+                                    display: isFromTon ? 'inline' : 'none',
+                                }"
+                            />
+                            <img
+                                src="~assets/pics/vertical-line-1.svg"
+                                class="vertical-line-1"
+                                alt=""
+                            />
+                            <div>
+                                <span
+                                    :class="{
+                                        normal: true,
+                                        initial: !isAmountInputVisible,
+                                    }"
+                                    >Enter
+                                    {{ isFromTon ? 'ICE' : 'Wrapped ICE' }}
+                                    amount</span
                                 >
-                                    <button>
-                                        {{
-                                            $t(
-                                                `Bridge.networks.${item}.${netTypeName}.name`
-                                            )
-                                        }}
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="Bridge-switcherAnno">
-                            {{ tonNetworkCoin }}
+                                <span class="alert"
+                                    >Insufficient ICE balance</span
+                                >
+                                <thousands-number-input
+                                    ref="amountInput"
+                                    :initial-value="amountInner"
+                                    :read-only="isInterfaceBlocked"
+                                    :disabled="isInterfaceBlocked"
+                                    @change="onAmountChange"
+                                    :visible="isAmountInputVisible"
+                                    class="amount-input"
+                                />
+                            </div>
+                            <span
+                                class="max"
+                                v-if="!isFromTon"
+                                @click="useMaximumTokenAmount()"
+                                >MAX</span
+                            >
                         </div>
                     </div>
 
@@ -274,54 +140,206 @@
                         @click="toggleFromTon"
                     ></button>
 
-                    <div class="Bridge-switcher">
-                        <div
-                            class="Bridge-switcherTitle"
-                            :class="{ disabled: isInterfaceBlocked }"
-                        >
-                            <span>{{ pairNetworkName }}&nbsp;▾</span>
-                            <ul class="Bridge-switcherList">
-                                <li
-                                    v-for="item in toPairs"
-                                    :key="item"
-                                    @click="
-                                        onPairClick(
-                                            item === 'ton',
-                                            item === 'ton' ? pair : item
-                                        )
-                                    "
+                    <div class="Bridge-inputWrapper form-group form-group-2">
+                        <div class="input-field">
+                            <img
+                                src="~assets/pics/binance-icon.svg"
+                                class="token"
+                                alt="Wrapped ION"
+                                :style="{
+                                    display: isFromTon ? 'inline' : 'none',
+                                }"
+                            />
+                            <img
+                                src="~assets/pics/ice-icon.svg"
+                                class="token"
+                                alt="ION"
+                                :style="{
+                                    display: !isFromTon ? 'inline' : 'none',
+                                }"
+                            />
+                            <img
+                                src="~assets/pics/vertical-line-1.svg"
+                                class="vertical-line-1"
+                                alt=""
+                            />
+                            <div>
+                                <span
+                                    :class="{
+                                        normal: true,
+                                        initial: !shouldShowResultingAmount,
+                                    }"
+                                    >You receive
+                                    {{
+                                        isFromTon ? 'Wrapped ICE' : 'ICE'
+                                    }}</span
                                 >
-                                    <button>
-                                        {{
-                                            $t(
-                                                `Bridge.networks.${item}.${netTypeName}.name`
-                                            )
-                                        }}
-                                    </button>
-                                </li>
-                            </ul>
+                                <thousands-number-input
+                                    :initial-value="amountInnerMinusFee"
+                                    :read-only="isInterfaceBlocked"
+                                    :disabled="isInterfaceBlocked"
+                                    @change="onAmountChange"
+                                    :visible="shouldShowResultingAmount"
+                                    class="amount-input"
+                                />
+                            </div>
                         </div>
-                        <div class="Bridge-switcherAnno">
-                            <a :href="pairNetworkCoinUrl" target="_blank">{{
-                                pairNetworkCoin
-                            }}</a>
+                    </div>
+
+                    <div class="Bridge-inputWrapper form-group form-group-3">
+                        <div class="input-field" @click="onAddressInputClicked">
+                            <img
+                                src="~assets/pics/wallet-icon.svg"
+                                class="token"
+                                alt="ION"
+                            />
+                            <img
+                                src="~assets/pics/vertical-line-1.svg"
+                                class="vertical-line-1"
+                                alt=""
+                            />
+                            <div>
+                                <span
+                                    :class="{
+                                        normal: true,
+                                        initial: !isAddressInputVisible,
+                                    }"
+                                    >Address you receive in
+                                    {{ isFromTon ? 'BSC' : 'ION' }}
+                                    Network</span
+                                >
+                                <input
+                                    ref="addressInput"
+                                    :disabled="isInterfaceBlocked"
+                                    type="text"
+                                    id="toInput"
+                                    :class="{
+                                        'thousands-number-input': true,
+                                        visible: isAddressInputVisible,
+                                    }"
+                                    v-model="toAddress"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="Bridge-pairFee">
+                        <span>BSC gas fee</span>
+                        <span>{{ pairFee }} BNB</span>
+                    </div>
+                    <div class="Bridge-bridgeFee">
+                        <span>Bridge fee</span>
+                        <span>{{ bridgeFee }}</span>
+                    </div>
+
+                    <BridgeProcessor
+                        ref="bridgeProcessor"
+                        :key="pair"
+                        :is-testnet="isTestnet"
+                        :is-recover="isRecover"
+                        :lt="lt"
+                        :hash="hash"
+                        :is-from-ton="isFromTon"
+                        :pair="pair"
+                        :amount="amount"
+                        :has-enough-ice="this.hasEnoughICE"
+                        :is-connected="this.isConnected"
+                        :to-address="toAddress"
+                        @interface-blocked="onInterfaceBlocked"
+                        @state-changed="getPairGasFee__debounced"
+                        @reset-state="resetState"
+                        @save-state="saveState"
+                        @delete-state="deleteState"
+                    />
+
+                    <div
+                        class="Bridge-switchers"
+                        :class="{ isFromTon }"
+                        :key="isFromTon"
+                        style="display: none"
+                    >
+                        <div class="Bridge-switcher">
+                            <div
+                                class="Bridge-switcherTitle"
+                                :class="{ disabled: isInterfaceBlocked }"
+                            >
+                                <span>{{ tonNetworkName }}&nbsp;▾</span>
+                                <ul class="Bridge-switcherList">
+                                    <li
+                                        v-for="item in fromPairs"
+                                        :key="item"
+                                        @click="onPairClick(true, item)"
+                                    >
+                                        <button>
+                                            {{
+                                                $t(
+                                                    `Bridge.networks.${item}.${netTypeName}.name`
+                                                )
+                                            }}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="Bridge-switcherAnno">
+                                {{ tonNetworkCoin }}
+                            </div>
+                        </div>
+
+                        <button
+                            class="Bridge-switcher-arrow"
+                            :disabled="isInterfaceBlocked"
+                            @click="toggleFromTon"
+                        ></button>
+
+                        <div class="Bridge-switcher">
+                            <div
+                                class="Bridge-switcherTitle"
+                                :class="{ disabled: isInterfaceBlocked }"
+                            >
+                                <span>{{ pairNetworkName }}&nbsp;▾</span>
+                                <ul class="Bridge-switcherList">
+                                    <li
+                                        v-for="item in toPairs"
+                                        :key="item"
+                                        @click="
+                                            onPairClick(
+                                                item === 'ton',
+                                                item === 'ton' ? pair : item
+                                            )
+                                        "
+                                    >
+                                        <button>
+                                            {{
+                                                $t(
+                                                    `Bridge.networks.${item}.${netTypeName}.name`
+                                                )
+                                            }}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="Bridge-switcherAnno">
+                                <a :href="pairNetworkCoinUrl" target="_blank">{{
+                                    pairNetworkCoin
+                                }}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="description-form">
-                <img src="~assets/pics/description-icon.svg" alt="Help" />
-                <div>
-                    <h2>How does it work?</h2>
-                    <span
-                        >If you have any questions, then check out our detailed
-                        guide on how it works</span
-                    >
+                <div class="description-form">
+                    <img src="~assets/pics/description-icon.svg" alt="Help" />
+                    <div>
+                        <h2>How does it work?</h2>
+                        <span
+                            >If you have any questions, then check out our
+                            detailed guide on how it works</span
+                        >
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </MobileWrapper>
 </template>
 
 <script lang="ts">
@@ -335,6 +353,7 @@ import IonWeb from 'ionweb'
 import WTON from '~/assets/WTON.json'
 import { AbiItem } from 'web3-utils'
 import ThousandsNumberInput from './ThousandsNumberInput.vue'
+import MobileWrapper from '~/pages/MobileWrapper.vue'
 
 const BN = IonWeb.utils.BN
 
@@ -375,6 +394,7 @@ declare interface IComponentData {
 
 export default Vue.extend({
     components: {
+        MobileWrapper,
         BridgeProcessor,
         ThousandsNumberInput,
     },
