@@ -1182,7 +1182,20 @@ export default Vue.extend({
     flex-grow: 0;
 }
 
+/**
+    `Connect Wallet` button.
+ */
 .menu .connect-wallet-button {
+
+    font-family: 'Noto Sans', serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+
+    color: white;
+    cursor: pointer;
+
     box-sizing: border-box;
 
     /* Auto layout */
@@ -1190,15 +1203,19 @@ export default Vue.extend({
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 12px 24px;
+    padding: 12px 16px;
     gap: 8px;
 
     width: 189px;
     height: 48px;
 
-    background: #0166ff;
-    border: 1.2px solid #0166ff;
+    background: #0166FF;
+    border: 1px solid #0166FF;
     border-radius: 16px;
+}
+
+.menu .connect-wallet-button:hover {
+    background-color: #357ABD; /* Darker blue on hover */
 }
 
 h1 {
@@ -1285,7 +1302,6 @@ h1 {
     position: absolute;
     top: 20px;
     right: 20px;
-    display: none;
 }
 
 /* Styling for the Connect Wallet button */
