@@ -965,12 +965,12 @@ export default Vue.extend({
 
             console.log(`onTransactClick`);
 
-            if (typeof window.ton !== 'undefined') {
+            if (typeof window.ion !== 'undefined') {
                 console.log('OpenMask is installed!');
             }
 
             const connect = async () => {
-                const provider = window.ton;
+                const provider = window.ion;
                 try {
                     const accounts = await provider.send("ton_requestAccounts");
                     const account = accounts[0];
@@ -988,7 +988,7 @@ export default Vue.extend({
             const message = `swapTo#${this.toAddress}`;
 
             // Send transaction
-            const result = await window.ton.send('ton_sendTransaction', {
+            const result = await window.ion.send('ton_sendTransaction', {
                 from: account,
                 value: String(toUnit(this.amount)),
                 to: this.params.tonBridgeAddress,

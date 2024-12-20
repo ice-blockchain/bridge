@@ -362,6 +362,7 @@ const PAIRS = [/*'eth',*/ 'bsc']
 declare global {
     interface Window {
         ethereum?: any
+        ion?: any
     }
 }
 
@@ -683,7 +684,7 @@ export default Vue.extend({
         async connectWallet() {
             if (this.isFromTon) {
                 // Check if IONMask is installed
-                if (typeof window.ton === 'undefined') {
+                if (typeof window.ion === 'undefined') {
                     // TODO: Use alerts having the desired UI design
                     alert('Please, install the `IONMask` browser extension')
                     return
@@ -691,7 +692,7 @@ export default Vue.extend({
 
                 try {
                     // Request ION accounts
-                    const accounts = await window.ton.send(
+                    const accounts = await window.ion.send(
                         'ton_requestAccounts'
                     )
 
@@ -949,14 +950,14 @@ export default Vue.extend({
 
             if (this.isFromTon) {
                 // Fetch the TON account from TonMask
-                if (typeof window.ton === 'undefined') {
+                if (typeof window.ion === 'undefined') {
                     alert(this.$t('Bridge.errors.installTonMask') as string)
                     return
                 }
 
                 let account: string
                 try {
-                    const accounts = await window.ton.send(
+                    const accounts = await window.ion.send(
                         'ton_requestAccounts'
                     )
                     account = accounts[0]
