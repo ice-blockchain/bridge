@@ -396,9 +396,9 @@ export default Vue.extend({
             }
 
             // Set new timeout to reset state after 30 seconds
-            this.alertTimeout = setTimeout(() => {
+            this.alertTimeout = Number(setTimeout(() => {
                 this.resetState();
-            }, 30000);
+            }, 30000));
         },
         classForStep(step: number): string {
             if (this.state.step <= step) {
@@ -1054,6 +1054,7 @@ export default Vue.extend({
                     console.error(error);
 
                     this.resetState();
+                    this.deleteState();
                 }
             } else {
                 await this.burn();

@@ -587,7 +587,7 @@ export default Vue.extend({
     },
 
     methods: {
-        async calculateHasEnoughICE(value) {
+        async calculateHasEnoughICE(value: string) {
             // Do not trigger, when the value is not set
             if (!value) {
                 return true
@@ -604,11 +604,11 @@ export default Vue.extend({
                 }
 
                 // Get balance info from IonWeb for TON network
-                const info = await this.provider.ionweb.provider.getAddressInfo(
+                const info: any = await this.provider.ionweb.provider.getAddressInfo(
                     this.accountAddress
                 )
                 // Convert balance from nanoTON to TON
-                const balance = parseFloat(info.balance) / 1e9
+                const balance: number = parseFloat(info.balance) / 1e9
 
                 // Remove commas from the entered value and convert to number
                 const amount = parseFloat(value.replace(/,/g, '') || '0')
@@ -630,7 +630,7 @@ export default Vue.extend({
 
                 // Convert the entered value to Wei (assuming 18 decimals)
                 const cleanedValue = value.replace(/,/g, '') || '0'
-                const balanceInEther = Number(balance) / Math.pow(10, decimals)
+                const balanceInEther: number = Number(balance) / Math.pow(10, decimals)
 
                 return Number(cleanedValue) <= balanceInEther
             }
@@ -646,7 +646,7 @@ export default Vue.extend({
             this.isDisconnectMenuVisible = !this.isDisconnectMenuVisible
         },
         // Helper function to shorten the displayed address
-        shortenAddress(address) {
+        shortenAddress(address: string) {
             if (!address) {
                 return ''
             }
@@ -671,7 +671,7 @@ export default Vue.extend({
         },
         onAmountChange(formattedValue: string) {
             this.amountInner = formattedValue.replace(',', '')
-            this.calculateHasEnoughICE(this.amountInner).then((enough) => {
+            this.calculateHasEnoughICE(this.amountInner).then((enough: boolean) => {
                 console.log('Has enough ICE', enough)
                 this.hasEnoughICE = enough
             })
@@ -767,7 +767,7 @@ export default Vue.extend({
 
             // Trigger amount validation after successful connection
             if (this.amountInner) {
-                this.calculateHasEnoughICE(this.amountInner).then((enough) => {
+                this.calculateHasEnoughICE(this.amountInner).then((enough: boolean) => {
                     this.hasEnoughICE = enough
                 })
             }
