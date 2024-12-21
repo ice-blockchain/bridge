@@ -684,7 +684,7 @@ export default Vue.extend({
             )
         },
         openSwap() {
-            document.location = this.params.swapUri
+            document.location.href = this.params.swapUri
         },
         async connectWallet() {
             if (this.isFromTon) {
