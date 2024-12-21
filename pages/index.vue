@@ -1468,7 +1468,8 @@ h1 {
     position: relative;
     width: 204px;
     height: 31px;
-    top: 62px;
+    top: 40px;
+    margin: 0;
 }
 
 /* Description form styling */
