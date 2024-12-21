@@ -684,8 +684,7 @@ export default Vue.extend({
             )
         },
         openSwap() {
-            // TODO: Move this to settings, when possible
-            window.open('https://swap.staging.ice.io', '__empty')
+            document.location = this.params.swapUri
         },
         async connectWallet() {
             if (this.isFromTon) {

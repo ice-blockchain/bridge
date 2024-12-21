@@ -14,7 +14,8 @@ export const PARAMS: IParams = {
                 "blocksConfirmations": 12,
                 "defaultGwei": 5,
                 "coinsPerGweiTo": 0.0008,
-                "coinsPerGweiFrom": 0.0002
+                "coinsPerGweiFrom": 0.0002,
+                "swapUri": "https://swap.staging.ice.io"
             },
             "test": {
                 "getGasUrl": "https://gbsc.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle",
@@ -28,7 +29,8 @@ export const PARAMS: IParams = {
                 "blocksConfirmations": 12,
                 "defaultGwei": 5,
                 "coinsPerGweiTo": 0.0008,
-                "coinsPerGweiFrom": 0.0002
+                "coinsPerGweiFrom": 0.0002,
+                "swapUri": "https://swap.staging.ice.io"
             }
         }
     }

@@ -11,6 +11,7 @@ interface IParamsNetwork {
     defaultGwei: number,
     coinsPerGweiTo: number,
     coinsPerGweiFrom: number
+    swapUri: string
 }
 
 interface IParams {
