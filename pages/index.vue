@@ -199,9 +199,10 @@
                                         normal: true,
                                         initial: !isAddressInputVisible,
                                     }"
-                                    >Address you receive in
-                                    {{ isFromTon ? 'BSC' : 'ION' }}
-                                    Network</span
+                                    >{{
+                                        isFromTon ? 'BSC' : 'ION Chain'
+                                    }}
+                                    Receiver Address</span
                                 >
                                 <input
                                     ref="addressInput"
@@ -496,7 +497,7 @@ export default Vue.extend({
         },
         amount: {
             get(): number {
-                const amount = parseFloat(this.amountInner)
+                const amount = parseFloat(this.amountInner.replace(/,/g, ''))
                 return !amount || isNaN(amount) ? 0 : amount
             },
 
@@ -506,19 +507,14 @@ export default Vue.extend({
         },
         bridgeFee(): string {
             if (!isNaN(this.amount) && this.amount >= 10) {
-                // v.1.0
-                // return (this.$t('Bridge.bridgeFeeAbove10') as string).replace('<FEE>', String(5 + (this.amount - 5) * (0.25 / 100)));
-
-                // v.2.0
-                return String(0.5 + (this.amount - 0.5) * (0.25 / 100)) + ' ICE'
+                return String(this.bridgeFeeNumeric) + ' ICE'
             } else {
-                // return this.$t('Bridge.bridgeFeeBelow10') as string;
                 return '0.5 ICE + 0.25% of amount'
             }
         },
         bridgeFeeNumeric(): number {
             if (!isNaN(this.amount) && this.amount >= 10) {
-                return 0.5 + (this.amount - 0.5) * (0.25 / 100)
+                return 0.5 + ((this.amount - 0.5) * 0.25) / 100
             }
             return 0
         },
