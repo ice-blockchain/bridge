@@ -84,7 +84,7 @@
                             <img
                                 src="~assets/pics/binance-icon.svg"
                                 class="token"
-                                alt="Wrapped ION"
+                                alt="ICE"
                                 :style="{
                                     display: !isFromTon ? 'inline' : 'none',
                                 }"
@@ -108,9 +108,7 @@
                                         normal: true,
                                         initial: !isAmountInputVisible,
                                     }"
-                                    >Enter
-                                    {{ isFromTon ? 'ICE' : 'Wrapped ICE' }}
-                                    amount</span
+                                    >Enter ICE amount</span
                                 >
                                 <span class="alert"
                                     >Insufficient ICE balance</span
@@ -145,7 +143,7 @@
                             <img
                                 src="~assets/pics/binance-icon.svg"
                                 class="token"
-                                alt="Wrapped ION"
+                                alt="ICE"
                                 :style="{
                                     display: isFromTon ? 'inline' : 'none',
                                 }"
@@ -169,10 +167,7 @@
                                         normal: true,
                                         initial: !shouldShowResultingAmount,
                                     }"
-                                    >You receive
-                                    {{
-                                        isFromTon ? 'Wrapped ICE' : 'ICE'
-                                    }}</span
+                                    >You receive ICE</span
                                 >
                                 <thousands-number-input
                                     :initial-value="amountInnerMinusFee"
@@ -985,7 +980,7 @@ export default Vue.extend({
                 // Set the input amount to the fetched balance
                 this.amount = tonBalance
             } else {
-                // Fetch ICE (Wrapped ION) balance via MetaMask (wtonContract)
+                // Fetch ICE balance via MetaMask (wtonContract)
                 const rawBalance = await this.provider.wtonContract.methods
                     .balanceOf(this.provider.myEthAddress)
                     .call()
