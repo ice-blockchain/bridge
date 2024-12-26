@@ -66,6 +66,6 @@ a:active,
 a:focus {
     color: #1d98dc;
     text-decoration: none;
-    word-break: break-all;
+    word-break: break-word;
 }
 </style>

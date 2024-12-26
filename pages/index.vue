@@ -323,16 +323,25 @@
                     </div>
                 </div>
 
-                <div class="description-form">
-                    <img src="~assets/pics/description-icon.svg" alt="Help" />
-                    <div>
-                        <h2>How does it work?</h2>
-                        <span
-                            >If you have any questions, then check out our
-                            detailed guide on how it works</span
-                        >
+                <a
+                    href="https://ice.io/bridge-tutorial"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <div class="description-form">
+                        <img
+                            src="~assets/pics/description-icon.svg"
+                            alt="Help"
+                        />
+                        <div>
+                            <h2>How does it work?</h2>
+                            <span
+                                >Follow our simple guide on how to bridge ICE
+                                from Binance Smart Chain to ION Chain.</span
+                            >
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </main>
     </MobileWrapper>
