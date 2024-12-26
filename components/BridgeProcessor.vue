@@ -1085,7 +1085,7 @@ export default Vue.extend({
 
         .isPointer &:hover,
         .isTouch &:active {
-            background-color: #5fb8ea;
+            background-color: #0E2BC6;
         }
     }
 

@@ -1195,7 +1195,7 @@ export default Vue.extend({
 
                     .isPointer &:hover,
                     .isTouch &:active {
-                        color: #1d98dc;
+                        color: #0E2BC6;
                     }
                 }
             }
@@ -1458,7 +1458,7 @@ export default Vue.extend({
 }
 
 .menu .connect-wallet-button:hover {
-    background-color: #357abd; /* Darker blue on hover */
+    background-color: #0E2BC6;
 }
 
 h1 {
@@ -1815,7 +1815,7 @@ h1 {
 
 /* Hover effect for the Swap button */
 .swap-button:hover {
-    background-color: #357abd; /* Darker blue on hover */
+    background-color: #0E2BC6;
 }
 
 /* Disabled state styling for the Swap button */
