@@ -615,20 +615,25 @@ export default Vue.extend({
                     return false
                 }
 
-                // Get balance from the WTON contract
-                const balance = await this.provider.wtonContract.methods
-                    .balanceOf(this.accountAddress)
-                    .call()
-                const decimals = await this.provider.wtonContract.methods
-                    .decimals()
-                    .call()
+                try {
+                    // Get balance from the WTON contract
+                    const balance = await this.provider.wtonContract.methods
+                        .balanceOf(this.accountAddress)
+                        .call()
+                    const decimals = await this.provider.wtonContract.methods
+                        .decimals()
+                        .call()
 
-                // Convert the entered value to Wei (assuming 18 decimals)
-                const cleanedValue = value.replace(/,/g, '') || '0'
-                const balanceInEther: number =
-                    Number(balance) / Math.pow(10, decimals)
+                    // Convert the entered value to Wei (assuming 18 decimals)
+                    const cleanedValue = value.replace(/,/g, '') || '0'
+                    const balanceInEther: number =
+                        Number(balance) / Math.pow(10, decimals)
 
-                return Number(cleanedValue) <= balanceInEther
+                    return Number(cleanedValue) <= balanceInEther
+                } catch (error) {
+                    // On any error, consider that we do not have enough balance
+                    return false
+                }
             }
         },
         // Reset general connection state
