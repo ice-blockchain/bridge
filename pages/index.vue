@@ -550,7 +550,12 @@ export default Vue.extend({
         if (this.$route.query.testnet) {
             this.isTestnet =
                 (this.$route.query.testnet as string).toLowerCase() === 'true'
+        } else {
+            // Set the `testnet` flag based on the domain
+            const hostname = window.location.hostname
+            this.isTestnet = hostname.includes('testnet')
         }
+
         if (this.$route.query.recover || this.$route.query.recovery) {
             this.isRecover = true
         }
@@ -1195,7 +1200,7 @@ export default Vue.extend({
 
                     .isPointer &:hover,
                     .isTouch &:active {
-                        color: #0E2BC6;
+                        color: #0e2bc6;
                     }
                 }
             }
@@ -1458,7 +1463,7 @@ export default Vue.extend({
 }
 
 .menu .connect-wallet-button:hover {
-    background-color: #0E2BC6;
+    background-color: #0e2bc6;
 }
 
 h1 {
@@ -1815,7 +1820,7 @@ h1 {
 
 /* Hover effect for the Swap button */
 .swap-button:hover {
-    background-color: #0E2BC6;
+    background-color: #0e2bc6;
 }
 
 /* Disabled state styling for the Swap button */
