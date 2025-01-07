@@ -77,7 +77,8 @@
                             'Bridge-inputWrapper': true,
                             'form-group': true,
                             'form-group-1': true,
-                            'insufficient-balance': !hasEnoughICE,
+                            'insufficient-balance':
+                                !hasEnoughICE || !amountInnerBigEnough,
                         }"
                     >
                         <div class="input-field" @click="onAmountInputClicked">
@@ -110,9 +111,11 @@
                                     }"
                                     >Enter ICE amount</span
                                 >
-                                <span class="alert"
-                                    >Insufficient ICE balance</span
-                                >
+                                <span class="alert">{{
+                                        amountInnerBigEnough
+                                            ? 'Insufficient ICE balance'
+                                            : 'Minimum amount is 10 ICE'
+                                    }}</span>
                                 <thousands-number-input
                                     ref="amountInput"
                                     :initial-value="amountInner"
@@ -444,6 +447,17 @@ export default Vue.extend({
         shouldShowResultingAmount() {
             const value = this.amountInner as String
             return value.trim() !== '' && Number(value.replace(/,/g, '')) > 0
+        },
+        amountInnerBigEnough(): boolean {
+
+            // Initially, allow using the empty value
+            if (!this.amountInner) {
+                return true
+            }
+
+            // Remove commas before converting to number
+            const cleanAmount = this.amountInner.toString().replace(/,/g, '')
+            return Number(cleanAmount) >= 10
         },
         amountInnerMinusFee(): string {
             // Remove commas before converting to number
