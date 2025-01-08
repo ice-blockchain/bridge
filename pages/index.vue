@@ -1,6 +1,6 @@
 <template>
     <MobileWrapper>
-        <main class="Bridge">
+        <main :class="{ 'Bridge': true, 'testnet': isTestnet }">
             <div class="Bridge-testnetWarning" v-if="isTestnet">
                 {{ $t('Bridge.testnet') }}
             </div>
@@ -112,10 +112,10 @@
                                     >Enter ICE amount</span
                                 >
                                 <span class="alert">{{
-                                        amountInnerBigEnough
-                                            ? 'Insufficient ICE balance'
-                                            : 'Minimum amount is 10 ICE'
-                                    }}</span>
+                                    amountInnerBigEnough
+                                        ? 'Insufficient ICE balance'
+                                        : 'Minimum amount is 10 ICE'
+                                }}</span>
                                 <thousands-number-input
                                     ref="amountInput"
                                     :initial-value="amountInner"
@@ -449,7 +449,6 @@ export default Vue.extend({
             return value.trim() !== '' && Number(value.replace(/,/g, '')) > 0
         },
         amountInnerBigEnough(): boolean {
-
             // Initially, allow using the empty value
             if (!this.amountInner) {
                 return true
@@ -1331,6 +1330,10 @@ export default Vue.extend({
     background: #ffffff;
     box-shadow: 0 0 21px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
+}
+
+.testnet .menu {
+    top: 44px;
 }
 
 .menu img {
