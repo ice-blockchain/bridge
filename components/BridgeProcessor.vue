@@ -15,7 +15,7 @@
                     <dots-cycler v-if=pendingStep(1) />
                 </div>
             </div>
-            <div :class="`notification ${classForStep(2)}`" v-if="!isFromTon">
+            <div :class="`notification ${classForStep(2)}`" v-if="!isFromTon && (pendingStep(2) || completedStep(2))">
                 <div>
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(2) />
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(2) />
@@ -24,7 +24,7 @@
                     <dots-cycler v-if=pendingStep(2) />
                 </div>
             </div>
-            <div :class="`notification ${classForStep(3)}`">
+            <div :class="`notification ${classForStep(3)}`" v-if="pendingStep(3) || completedStep(3)">
                 <div>
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(3) />
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(3) />
@@ -33,7 +33,7 @@
                     <dots-cycler v-if=pendingStep(3) />
                 </div>
             </div>
-            <div :class="`notification ${classForStep(4)}`">
+            <div :class="`notification ${classForStep(4)}`" v-if="pendingStep(4) || completedStep(4)">
                 <div>
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(4) />
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(4) />
@@ -415,7 +415,9 @@ export default Vue.extend({
             return this.state.step > step;
         },
         futureStep(step: number): boolean {
-            return this.state.step < step;
+            return false;
+
+            // return this.state.step < step;
         },
         resetState(): void {
             this.state.swapId = '';
@@ -1211,7 +1213,7 @@ export default Vue.extend({
 }
 
 .notifications-area {
-    width: 311px;
+    width: 267px;
     left: calc(50% - 1392px/2);
     box-sizing: border-box;
     display: flex;

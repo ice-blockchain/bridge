@@ -36,14 +36,14 @@
             "main": {
                 "name": "Ethereum",
                 "full": "Ethereum Network",
-                "coin": "ION (ERC20)",
-                "coinShort": "ION"
+                "coin": "ICE (ERC20)",
+                "coinShort": "ICE"
             },
             "test": {
                 "name": "Ethereum Goerli",
                 "full": "Ethereum Goerli",
-                "coin": "ION (ERC20)",
-                "coinShort": "ION"
+                "coin": "ICE (ERC20)",
+                "coinShort": "ICE"
             }
         },
         "bsc": {
@@ -60,21 +60,21 @@
             "main": {
                 "name": "Binance Smart Chain",
                 "full": "BSC Network",
-                "coin": "ION (BEP-20)",
-                "coinShort": "ION"
+                "coin": "ICE (BEP-20)",
+                "coinShort": "ICE"
             },
             "test": {
                 "name": "BSC Testnet",
                 "full": "BSC Testnet",
-                "coin": "ION (BEP-20)",
-                "coinShort": "ION"
+                "coin": "ICE (BEP-20)",
+                "coinShort": "ICE"
             }
         }
     },
-    "amountOfTon": "Amount of ION:",
+    "amountOfTon": "Amount of ICE:",
     "addressInputLabel": "Address to receive in <NETWORK>:",
-    "bridgeFeeAbove10": "Bridge fee - <FEE> ION",
-    "bridgeFeeBelow10": "Bridge fee - 5 ION + 0.25% of amount",
+    "bridgeFeeAbove10": "Bridge fee - <FEE> ICE",
+    "bridgeFeeBelow10": "Bridge fee - 5 ICE + 0.25% of amount",
     "sourceCode": "Source Code",
     "howItWorks": "How it works",
     "documentation": "Documentation",
@@ -88,13 +88,13 @@
     "oraclesConfirmationsCollected": "Oracles voted",
     "oraclesConfirmationsWaiting": "Waiting for oracles",
     "getCoinsByMetamask": "Get <TO_COIN> by MetaMask",
-    "coinsSent": "<TO_COIN>s sent to you",
+    "coinsSent": "<TO_COIN> sent to you",
     "getCoins": "Receiving <TO_COIN> in <TO_NETWORK>",
     "errors": {
         "notValidAmount": "Amount is not valid number",
-        "amountBelow10": "Amount must be at least 10 ION",
+        "amountBelow10": "Amount must be at least 10 ICE",
         "needPersonalAddress": "Please enter YOUR address to receive",
-        "toncoinBalance": "You have only <BALANCE> ION",
+        "toncoinBalance": "You have only <BALANCE> ICE",
         "installMetamask": "Please install MetaMask",
         "wrongMetamaskNetwork": "Set chain to <NETWORK> in Metamask"
     }
