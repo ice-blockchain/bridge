@@ -11,7 +11,7 @@
                 <div>
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(1) />
                     <img src="~assets/pics/completed-icon.svg" class="notification-status-icon" alt="Completed" v-if=completedStep(1) />
-                    Transaction in {{isFromTon ? 'IONMask' : 'MetaMask'}}
+                    Submitting transaction
                     <dots-cycler v-if=pendingStep(1) />
                 </div>
             </div>
@@ -343,7 +343,6 @@ export default Vue.extend({
                 return (this.$t(`Bridge.coinsSent`) as string)
                     .replace('<TO_COIN>', this.toCoin);
             } else {
-                return 'Get ' + this.toCoin + 's in ' + this.toNetwork;
                 return (this.$t(`Bridge.getCoins`) as string)
                     .replace('<TO_COIN>', this.toCoin)
                     .replace('<TO_NETWORK>', this.toNetwork);
@@ -1212,7 +1211,7 @@ export default Vue.extend({
 }
 
 .notifications-area {
-    width: 256px;
+    width: 311px;
     left: calc(50% - 1392px/2);
     box-sizing: border-box;
     display: flex;

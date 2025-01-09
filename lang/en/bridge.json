@@ -12,14 +12,14 @@
             "main": {
                 "name": "ION Network",
                 "full": "ION Network",
-                "coin": "ION",
-                "coinShort": "ION"
+                "coin": "ICE",
+                "coinShort": "ICE"
             },
-            "test" : {
+            "test": {
                 "name": "ION Testnet",
                 "full": "ION Testnet",
-                "coin": "ION",
-                "coinShort": "ION"
+                "coin": "ICE",
+                "coinShort": "ICE"
             }
         },
         "eth": {
@@ -39,7 +39,7 @@
                 "coin": "ION (ERC20)",
                 "coinShort": "ION"
             },
-            "test" : {
+            "test": {
                 "name": "Ethereum Goerli",
                 "full": "Ethereum Goerli",
                 "coin": "ION (ERC20)",
@@ -63,7 +63,7 @@
                 "coin": "ION (BEP-20)",
                 "coinShort": "ION"
             },
-            "test" : {
+            "test": {
                 "name": "BSC Testnet",
                 "full": "BSC Testnet",
                 "coin": "ION (BEP-20)",
@@ -78,22 +78,18 @@
     "sourceCode": "Source Code",
     "howItWorks": "How it works",
     "documentation": "Documentation",
-
     "transfer": "Transfer",
-    "getToncoin": "Get ION",
+    "getToncoin": "Get ICE",
     "done": "Done",
     "cancel": "Cancel",
-
-
     "blocksConfirmationsCollected": "Blocks confirmed",
-    "blocksConfirmationsWaiting": "Wait block confirmations",
+    "blocksConfirmationsWaiting": "Waiting for block confirmations",
     "oraclesConfirmations": "<COUNT> oracles voted",
     "oraclesConfirmationsCollected": "Oracles voted",
-    "oraclesConfirmationsWaiting": "Wait for oracles",
-    "getCoinsByMetamask": "Get <TO_COIN>s by MetaMask",
+    "oraclesConfirmationsWaiting": "Waiting for oracles",
+    "getCoinsByMetamask": "Get <TO_COIN> by MetaMask",
     "coinsSent": "<TO_COIN>s sent to you",
-    "getCoins": "Get <TO_COIN>s in <TO_NETWORK>",
-
+    "getCoins": "Receiving <TO_COIN> in <TO_NETWORK>",
     "errors": {
         "notValidAmount": "Amount is not valid number",
         "amountBelow10": "Amount must be at least 10 ION",
