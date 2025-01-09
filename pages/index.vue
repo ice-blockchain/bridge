@@ -207,16 +207,22 @@
                                     }}
                                     Receiver Address</span
                                 >
+                                <div
+                                    v-if="!isEditingAddress"
+                                    class="address-display"
+                                    @click="toggleAddressEditing(true)"
+                                >
+                                    {{ shortenAddress2(toAddress) }}
+                                </div>
                                 <input
+                                    v-else
                                     ref="addressInput"
-                                    :disabled="isInterfaceBlocked"
                                     type="text"
                                     id="toInput"
-                                    :class="{
-                                        'thousands-number-input': true,
-                                        visible: isAddressInputVisible,
-                                    }"
                                     v-model="toAddress"
+                                    @blur="toggleAddressEditing(false)"
+                                    :disabled="isInterfaceBlocked"
+                                    class="address-input"
                                 />
                             </div>
                         </div>
@@ -399,6 +405,8 @@ declare interface IComponentData {
     accountAddress: string
 
     provider: any
+
+    isEditingAddress: boolean
 }
 
 export default Vue.extend({
@@ -440,6 +448,8 @@ export default Vue.extend({
             hasEnoughICE: true,
 
             accountAddress: '',
+
+            isEditingAddress: true, // Address input is editable by default
         }
     },
 
@@ -608,6 +618,19 @@ export default Vue.extend({
     },
 
     methods: {
+        // Toggle between display mode and editing mode
+        toggleAddressEditing(isEditing) {
+            if (!this.toAddress.trim()) {
+                this.isEditingAddress = true;
+                return;
+            }
+            this.isEditingAddress = isEditing
+            if (isEditing) {
+                this.$nextTick(() => {
+                    this.$refs.addressInput?.focus()
+                })
+            }
+        },
         async calculateHasEnoughICE(value: string) {
             // Do not trigger, when the value is not set
             if (!value) {
@@ -680,6 +703,17 @@ export default Vue.extend({
             }
 
             return `${address.slice(0, 5)}...${address.slice(-5)}`
+        },
+        shortenAddress2(address: string) {
+            if (!address) {
+                return ''
+            }
+
+            if (address.length < 14 + 17) {
+                return address;
+            }
+
+            return `${address.slice(0, 14)}...${address.slice(-17)}`
         },
         onAmountInputClicked() {
             this.isAmountInputVisible = true
@@ -819,6 +853,8 @@ export default Vue.extend({
             this.hash = ''
             this.amountInner = ''
             this.toAddress = ''
+            this.isEditingAddress = true;
+            this.isAddressInputVisible = false;
         },
         loadState(): void {
             if (!supportsLocalStorage) {
@@ -1864,5 +1900,25 @@ h1 {
 
 .thousands-number-input.visible {
     display: inline !important;
+}
+
+.address-display {
+    font-family: 'Noto Sans', serif;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
+    color: #0e0e0e;
+    cursor: pointer;
+    width: 260px;
+    text-align: left;
+}
+
+.address-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-family: 'Noto Sans', serif;
+    font-size: 13px;
 }
 </style>
