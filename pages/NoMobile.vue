@@ -39,6 +39,7 @@ export default {
     width: 343px;
     height: 60px;
     left: calc(50% - 343px / 2);
+    top: 24px;
 
     background: #ffffff;
     box-shadow: 0 0 21px rgba(0, 0, 0, 0.1);
