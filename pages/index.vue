@@ -1,6 +1,6 @@
 <template>
     <MobileWrapper>
-        <main :class="{ 'Bridge': true, 'testnet': isTestnet }">
+        <main :class="{ Bridge: true, testnet: isTestnet }">
             <div class="Bridge-testnetWarning" v-if="isTestnet">
                 {{ $t('Bridge.testnet') }}
             </div>
@@ -340,7 +340,7 @@
                             <h2>How does it work?</h2>
                             <span
                                 >Follow our simple guide on how to bridge ICE
-                                from Binance Smart Chain to ION Chain.</span
+                                between Binance Smart Chain and ION Chain.</span
                             >
                         </div>
                     </div>
