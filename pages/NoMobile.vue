@@ -39,7 +39,6 @@ export default {
     width: 343px;
     height: 60px;
     left: calc(50% - 343px / 2);
-    top: 60px;
 
     background: #ffffff;
     box-shadow: 0 0 21px rgba(0, 0, 0, 0.1);
@@ -59,9 +58,9 @@ export default {
 
     position: absolute;
     width: 343px;
-    height: 626px;
+    height: 70%;
     left: calc(50% - 343px / 2);
-    top: 136px;
+    top: 111px;
 
     background: #ffffff;
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
