@@ -619,7 +619,7 @@ export default Vue.extend({
 
     methods: {
         // Toggle between display mode and editing mode
-        toggleAddressEditing(isEditing) {
+        toggleAddressEditing(isEditing: boolean) {
             if (!this.toAddress.trim()) {
                 this.isEditingAddress = true;
                 return;
