@@ -621,8 +621,8 @@ export default Vue.extend({
         // Toggle between display mode and editing mode
         toggleAddressEditing(isEditing: boolean) {
             if (!this.toAddress.trim()) {
-                this.isEditingAddress = true;
-                return;
+                this.isEditingAddress = true
+                return
             }
             this.isEditingAddress = isEditing
             if (isEditing) {
@@ -709,11 +709,11 @@ export default Vue.extend({
                 return ''
             }
 
-            if (address.length < 14 + 17) {
-                return address;
+            if (address.length < 14 + 9) {
+                return address
             }
 
-            return `${address.slice(0, 14)}...${address.slice(-17)}`
+            return `${address.slice(0, 14)}...${address.slice(-9)}`
         },
         onAmountInputClicked() {
             this.isAmountInputVisible = true
@@ -853,8 +853,8 @@ export default Vue.extend({
             this.hash = ''
             this.amountInner = ''
             this.toAddress = ''
-            this.isEditingAddress = true;
-            this.isAddressInputVisible = false;
+            this.isEditingAddress = true
+            this.isAddressInputVisible = false
         },
         loadState(): void {
             if (!supportsLocalStorage) {
