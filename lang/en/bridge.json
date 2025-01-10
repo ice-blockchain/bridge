@@ -52,7 +52,7 @@
             "transactionCompleted": "BSC transaction completed successfully",
             "transactionWait": "Wait for BSC transaction",
             "transactionSend": "Send BSC transaction in MetaMask",
-            "blocksConfirmations": "<COUNT> BSC blocks",
+            "blocksConfirmations": "<COUNT> blocks confirmed",
             "errors": {
                 "invalidAddress": "Not valid BSC address",
                 "lowBalance": "You need to have BNB on your wallet to pay for gas in the BSC network"
