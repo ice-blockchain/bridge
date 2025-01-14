@@ -1,0 +1,197 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_iceV1",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_iceV2",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_bridge",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_ionSwap",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            }
+        ],
+        "name": "SafeERC20FailedOperation",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "bridge",
+        "outputs": [
+            {
+                "internalType": "contract IIONBridge",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "int8",
+                        "name": "workchain",
+                        "type": "int8"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "address_hash",
+                        "type": "bytes32"
+                    }
+                ],
+                "internalType": "struct IIONBridge.IONAddress",
+                "name": "addr",
+                "type": "tuple"
+            }
+        ],
+        "name": "burn",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "iceV1",
+        "outputs": [
+            {
+                "internalType": "contract IERC20",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "iceV2",
+        "outputs": [
+            {
+                "internalType": "contract IERC20",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "ionSwap",
+        "outputs": [
+            {
+                "internalType": "contract IONSwap",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "receiver",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "amount",
+                        "type": "uint64"
+                    },
+                    {
+                        "components": [
+                            {
+                                "components": [
+                                    {
+                                        "internalType": "int8",
+                                        "name": "workchain",
+                                        "type": "int8"
+                                    },
+                                    {
+                                        "internalType": "bytes32",
+                                        "name": "address_hash",
+                                        "type": "bytes32"
+                                    }
+                                ],
+                                "internalType": "struct IIONBridge.IONAddress",
+                                "name": "address_",
+                                "type": "tuple"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "tx_hash",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "lt",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct IIONBridge.IONTxID",
+                        "name": "tx",
+                        "type": "tuple"
+                    }
+                ],
+                "internalType": "struct IIONBridge.SwapData",
+                "name": "data",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "signer",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signature",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct IIONBridge.Signature[]",
+                "name": "signatures",
+                "type": "tuple[]"
+            }
+        ],
+        "name": "voteForMinting",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

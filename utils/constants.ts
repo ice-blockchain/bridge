@@ -15,7 +15,8 @@ export const PARAMS: IParams = {
                 "defaultGwei": 5,
                 "coinsPerGweiTo": 0.0008,
                 "coinsPerGweiFrom": 0.0002,
-                "swapUri": "https://swap.staging.ice.io"
+                "swapUri": "https://swap.staging.ice.io",
+                "ionBridgeRouterAddress": "0xD83827590808a3130Cf097AF59F12b6A979898b9"
             },
             "test": {
                 "getGasUrl": "https://gbsc.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle",
@@ -30,7 +31,8 @@ export const PARAMS: IParams = {
                 "defaultGwei": 5,
                 "coinsPerGweiTo": 0.0008,
                 "coinsPerGweiFrom": 0.0002,
-                "swapUri": "https://swap.staging.ice.io"
+                "swapUri": "https://swap.staging.ice.io",
+                "ionBridgeRouterAddress": "0xD83827590808a3130Cf097AF59F12b6A979898b9"
             }
         }
     }

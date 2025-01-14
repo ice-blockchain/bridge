@@ -66,6 +66,7 @@ import Vue from 'vue'
 import Web3 from 'web3';
 import IonWeb from 'ionweb';
 import WTON from '~/assets/WTON.json';
+import IONBridgeRouter from '~/assets/IONBridgeRouter.json';
 import {ethers} from "ethers";
 import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
@@ -116,6 +117,7 @@ declare interface IProvider {
     blockNumber: number,
     myEthAddress: string,
     wtonContract: Contract,
+    ionBridgeRouter: Contract,
     web3: Web3,
     ionweb: IonWeb,
     feeFlat: typeof BN,
@@ -787,7 +789,7 @@ export default Vue.extend({
 
                 console.log('voteForMinting', JSON.stringify(this.state.swapData!), JSON.stringify(signatures));
 
-                receipt = await this.provider!.wtonContract.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
+                receipt = await this.provider!.ionBridgeRouter.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
                     .on('transactionHash', () => {
                         this.state.toCurrencySent = true;
                         this.deleteState();
@@ -820,7 +822,7 @@ export default Vue.extend({
             let receipt;
 
             try {
-                receipt = await this.provider!.wtonContract.methods.burn(amountUnit, {
+                receipt = await this.provider!.ionBridgeRouter.methods.burn(amountUnit, {
                     workchain: wc,
                     address_hash: '0x' + hashPart
                 }).send({from: fromAddress})
@@ -905,6 +907,7 @@ export default Vue.extend({
 
                 const web3 = new Web3(ethereum);
                 const wtonContract = new web3.eth.Contract(WTON as AbiItem[], this.params.wTonAddress);
+                const ionBridgeRouter = new web3.eth.Contract(IONBridgeRouter as AbiItem[], this.params.ionBridgeRouterAddress);
                 const oraclesTotal = (await wtonContract.methods.getFullOracleSet().call()).length;
 
                 if (!(oraclesTotal > 0)) {
@@ -946,6 +949,7 @@ export default Vue.extend({
                     myEthAddress,
                     web3,
                     wtonContract,
+                    ionBridgeRouter,
                     ionweb,
                     oraclesTotal,
                     feeFlat: feeFlat.add(feeNetwork),
