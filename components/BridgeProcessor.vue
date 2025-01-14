@@ -6,7 +6,7 @@
             :disabled="!isSwapValid"
             @click="onTransferClick">{{$t('Bridge.transfer')}}</button>
 
-        <div class="BridgeProcessor-infoWrapper notifications-area" >
+        <div class="BridgeProcessor-infoWrapper notifications-area" v-else>
             <div :class="`notification ${classForStep(1)}`">
                 <div>
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(1) />
