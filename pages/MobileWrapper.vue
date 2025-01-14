@@ -1,19 +1,14 @@
 <!-- MobileWrapper.vue -->
 <template>
     <div>
-        <NoMobile v-if="isMobile" />
-        <slot v-else></slot>
+        <slot />
     </div>
 </template>
 
 <script>
-import NoMobile from './NoMobile.vue'
 
 export default {
     name: 'MobileWrapper',
-    components: {
-        NoMobile,
-    },
 
     data() {
         return {

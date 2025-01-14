@@ -1921,4 +1921,90 @@ h1 {
     font-family: 'Noto Sans', serif;
     font-size: 13px;
 }
+
+@media only screen and (max-width:768px) {
+    .menu {
+        z-index: 1;
+        position: relative;
+        width: 100%;
+        height: auto;
+        left: auto;
+        top: auto;
+        background: transparent;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        flex-wrap: wrap;
+        padding: 16px;
+    }
+    .menu .tabs {
+        display: none;
+    }
+
+    .menu img.logo, .connect-wallet-container, .Bridge-form, .form-group-1, .form-group-2, .form-group-3, h1, .Bridge-pairFee, .Bridge-bridgeFee, .description-form {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+    }
+
+    .description-form {
+        width: 100%;
+        padding: 16px;
+        margin-top: 20px;
+    }
+
+    .description-form h2 {
+        font-size: 13px;
+    }
+
+    .description-form span {
+        font-size: 12px;
+    }
+
+    .Bridge-form {
+        width: 100%;
+        height: auto;
+        padding: 16px;
+    }
+
+    .Bridge-pairFee, .Bridge-bridgeFee {
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .input-field, .form-group {
+        width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .Bridge-content {
+        padding: 16px;
+    }
+
+    h1 {
+        margin: 16px 0 24px;
+    }
+
+
+    .menu img.logo {
+        position: relative;
+        left: auto;
+        top: auto;
+        height: 60px;
+        background: #FFFFFF;
+        width: 100%;
+        padding: 15px 0;
+        border-radius: 20px;
+        margin-bottom: 30px;
+    }
+
+}
+
 </style>

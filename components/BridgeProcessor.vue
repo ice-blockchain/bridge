@@ -6,7 +6,7 @@
             :disabled="!isSwapValid"
             @click="onTransferClick">{{$t('Bridge.transfer')}}</button>
 
-        <div class="BridgeProcessor-infoWrapper notifications-area" v-else>
+        <div class="BridgeProcessor-infoWrapper notifications-area" >
             <div :class="`notification ${classForStep(1)}`">
                 <div>
                     <img src="~assets/pics/pending-icon.svg" class="notification-status-icon" alt="Pending" v-if=pendingStep(1) />
@@ -1282,5 +1282,33 @@ export default Vue.extend({
     flex: none;
     order: 0;
     flex-grow: 0;
+}
+
+@media only screen and (max-width:768px) {
+    .BridgeProcessor {
+        width: 100%;
+        margin: 10px 0 4px 0;
+    }
+    .BridgeProcessor-transfer  {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 100%;
+    }
+
+    .notifications-area {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 100%;
+        height: auto;
+        margin-top: 19px;
+    }
 }
 </style>
