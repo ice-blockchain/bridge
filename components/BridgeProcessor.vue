@@ -778,6 +778,29 @@ export default Vue.extend({
         async mint(): Promise<any> {
             let receipt;
             try {
+
+                // First check and set allowance for WTON
+                const currentWTONAllowance = await this.provider!.wtonContract.methods.allowance(
+                    this.provider!.myEthAddress,
+                    this.provider!.ionBridgeRouter.options.address
+                ).call();
+
+                // Convert to amount to the right decimals (from 10^9 to 10^18)
+                const amountForApproval = new BN(this.state.swapData!.amount);
+
+                if (new BN(currentWTONAllowance).lt(amountForApproval)) {
+                    console.log('Requesting WTON token approval...');
+                    const approvalReceipt = await this.provider!.wtonContract.methods.approve(
+                        this.provider!.ionBridgeRouter.options.address,
+                        amountForApproval
+                    ).send({ from: this.provider!.myEthAddress });
+
+                    if (!approvalReceipt.status) {
+                        throw new Error('WTON token approval failed');
+                    }
+                    console.log('WTON token approval successful');
+                }
+
                 let signatures = (this.state.votes! as IVoteEth[]).map(v => {
                     return {
                         signer: v.publicKey,
