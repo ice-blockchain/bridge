@@ -1441,6 +1441,7 @@ export default Vue.extend({
 }
 
 .menu .swap-tab {
+    visibility: hidden;
     /* Auto layout */
     display: flex;
     flex-direction: row;

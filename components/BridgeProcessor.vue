@@ -71,7 +71,7 @@ import ERC20 from '~/assets/ERC20.json';
 import {ethers} from "ethers";
 import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
-import { toUnit, fromUnit, getNumber, getBool, decToHex, parseAddressFromDec } from '~/utils/helpers';
+import { toUnit, toEther, fromUnit, fromEther, getNumber, getBool, decToHex, parseAddressFromDec } from '~/utils/helpers';
 import {PARAMS} from '~/utils/constants';
 import keccak256 from 'keccak256'
 import DotsCycler from './DotsCycler.vue'
@@ -818,24 +818,26 @@ export default Vue.extend({
             const wc = addressTon.wc;
             const hashPart = IonWeb.utils.bytesToHex(addressTon.hashPart);
             const amountUnit = toUnit(amount ? amount : 0);
+            const amountEther = toEther(amount ? amount : 0);
 
             console.log(`Address hash: 0x${hashPart}`);
 
             // First check the allowance for ice1Contract
-            const currentAllowance = await this.provider!.ice1Contract.methods.allowance(
+            let currentAllowance = await this.provider!.ice1Contract.methods.allowance(
                 fromAddress,
                 this.provider!.ionBridgeRouter.options.address
             ).call();
+            currentAllowance = new BN(currentAllowance);
 
             // If allowance is less than amount, request approval
-            // TODO: While calculating allowance, need to consider the difference in decimal places between tokens
-            if (new BN(currentAllowance).lt(new BN(amountUnit))) {
+            console.log(`Current allowance: ${currentAllowance}, expected amount: ${amountEther}`);
+            if (currentAllowance.lt(amountEther)) {
                 console.log('Requesting ICE token approval...');
 
                 // Now approve the actual amount
                 const approvalReceipt = await this.provider!.ice1Contract.methods.approve(
                     this.provider!.ionBridgeRouter.options.address,
-                    amountUnit
+                    amountEther
                 ).send({ from: fromAddress });
 
                 if (!approvalReceipt.status) {
@@ -863,10 +865,27 @@ export default Vue.extend({
             if (receipt.status) {
                 console.log('Transaction receipt', receipt);
 
+                // Find SwapEthToIon event by its signature
+                const SWAP_ETH_TO_ION_SIGNATURE = "SwapEthToIon(address,int8,bytes32,uint256)";
+                const SWAP_ETH_TO_ION_TOPIC = Web3.utils.sha3(SWAP_ETH_TO_ION_SIGNATURE);
+
+                const swapEvent = receipt.events && Object.values(receipt.events).find((event: any) =>
+                    event.raw &&
+                    event.raw.topics &&
+                    event.raw.topics[0] === SWAP_ETH_TO_ION_TOPIC
+                );
+
+                if (!swapEvent) {
+                    console.error('SwapEthToIon event not found in receipt');
+                    return;
+                } else {
+                    console.log('Swap event:', swapEvent);
+                }
+
                 this.state.blockNumber = receipt.blockNumber;
                 this.ethToTon = {
                     transactionHash: receipt.transactionHash,
-                    logIndex: receipt.events.SwapEthToIon.logIndex,
+                    logIndex: swapEvent.logIndex, // Use logIndex from found event
                     blockNumber: this.state.blockNumber,
                     blockTime: 0,
                     blockHash: '',
