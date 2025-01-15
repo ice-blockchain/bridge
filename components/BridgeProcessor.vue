@@ -67,6 +67,7 @@ import Web3 from 'web3';
 import IonWeb from 'ionweb';
 import WTON from '~/assets/WTON.json';
 import IONBridgeRouter from '~/assets/IONBridgeRouter.json';
+import ERC20 from '~/assets/ERC20.json';
 import {ethers} from "ethers";
 import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
@@ -118,6 +119,7 @@ declare interface IProvider {
     myEthAddress: string,
     wtonContract: Contract,
     ionBridgeRouter: Contract,
+    ice1Contract: Contract,
     web3: Web3,
     ionweb: IonWeb,
     feeFlat: typeof BN,
@@ -815,9 +817,32 @@ export default Vue.extend({
             const addressTon = new IonWeb.utils.Address(toAddress);
             const wc = addressTon.wc;
             const hashPart = IonWeb.utils.bytesToHex(addressTon.hashPart);
-            const amountUnit = toUnit(amount);
+            const amountUnit = toUnit(amount ? amount : 0);
 
             console.log(`Address hash: 0x${hashPart}`);
+
+            // First check the allowance for ice1Contract
+            const currentAllowance = await this.provider!.ice1Contract.methods.allowance(
+                fromAddress,
+                this.provider!.ionBridgeRouter.options.address
+            ).call();
+
+            // If allowance is less than amount, request approval
+            // TODO: While calculating allowance, need to consider the difference in decimal places between tokens
+            if (new BN(currentAllowance).lt(new BN(amountUnit))) {
+                console.log('Requesting ICE token approval...');
+
+                // Now approve the actual amount
+                const approvalReceipt = await this.provider!.ice1Contract.methods.approve(
+                    this.provider!.ionBridgeRouter.options.address,
+                    amountUnit
+                ).send({ from: fromAddress });
+
+                if (!approvalReceipt.status) {
+                    throw new Error('ICE token approval failed');
+                }
+                console.log('ICE token approval successful');
+            }
 
             let receipt;
 
@@ -908,6 +933,7 @@ export default Vue.extend({
                 const web3 = new Web3(ethereum);
                 const wtonContract = new web3.eth.Contract(WTON as AbiItem[], this.params.wTonAddress);
                 const ionBridgeRouter = new web3.eth.Contract(IONBridgeRouter as AbiItem[], this.params.ionBridgeRouterAddress);
+                const ice1Contract = new web3.eth.Contract(ERC20 as AbiItem[], this.params.ice1TokenAddress);
                 const oraclesTotal = (await wtonContract.methods.getFullOracleSet().call()).length;
 
                 if (!(oraclesTotal > 0)) {
@@ -950,6 +976,7 @@ export default Vue.extend({
                     web3,
                     wtonContract,
                     ionBridgeRouter,
+                    ice1Contract,
                     ionweb,
                     oraclesTotal,
                     feeFlat: feeFlat.add(feeNetwork),

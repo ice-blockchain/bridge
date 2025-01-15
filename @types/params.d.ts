@@ -13,6 +13,7 @@ interface IParamsNetwork {
     coinsPerGweiFrom: number
     swapUri: string
     ionBridgeRouterAddress: string
+    ice1TokenAddress: string
 }
 
 interface IParams {
