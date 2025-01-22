@@ -872,7 +872,7 @@ export default Vue.extend({
             let receipt;
 
             try {
-                receipt = await this.provider!.ionBridgeRouter.methods.burn(amountUnit, {
+                receipt = await this.provider!.ionBridgeRouter.methods.burn(amountEther, {
                     workchain: wc,
                     address_hash: '0x' + hashPart
                 }).send({from: fromAddress})
