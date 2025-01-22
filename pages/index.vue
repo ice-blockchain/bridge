@@ -365,6 +365,7 @@ import BridgeProcessor from '~/components/BridgeProcessor.vue'
 import Web3 from 'web3'
 import IonWeb from 'ionweb'
 import WTON from '~/assets/WTON.json'
+import ERC20 from '~/assets/ERC20.json'
 import { AbiItem } from 'web3-utils'
 import ThousandsNumberInput from './ThousandsNumberInput.vue'
 import MobileWrapper from '~/pages/MobileWrapper.vue'
@@ -661,16 +662,16 @@ export default Vue.extend({
                 return amount <= balance
             } else {
                 // Handle BSC network balance check
-                if (!this.provider?.wtonContract) {
+                if (!this.provider?.ice1Contract) {
                     return false
                 }
 
                 try {
                     // Get balance from the WTON contract
-                    const balance = await this.provider.wtonContract.methods
+                    const balance = await this.provider.ice1Contract.methods
                         .balanceOf(this.accountAddress)
                         .call()
-                    const decimals = await this.provider.wtonContract.methods
+                    const decimals = await this.provider.ice1Contract.methods
                         .decimals()
                         .call()
 
@@ -813,12 +814,14 @@ export default Vue.extend({
                             WTON as AbiItem[],
                             this.params.wTonAddress
                         )
+                        const ice1Contract = new web3.eth.Contract(ERC20 as AbiItem[], this.params.ice1TokenAddress);
 
                         // Update provider with necessary instances
                         this.provider = {
                             ...this.provider,
                             web3,
                             wtonContract,
+                            ice1Contract,
                             myEthAddress: account,
                         } as any
                     }
