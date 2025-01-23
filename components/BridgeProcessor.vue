@@ -1108,7 +1108,7 @@ export default Vue.extend({
             }
 
             if (!this.isFromTon) {
-                const userErcBalance = fromUnit(Number(await (this.provider!.wtonContract.methods.balanceOf(this.provider!.myEthAddress).call())));
+                const userErcBalance = fromUnit(Number(await (this.provider!.ice1Contract.methods.balanceOf(this.provider!.myEthAddress).call())));
                 if (this.amount > userErcBalance) {
                     alert((this.$t('Bridge.errors.toncoinBalance') as string).replace('<BALANCE>', String(userErcBalance)));
                     return;
