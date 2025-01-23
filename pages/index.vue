@@ -746,10 +746,10 @@ export default Vue.extend({
         },
         async connectWallet() {
             if (this.isFromTon) {
-                // Check if IONMask is installed
+                // Check if ION Wallet is installed
                 if (typeof window.ion === 'undefined') {
                     // TODO: Use alerts having the desired UI design
-                    alert('Please, install the `IONMask` browser extension')
+                    alert('Please, install the `ION Wallet` browser extension')
                     return
                 }
 
@@ -765,7 +765,7 @@ export default Vue.extend({
                         // You might want to store the connected account
                         const account = accounts[0]
                         console.log(
-                            'Connected to IONMask with account:',
+                            'Connected to ION Wallet with account:',
                             account
                         )
 
@@ -782,8 +782,8 @@ export default Vue.extend({
                         } as any
                     }
                 } catch (error) {
-                    console.error('Failed to connect to IONMask:', error)
-                    alert('Failed to connect to IONMask. Please try again.')
+                    console.error('Failed to connect to ION Wallet:', error)
+                    alert('Failed to connect to ION Wallet. Please try again.')
                 }
             } else {
                 // Check if MetaMask is installed
