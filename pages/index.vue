@@ -1405,6 +1405,7 @@ export default Vue.extend({
 }
 
 .menu .bridge-tab {
+    visibility: hidden;
     /* Auto layout */
     display: flex;
     flex-direction: row;
