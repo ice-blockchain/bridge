@@ -128,7 +128,6 @@
                             </div>
                             <span
                                 class="max"
-                                v-if="!isFromTon"
                                 @click="useMaximumTokenAmount()"
                                 >MAX</span
                             >
@@ -955,6 +954,11 @@ export default Vue.extend({
         useMaximumTokenAmount: async function () {
             const self = this
 
+            // Not connected at all
+            if (!this.isConnected) {
+                return;
+            }
+
             const initProvider = async function () {
                 // Check if MetaMask (Ethereum provider) is available
                 const ethereum = (window as any).ethereum
@@ -1024,6 +1028,11 @@ export default Vue.extend({
                     return
                 }
 
+                // Connected, but not to ION Web
+                if (!this.provider.ionweb) {
+                    return;
+                }
+
                 let account: string
                 try {
                     const accounts = await window.ion.send(
@@ -1047,16 +1056,27 @@ export default Vue.extend({
                 // Set the input amount to the fetched balance
                 this.amount = tonBalance
             } else {
-                // Fetch ICE balance via MetaMask (wtonContract)
-                const rawBalance = await this.provider.wtonContract.methods
+
+                // Connected, but not to ICE v1
+                if (!this.provider.ice1Contract) {
+                    return;
+                }
+
+                // Fetch ICE balance and decimals
+                const rawBalance = await this.provider.ice1Contract.methods
                     .balanceOf(this.provider.myEthAddress)
                     .call()
-                // rawBalance is a string in the smallest unit. Use fromUnit() to convert:
-                const iceBalance = parseFloat('' + fromUnit(Number(rawBalance)))
-                console.log(`Current ICE balance: ${iceBalance} WTON`)
+                const decimals = await this.provider.ice1Contract.methods
+                    .decimals()
+                    .call()
+
+                // Convert the entered value to Wei (assuming 18 decimals)
+                const balanceInEther: number =
+                    Number(rawBalance) / Math.pow(10, decimals)
+                console.log(`Current ICE balance: ${balanceInEther}`)
 
                 // Set the input amount to the fetched balance
-                this.amount = iceBalance
+                this.amount = balanceInEther
             }
         },
     },
