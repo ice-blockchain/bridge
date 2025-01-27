@@ -126,9 +126,7 @@
                                     class="amount-input"
                                 />
                             </div>
-                            <span
-                                class="max"
-                                @click="useMaximumTokenAmount()"
+                            <span class="max" @click="useMaximumTokenAmount()"
                                 >MAX</span
                             >
                         </div>
@@ -358,7 +356,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import lodashDebounce from 'lodash.debounce'
-import { fromUnit, supportsLocalStorage } from '~/utils/helpers'
+import { supportsLocalStorage } from '~/utils/helpers'
 import { PARAMS } from '~/utils/constants'
 import BridgeProcessor from '~/components/BridgeProcessor.vue'
 import Web3 from 'web3'
@@ -813,7 +811,10 @@ export default Vue.extend({
                             WTON as AbiItem[],
                             this.params.wTonAddress
                         )
-                        const ice1Contract = new web3.eth.Contract(ERC20 as AbiItem[], this.params.ice1TokenAddress);
+                        const ice1Contract = new web3.eth.Contract(
+                            ERC20 as AbiItem[],
+                            this.params.ice1TokenAddress
+                        )
 
                         // Update provider with necessary instances
                         this.provider = {
@@ -915,6 +916,13 @@ export default Vue.extend({
             if (this.isInterfaceBlocked) {
                 return
             }
+
+            // Disconnect the wallet if connected
+            if (this.isConnected) {
+                this.disconnectWallet()
+            }
+
+            // Toggle the direction
             this.isFromTon = !this.isFromTon
         },
         async getPairGasFee(): Promise<void> {
@@ -956,7 +964,7 @@ export default Vue.extend({
 
             // Not connected at all
             if (!this.isConnected) {
-                return;
+                return
             }
 
             const initProvider = async function () {
@@ -1030,7 +1038,7 @@ export default Vue.extend({
 
                 // Connected, but not to ION Web
                 if (!this.provider.ionweb) {
-                    return;
+                    return
                 }
 
                 let account: string
@@ -1056,10 +1064,9 @@ export default Vue.extend({
                 // Set the input amount to the fetched balance
                 this.amount = tonBalance
             } else {
-
                 // Connected, but not to ICE v1
                 if (!this.provider.ice1Contract) {
-                    return;
+                    return
                 }
 
                 // Fetch ICE balance and decimals
@@ -1947,7 +1954,7 @@ h1 {
     font-size: 13px;
 }
 
-@media only screen and (max-width:768px) {
+@media only screen and (max-width: 768px) {
     .menu {
         z-index: 1;
         position: relative;
@@ -1963,11 +1970,21 @@ h1 {
         flex-wrap: wrap;
         padding: 16px;
     }
+
     .menu .tabs {
         display: none;
     }
 
-    .menu img.logo, .connect-wallet-container, .Bridge-form, .form-group-1, .form-group-2, .form-group-3, h1, .Bridge-pairFee, .Bridge-bridgeFee, .description-form {
+    .menu img.logo,
+    .connect-wallet-container,
+    .Bridge-form,
+    .form-group-1,
+    .form-group-2,
+    .form-group-3,
+    h1,
+    .Bridge-pairFee,
+    .Bridge-bridgeFee,
+    .description-form {
         position: relative;
         top: 0;
         left: 0;
@@ -1996,12 +2013,14 @@ h1 {
         padding: 16px;
     }
 
-    .Bridge-pairFee, .Bridge-bridgeFee {
+    .Bridge-pairFee,
+    .Bridge-bridgeFee {
         width: 100%;
         margin-bottom: 12px;
     }
 
-    .input-field, .form-group {
+    .input-field,
+    .form-group {
         width: 100%;
     }
 
@@ -2017,19 +2036,16 @@ h1 {
         margin: 16px 0 24px;
     }
 
-
     .menu img.logo {
         position: relative;
         left: auto;
         top: auto;
         height: 60px;
-        background: #FFFFFF;
+        background: #ffffff;
         width: 100%;
         padding: 15px 0;
         border-radius: 20px;
         margin-bottom: 30px;
     }
-
 }
-
 </style>
