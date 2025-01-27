@@ -68,6 +68,7 @@ import IonWeb from 'ionweb';
 import WTON from '~/assets/WTON.json';
 import IONBridgeRouter from '~/assets/IONBridgeRouter.json';
 import ERC20 from '~/assets/ERC20.json';
+import IONSwap from '~/assets/IONSwap.json';
 import {ethers} from "ethers";
 import {Contract} from 'web3-eth-contract';
 import {AbiItem} from 'web3-utils';
@@ -120,6 +121,7 @@ declare interface IProvider {
     wtonContract: Contract,
     ionBridgeRouter: Contract,
     ice1Contract: Contract,
+    ionSwap: Contract,
     web3: Web3,
     ionweb: IonWeb,
     feeFlat: typeof BN,
@@ -384,6 +386,36 @@ export default Vue.extend({
     },
 
     methods: {
+        async validateSwapLiquidity(amount: number): Promise<boolean> {
+            if (!this.provider) {
+                this.provider = await this.initProvider();
+                if (!this.provider) {
+                    return false;
+                }
+            }
+
+            if (this.isFromTon) {
+                // Check ICE1 balance when swapping from TON
+                const ice1Balance = await this.provider.ice1Contract.methods
+                    .balanceOf(this.provider.ionSwap.options.address)
+                    .call();
+                const ice1BalanceBN = new BN(ice1Balance);
+
+                console.log('ICE1 liquidity on swap:', ice1BalanceBN.toString());
+                const amountInWei = new BN(Web3.utils.toWei(amount.toString(), 'ether')); // Convert amount to Wei
+                return amountInWei.lte(ice1BalanceBN); // Check if amount <= liquidity
+            } else {
+                // Check WTON balance when swapping to TON
+                const wtonBalance = await this.provider.wtonContract.methods
+                    .balanceOf(this.provider.ionSwap.options.address)
+                    .call();
+                const wtonBalanceBN = new BN(wtonBalance);
+
+                console.log('WTON liquidity on swap:', wtonBalanceBN.toString());
+                const amountInGwei = new BN(amount.toString()).mul(new BN('1000000000')); // 10^9
+                return amountInGwei.lte(wtonBalanceBN); // Check if amount <= liquidity
+            }
+        },
         // Clear any existing timeout first
         unScheduleReset() {
             if (this.alertTimeout) {
@@ -976,6 +1008,19 @@ export default Vue.extend({
                 const wtonContract = new web3.eth.Contract(WTON as AbiItem[], this.params.wTonAddress);
                 const ionBridgeRouter = new web3.eth.Contract(IONBridgeRouter as AbiItem[], this.params.ionBridgeRouterAddress);
                 const ice1Contract = new web3.eth.Contract(ERC20 as AbiItem[], this.params.ice1TokenAddress);
+
+                // Retrieve the IONSwap address dynamically
+                let ionSwapAddress;
+                try {
+                    ionSwapAddress = await ionBridgeRouter.methods.ionSwap().call();
+                    console.log('IONSwap address:', ionSwapAddress);
+                } catch (error) {
+                    console.error('Failed to retrieve IONSwap address:', error);
+                    return null;
+                }
+
+                const ionSwap = new web3.eth.Contract(IONSwap as AbiItem[], ionSwapAddress);
+
                 const oraclesTotal = (await wtonContract.methods.getFullOracleSet().call()).length;
 
                 if (!(oraclesTotal > 0)) {
@@ -1020,6 +1065,7 @@ export default Vue.extend({
                     ionBridgeRouter,
                     ice1Contract,
                     ionweb,
+                    ionSwap,
                     oraclesTotal,
                     feeFlat: feeFlat.add(feeNetwork),
                     feeFactor,

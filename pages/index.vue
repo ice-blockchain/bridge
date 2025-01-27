@@ -78,7 +78,7 @@
                             'form-group': true,
                             'form-group-1': true,
                             'insufficient-balance':
-                                !hasEnoughICE || !amountInnerBigEnough,
+                                !isLiquidityEnough || !hasEnoughICE || !amountInnerBigEnough,
                         }"
                     >
                         <div class="input-field" @click="onAmountInputClicked">
@@ -113,7 +113,9 @@
                                 >
                                 <span class="alert">{{
                                     amountInnerBigEnough
-                                        ? 'Insufficient ICE balance'
+                                        ? (!isLiquidityEnough
+                                            ? (isFromTon ? 'Insufficient ICE v1 liquidity' : 'Insufficient ICE v2 liquidity')
+                                            : 'Insufficient ICE balance')
                                         : 'Minimum amount is 10 ICE'
                                 }}</span>
                                 <thousands-number-input
@@ -244,7 +246,7 @@
                         :is-from-ton="isFromTon"
                         :pair="pair"
                         :amount="amount"
-                        :has-enough-ice="this.hasEnoughICE"
+                        :has-enough-ice="this.hasEnoughICE && this.isLiquidityEnough"
                         :is-connected="this.isConnected"
                         :to-address="toAddress"
                         @interface-blocked="onInterfaceBlocked"
@@ -399,6 +401,7 @@ declare interface IComponentData {
     isConnected: boolean
     isDisconnectMenuVisible: boolean
     hasEnoughICE: boolean
+    isLiquidityEnough: boolean
 
     accountAddress: string
 
@@ -444,6 +447,7 @@ export default Vue.extend({
             isConnected: false,
             isDisconnectMenuVisible: false,
             hasEnoughICE: true,
+            isLiquidityEnough: true,
 
             accountAddress: '',
 
@@ -557,6 +561,14 @@ export default Vue.extend({
     },
 
     watch: {
+        amount: {
+            async handler(newVal) {
+                if (newVal) {
+                    this.isLiquidityEnough = await this.checkLiquidity(newVal);
+                    console.log(`this.isLiquidityEnough ${this.isLiquidityEnough}`);
+                }
+            }
+        },
         isFromTon() {
             this.getPairGasFee__debounced()
         },
@@ -616,6 +628,12 @@ export default Vue.extend({
     },
 
     methods: {
+        async checkLiquidity(amount: number) {
+            if (this.$refs.bridgeProcessor) {
+                return await (this.$refs.bridgeProcessor as any).validateSwapLiquidity(amount);
+            }
+            return true;
+        },
         // Toggle between display mode and editing mode
         toggleAddressEditing(isEditing: boolean) {
             if (!this.toAddress.trim()) {
