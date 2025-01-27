@@ -1281,7 +1281,7 @@ export default Vue.extend({
 /* Disabled state styling for the Swap button */
 .transfer-button:disabled {
     background-color: #cccccc; /* Noticeably gray */
-    color: #666666; /* Dark gray text */
+    color: white;
     cursor: not-allowed;
 }
 
