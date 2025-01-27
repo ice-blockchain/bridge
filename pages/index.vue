@@ -882,29 +882,35 @@ export default Vue.extend({
                 return
             }
 
-            const raw = localStorage.getItem('bridgeState')
+            // Loading state is not relevant to the expected oracles design and also does not work as expected
+            // in the current version of the code.
+            //
+            // Still, this code may be kept to be used later.
+            //
 
-            if (raw) {
-                let state: any
-                try {
-                    state = JSON.parse(raw)
-                } catch (e) {
-                    return
-                }
+            // const raw = localStorage.getItem('bridgeState')
 
-                // for previous version
-                if (!state.pair) {
-                    return
-                }
+            // if (raw) {
+            //     let state: any
+            //     try {
+            //         state = JSON.parse(raw)
+            //     } catch (e) {
+            //         return
+            //     }
 
-                this.amount = state.amount
-                this.toAddress = state.toAddress
-                this.pair = state.pair
+            //     // for previous version
+            //     if (!state.pair) {
+            //         return
+            //     }
 
-                this.$nextTick(() => {
-                    this.$refs.bridgeProcessor.loadState(state.processingState)
-                })
-            }
+            //     this.amount = state.amount
+            //     this.toAddress = state.toAddress
+            //     this.pair = state.pair
+
+            //     this.$nextTick(() => {
+            //         this.$refs.bridgeProcessor.loadState(state.processingState)
+            //     })
+            // }
         },
         saveState(processingState: any): void {
             if (!supportsLocalStorage) {
