@@ -408,6 +408,8 @@ declare interface IComponentData {
     provider: any
 
     isEditingAddress: boolean
+
+    feeFactor: number
 }
 
 export default Vue.extend({
@@ -452,6 +454,8 @@ export default Vue.extend({
             accountAddress: '',
 
             isEditingAddress: true, // Address input is editable by default
+
+            feeFactor: 0
         }
     },
 
@@ -542,13 +546,15 @@ export default Vue.extend({
         bridgeFee(): string {
             if (!isNaN(this.amount) && this.amount >= 10) {
                 return String(this.bridgeFeeNumeric) + ' ICE'
+            } else if (0 < this.feeFactor) {
+                return `0.5 ICE + ${this.feeFactor}% of amount`
             } else {
-                return '0.5 ICE + 0.25% of amount'
+                return `0.5 ICE`
             }
         },
         bridgeFeeNumeric(): number {
             if (!isNaN(this.amount) && this.amount >= 10) {
-                return 0.5 + ((this.amount - 0.5) * 0.25) / 100
+                return 0.5 + ((this.amount - 0.5) * this.feeFactor) / 100
             }
             return 0
         },
@@ -565,7 +571,6 @@ export default Vue.extend({
             async handler(newVal) {
                 if (newVal) {
                     this.isLiquidityEnough = await this.checkLiquidity(newVal);
-                    console.log(`this.isLiquidityEnough ${this.isLiquidityEnough}`);
                 }
             }
         },
@@ -755,6 +760,20 @@ export default Vue.extend({
                     this.hasEnoughICE = enough
                 }
             )
+
+            setTimeout(() => {
+                // Get the fee-factor from the bridge contract
+                try {
+                    const processor = this.$refs.bridgeProcessor;
+                    if (processor?.provider?.feeFactor) {
+                        this.feeFactor = processor.provider.feeFactor;
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch feeFactor", e);
+                } finally {
+                    console.log(`Fee factor: ${this.feeFactor}`);
+                }
+            }, 1500);
         },
         openSwap() {
             document.location.href = this.params.swapUri
