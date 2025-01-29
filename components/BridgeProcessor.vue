@@ -996,11 +996,12 @@ export default Vue.extend({
 
                 ethereum.addListener('accountsChanged', this.onAccountChanged);
 
-                if (Number(ethereum.chainId) !== this.params.chainId) {
+                let chainId = (await ethereum.send('eth_chainId')).result;
+                if (Number(chainId) !== this.params.chainId) {
                     const error = (this.$t('Bridge.errors.wrongMetamaskNetwork') as string)
                         .replace('<NETWORK>', this.$t(`Bridge.networks.${this.pair}.${this.netTypeName}.full`) as string)
                     alert(error);
-                    alert(`${ethereum.chainId} ? ${this.params.chainId} ;)`);
+                    alert(`${chainId} ? ${this.params.chainId} ;)`);
                     return null;
                 }
 
