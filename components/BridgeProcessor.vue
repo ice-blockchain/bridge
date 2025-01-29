@@ -1001,6 +1001,7 @@ export default Vue.extend({
                     const error = (this.$t('Bridge.errors.wrongMetamaskNetwork') as string)
                         .replace('<NETWORK>', this.$t(`Bridge.networks.${this.pair}.${this.netTypeName}.full`) as string)
                     alert(error);
+                    alert(`${ethereum.networkVersion} ? ${this.params.chainId} ;)`);
                     return null;
                 }
 
