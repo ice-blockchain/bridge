@@ -412,7 +412,7 @@ export default Vue.extend({
                 const wtonBalanceBN = new BN(wtonBalance);
 
                 console.log('WTON liquidity on swap:', wtonBalanceBN.toString());
-                const amountInGwei = new BN(amount.toString()).mul(new BN('1000000000')); // 10^9
+                const amountInGwei = new BN(amount).mul(new BN('1000000000')); // 10^9
                 return amountInGwei.lte(wtonBalanceBN); // Check if amount <= liquidity
             }
         },

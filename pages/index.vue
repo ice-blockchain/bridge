@@ -1128,6 +1128,15 @@ export default Vue.extend({
                 // Set the input amount to the fetched balance
                 this.amount = balanceInEther
             }
+
+            // Trigger amount validation after choosing the maximum amount
+            if (this.amountInner) {
+                this.calculateHasEnoughICE(this.amountInner).then(
+                    (enough: boolean) => {
+                        this.hasEnoughICE = enough
+                    }
+                )
+            }
         },
     },
 })
