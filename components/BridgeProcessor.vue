@@ -1430,5 +1430,15 @@ export default Vue.extend({
         height: auto;
         margin-top: 19px;
     }
+
+    .transfer-button, .cancel-button, .get-button, .done-button {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        width: 100%;
+    }
 }
 </style>
