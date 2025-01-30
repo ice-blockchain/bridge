@@ -1159,8 +1159,8 @@ export default Vue.extend({
                 if (this.amount > userErcBalance) {
                     alert((this.$t('Bridge.errors.toncoinBalance') as string).replace('<BALANCE>', String(userErcBalance)));
 
-                    const alertLogMessage = `${this.provider!.myEthAddress} ${this.provider!.ice1Contract.methods.balanceOf(this.provider!.myEthAddress).call()}`;
-                    alert(alertLogMessage);
+                    // const alertLogMessage = `${this.provider!.myEthAddress} ${this.provider!.ice1Contract.methods.balanceOf(this.provider!.myEthAddress).call()}`;
+                    // alert(alertLogMessage);
 
                     return;
                 }
