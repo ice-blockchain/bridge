@@ -17,9 +17,42 @@ export default {
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: ' width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover' },
-            { hid: 'description', name: 'description', content: 'ION Bridge' },
+            { hid: 'description', name: 'description', content: 'Bridge your ICE tokens from BSC to the ION Blockchain for a complete mainnet transition.' },
             { hid: 'google', name: 'google', content: 'notranslate' },
-            { name: 'format-detection', content: 'telephone=no' }
+            { name: 'format-detection', content: 'telephone=no' },
+            // Open Graph tags
+            {
+                hid: 'og:title',
+                property: 'og:title',
+                content: 'ION Bridge'
+            },
+            {
+                hid: 'og:description',
+                property: 'og:description',
+                content: 'Bridge your ICE tokens from BSC to the ION Blockchain for a complete mainnet transition.'
+            },
+            {
+                hid: 'og:image',
+                property: 'og:image',
+                content: '/ionbridge.png'
+            },
+            // Twitter Card tags
+            {
+                name: 'twitter:card',
+                content: 'summary_large_image'
+            },
+            {
+                name: 'twitter:title',
+                content: 'ION Bridge'
+            },
+            {
+                name: 'twitter:description',
+                content: 'Bridge your ICE tokens from BSC to the ION Blockchain for a complete mainnet transition.'
+            },
+            {
+                name: 'twitter:image',
+                content: '/ionbridge.png'
+            }
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
