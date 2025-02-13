@@ -33,7 +33,7 @@ export const PARAMS: IParams = {
                 "coinsPerGweiTo": 0.0008,
                 "coinsPerGweiFrom": 0.0002,
                 "swapUri": "https://swap.staging.ice.io",
-                "ionBridgeRouterAddress": "0x83ba759f5a64A0fd22DEa3359ec05DFB69f7a8F3",
+                "ionBridgeRouterAddress": "0x4A4DF9b7f529DC9c88c4b21f55aAe1a806eEfE4c",
                 "ice1TokenAddress": "0x2A0864a15a63AC237a46405CCd6aD7Fa0513050D"
             }
         }
