@@ -145,6 +145,7 @@ declare interface IComponentData {
     newBlockHeadersSubscription: any,
     updateStateInterval: null | ReturnType<typeof setInterval>,
     provider: IProvider | null,
+    binanceProvider: any,
     state: IState,
     ethToTon: IEthToTon | null,
     alertTimeout: number,
@@ -207,6 +208,7 @@ export default Vue.extend({
             newBlockHeadersSubscription: null,
             updateStateInterval: null,
             provider: null,
+            binanceProvider: null,
             ethToTon: null,
             alertTimeout: 0,
 
@@ -387,31 +389,28 @@ export default Vue.extend({
 
     methods: {
         async validateSwapLiquidity(amount: number): Promise<boolean> {
-            if (!this.provider) {
-                this.provider = await this.initProvider();
-                if (!this.provider) {
-                    return false;
-                }
+            if (!this.binanceProvider) {
+                this.binanceProvider = await this.initializeBinanceProvider();
             }
 
             if (this.isFromTon) {
                 // Check ICE1 balance when swapping from TON
-                const ice1Balance = await this.provider.ice1Contract.methods
-                    .balanceOf(this.provider.ionSwap.options.address)
+                const ice1Balance = await this.binanceProvider.ice1Contract.methods
+                    .balanceOf(this.binanceProvider.ionSwap.options.address)
                     .call();
                 const ice1BalanceBN = new BN(ice1Balance);
 
-                console.log('ICE1 liquidity on swap:', ice1BalanceBN.toString());
+                console.log('ICE v1 liquidity on swap:', ice1BalanceBN.toString());
                 const amountInWei = new BN(Web3.utils.toWei(amount.toString(), 'ether')); // Convert amount to Wei
                 return amountInWei.lte(ice1BalanceBN); // Check if amount <= liquidity
             } else {
                 // Check WTON balance when swapping to TON
-                const wtonBalance = await this.provider.wtonContract.methods
-                    .balanceOf(this.provider.ionSwap.options.address)
+                const wtonBalance = await this.binanceProvider.wtonContract.methods
+                    .balanceOf(this.binanceProvider.ionSwap.options.address)
                     .call();
                 const wtonBalanceBN = new BN(wtonBalance);
 
-                console.log('WTON liquidity on swap:', wtonBalanceBN.toString());
+                console.log('ICE v2 liquidity on swap:', wtonBalanceBN.toString());
                 const amountInGwei = new BN(amount).mul(new BN('1000000000')); // 10^9
                 return amountInGwei.lte(wtonBalanceBN); // Check if amount <= liquidity
             }
@@ -1075,6 +1074,57 @@ export default Vue.extend({
 
                 return res;
             }
+        },
+        async initializeBinanceProvider(): Promise<any> {
+            // 1. Choose the BSC node (mainnet or testnet).
+            const bscRpcUrl = this.isTestnet
+                ? 'https://data-seed-prebsc-1-s1.binance.org:8545/'
+                : 'https://bsc-dataseed.binance.org/';
+
+            // 2. Create a Web3 instance pointing to that node.
+            const web3 = new Web3(new Web3.providers.HttpProvider(bscRpcUrl));
+
+            // 3. Create only the BSC-based contracts you actually need.
+            //    Example: WTON & ICE1
+            const wtonContract = new web3.eth.Contract(
+                WTON as AbiItem[],
+                this.params.wTonAddress // your BSC WTON address
+            );
+            const ice1Contract = new web3.eth.Contract(
+                ERC20 as AbiItem[],
+                this.params.ice1TokenAddress // your BSC ICE1 address
+            );
+
+            const ionBridgeRouter = new web3.eth.Contract(
+                IONBridgeRouter as AbiItem[],
+                this.params.ionBridgeRouterAddress // BSC router address
+            );
+
+            // If you need the dynamically retrieved IonSwap address, you can do so:
+            let ionSwapAddress: string;
+            try {
+                ionSwapAddress = await ionBridgeRouter.methods.ionSwap().call();
+                console.log('IONSwap address (BSC):', ionSwapAddress);
+            } catch (error) {
+                console.error('Failed to retrieve BSC IONSwap address:', error);
+                // Return an empty object or handle the error as needed
+                ionSwapAddress = '0x0000000000000000000000000000000000000000';
+            }
+
+            const ionSwap = new web3.eth.Contract(
+                IONSwap as AbiItem[],
+                ionSwapAddress
+            );
+
+            // 4. Return an IProvider object. Notice all irrelevant fields set to undefined or 0:
+            return {
+                // BSC-only contracts:
+                wtonContract,
+                ice1Contract,
+                // We do still return web3 for reading from BSC:
+                web3,
+                ionSwap
+            };
         },
         async onTransactClick(): Promise<void> {
 

@@ -16,7 +16,7 @@ export const PARAMS: IParams = {
                 "coinsPerGweiTo": 0.0008,
                 "coinsPerGweiFrom": 0.0002,
                 "swapUri": "https://swap.ice.io",
-                "ionBridgeRouterAddress": "0x227002f9042ce429e9055189A2a41e9D8D69D9Be",
+                "ionBridgeRouterAddress": "0xd62148F4c8269DA6BF7E3C2d3A0E0363C924590E",
                 "ice1TokenAddress": "0xc335Df7C25b72eEC661d5Aa32a7c2B7b2a1D1874"
             },
             "test": {
