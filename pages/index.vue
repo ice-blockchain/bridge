@@ -1104,8 +1104,12 @@ export default Vue.extend({
                 const tonBalance = parseFloat(info.balance) / 1e9
                 console.log(`Current TON balance: ${tonBalance} ION`)
 
+                // Calculate the allowed transfer balance
+                const transferableBalance = tonBalance - 0.003; // Fee taken from the current experimental transaction
+                console.log(`Current transferable balance: ${transferableBalance} ION`);
+
                 // Set the input amount to the fetched balance
-                this.amount = tonBalance
+                this.amount = transferableBalance
             } else {
                 // Connected, but not to ICE v1
                 if (!this.provider.ice1Contract) {
