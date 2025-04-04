@@ -380,6 +380,11 @@ declare global {
     }
 }
 
+function toNonBounceable(addressString: string) {
+    const address = new IonWeb.Address(addressString)
+    return address.toString(true, true, false, false)
+}
+
 declare interface IComponentData {
     getPairGasFee__debounced: () => void
     gasPrice: number
@@ -797,7 +802,8 @@ export default Vue.extend({
                         this.isConnected = true
 
                         // You might want to store the connected account
-                        const account = accounts[0]
+                        let account = accounts[0]
+                        account = toNonBounceable(account)
                         console.log(
                             'Connected to ION Wallet with account:',
                             account
