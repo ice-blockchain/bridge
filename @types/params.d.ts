@@ -14,13 +14,14 @@ interface IParamsNetwork {
     swapUri: string
     ionBridgeRouterAddress: string
     ice1TokenAddress: string
+    stakeUri: string
 }
 
 interface IParams {
-    tonTransferUrl: string
+    tonTransferUrl: string,
     networks: {
         [key: string]: {
-            main: IParamsNetwork
+            main: IParamsNetwork,
             test: IParamsNetwork
         }
     }

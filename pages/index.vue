@@ -12,6 +12,15 @@
                 />
 
                 <div class="tabs">
+                    <button class="swap-tab" @click="openStaking()">
+                        <img
+                            src="~assets/pics/stack-icon.svg"
+                            class="meme-icon-blue"
+                            alt="Stake"
+                        />
+                        Staking
+                    </button>
+
                     <button class="swap-tab" @click="openSwap()">
                         <img
                             src="~assets/pics/meme-markers.svg"
@@ -783,6 +792,9 @@ export default Vue.extend({
         openSwap() {
             document.location.href = this.params.swapUri
         },
+        openStaking() {
+            document.location.href = this.params.stakeUri
+        },
         async connectWallet() {
             if (this.isFromTon) {
                 // Check if ION Wallet is installed
@@ -1487,9 +1499,10 @@ export default Vue.extend({
     gap: 12px;
 
     position: absolute;
-    width: 268px;
+    width: auto;
     height: 48px;
-    left: calc(50% - 268px / 2);
+    left: 50%;
+    transform: translateX(-50%);
     top: calc(50% - 48px / 2);
 }
 
