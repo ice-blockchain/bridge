@@ -4,6 +4,7 @@
         type="text"
         :value="displayValue"
         @input="handleChange"
+        @blur="onBlur($event)"
         @keypress="allowOnlyNumeric($event)"
         :readOnly="readOnly"
         :disabled="disabled"
@@ -58,6 +59,9 @@ export default {
         // Directly call `focus` on the component's input element
         focus() {
             this.$el.focus();
+        },
+        onBlur(event) {
+            this.$emit('onBlur', event)
         },
         allowOnlyNumeric(event) {
             const char = String.fromCharCode(event.which)

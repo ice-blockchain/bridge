@@ -18,7 +18,7 @@ export const PARAMS: IParams = {
                 "swapUri": "https://swap.ice.io",
                 "ionBridgeRouterAddress": "0xd62148F4c8269DA6BF7E3C2d3A0E0363C924590E",
                 "ice1TokenAddress": "0xc335Df7C25b72eEC661d5Aa32a7c2B7b2a1D1874",
-                "stakeUri": "https://stake.staging.ice.io"
+                "stakeUri": "https://stake.ice.io/"
             },
             "test": {
                 "getGasUrl": "https://gbsc.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle",
@@ -36,7 +36,7 @@ export const PARAMS: IParams = {
                 "swapUri": "https://swap.staging.ice.io",
                 "ionBridgeRouterAddress": "0x4A4DF9b7f529DC9c88c4b21f55aAe1a806eEfE4c",
                 "ice1TokenAddress": "0x2A0864a15a63AC237a46405CCd6aD7Fa0513050D",
-                "stakeUri": "https://stake.staging.ice.io"
+                "stakeUri": "https://stake.ice.io/"
             }
         }
     }

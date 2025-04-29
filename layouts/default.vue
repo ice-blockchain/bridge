@@ -34,7 +34,7 @@ export default Vue.extend({
                 {
                     // Include the `Noto Sans` font
                     rel: 'stylesheet',
-                    href: 'https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap',
+                    href: 'https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap',
                 },
             ],
         }

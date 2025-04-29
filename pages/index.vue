@@ -12,6 +12,14 @@
                 />
 
                 <div class="tabs">
+                    <button class="bridge-tab">
+                        <img
+                            src="~assets/pics/bridge-icon.svg"
+                            class="bridge-icon-gray"
+                            alt="Bridge"
+                        />
+                        Bridge
+                    </button>
                     <button class="swap-tab" @click="openStaking()">
                         <img
                             src="~assets/pics/stack-icon.svg"
@@ -21,23 +29,6 @@
                         Staking
                     </button>
 
-                    <button class="swap-tab" @click="openSwap()">
-                        <img
-                            src="~assets/pics/meme-markers.svg"
-                            class="meme-icon-blue"
-                            alt="Swap"
-                        />
-                        Swap
-                    </button>
-
-                    <button class="bridge-tab">
-                        <img
-                            src="~assets/pics/bridge-icon.svg"
-                            class="bridge-icon-gray"
-                            alt="Bridge"
-                        />
-                        Bridge
-                    </button>
                 </div>
 
                 <div class="connect-wallet-container">
@@ -133,6 +124,7 @@
                                     :read-only="isInterfaceBlocked"
                                     :disabled="isInterfaceBlocked"
                                     @change="onAmountChange"
+                                    @onBlur="onBlur"
                                     :visible="isAmountInputVisible"
                                     class="amount-input"
                                 />
@@ -758,6 +750,11 @@ export default Vue.extend({
                 }
             })
         },
+        onBlur(event: Event) {
+            if(!(event.target as HTMLInputElement).value) {
+                this.isAmountInputVisible = false
+            }
+        },
         onAddressInputClicked() {
             this.isAddressInputVisible = true
             this.$nextTick(() => {
@@ -788,9 +785,6 @@ export default Vue.extend({
                     console.log(`Fee factor: ${this.feeFactor}`);
                 }
             }, 1500);
-        },
-        openSwap() {
-            document.location.href = this.params.swapUri
         },
         openStaking() {
             document.location.href = this.params.stakeUri
@@ -1462,11 +1456,12 @@ export default Vue.extend({
     box-sizing: border-box;
 
     position: relative;
-    width: 1392px;
+    max-width: 1392px;
+    width: 100%;
     height: 80px;
-    left: calc(50% - 1392px / 2);
+    left: 50%;
+    transform: translateX(-50%);
     top: 24px;
-
     background: #ffffff;
     box-shadow: 0 0 21px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
@@ -1507,7 +1502,6 @@ export default Vue.extend({
 }
 
 .menu .bridge-tab {
-    visibility: hidden;
     /* Auto layout */
     display: flex;
     flex-direction: row;
@@ -1525,7 +1519,6 @@ export default Vue.extend({
 
     /* Inside auto layout */
     flex: none;
-    order: 1;
     flex-grow: 0;
 
     font-family: 'Noto Sans', serif;
@@ -1547,7 +1540,6 @@ export default Vue.extend({
 }
 
 .menu .swap-tab {
-    visibility: hidden;
     /* Auto layout */
     display: flex;
     flex-direction: row;
@@ -1600,19 +1592,16 @@ export default Vue.extend({
     font-weight: 600;
     font-size: 15px;
     line-height: 20px;
-
     color: white;
     cursor: pointer;
-
     box-sizing: border-box;
-
     /* Auto layout */
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     padding: 12px 16px;
-    gap: 8px;
+    gap: 6px;
 
     width: 189px;
     height: 48px;
@@ -1709,7 +1698,8 @@ h1 {
 /* Container for the Connect Wallet button */
 .connect-wallet-container {
     position: absolute;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     right: 20px;
 }
 
