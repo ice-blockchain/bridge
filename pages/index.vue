@@ -2025,7 +2025,7 @@ h1 {
         position: relative;
         width: 100%;
         height: auto;
-        left: auto;
+        left: 50%;
         top: auto;
         background: transparent;
         box-shadow: none;
