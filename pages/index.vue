@@ -4,6 +4,9 @@
             <div class="Bridge-testnetWarning" v-if="isTestnet">
                 {{ $t('Bridge.testnet') }}
             </div>
+            <div class="Bridge-testnetWarning" v-if="isV2Swap">
+                Swapping for V2 ONLY
+            </div>
             <div class="menu">
                 <img
                     src="~assets/pics/ice-open-network-logo.svg"
@@ -241,6 +244,7 @@
                         ref="bridgeProcessor"
                         :key="pair"
                         :is-testnet="isTestnet"
+                        :is-v2-swap="isV2Swap"
                         :is-recover="isRecover"
                         :lt="lt"
                         :hash="hash"
@@ -391,6 +395,7 @@ declare interface IComponentData {
     gasPrice: number
 
     isTestnet: boolean
+    isV2Swap: boolean
     isRecover: boolean
     lt: number
     hash: string
@@ -439,6 +444,7 @@ export default Vue.extend({
             gasPrice: 0,
 
             isTestnet: false,
+            isV2Swap: false,
             isRecover: false,
             lt: 0,
             hash: '',
@@ -600,6 +606,15 @@ export default Vue.extend({
             this.isTestnet = hostname.includes('testnet')
         }
 
+        if (this.$route.query.isV2Swap) {
+            this.isV2Swap =
+                (this.$route.query.isV2Swap as string).toLowerCase() === 'true'
+        } else {
+            // Set the `testnet` flag based on the domain
+            const hostname = window.location.hostname
+            this.isV2Swap = hostname.includes('isV2Swap')
+        }
+
         if (this.$route.query.recover || this.$route.query.recovery) {
             this.isRecover = true
         }
@@ -640,6 +655,12 @@ export default Vue.extend({
 
     methods: {
         async checkLiquidity(amount: number) {
+
+            // Liquidity is always enough while doing the Just-V2 Swap.
+            if (this.isV2Swap) {
+                return true;
+            }
+
             if (this.$refs.bridgeProcessor) {
                 return await (this.$refs.bridgeProcessor as any).validateSwapLiquidity(amount);
             }

@@ -166,6 +166,10 @@ export default Vue.extend({
             type: Boolean,
             required: true
         },
+        isV2Swap: {
+          type: Boolean,
+          required: false
+        },
         isRecover: {
             type: Boolean,
             required: true
@@ -845,11 +849,20 @@ export default Vue.extend({
 
                 console.log('voteForMinting', JSON.stringify(this.state.swapData!), JSON.stringify(signatures));
 
-                receipt = await this.provider!.ionBridgeRouter.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
-                    .on('transactionHash', () => {
-                        this.state.toCurrencySent = true;
-                        this.deleteState();
-                    });
+                // Whether ICE v2 is swapped (directly) instead of ICE v1 (through the router)
+                if (this.isV2Swap) {
+                    receipt = await this.provider!.wtonContract.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
+                        .on('transactionHash', () => {
+                            this.state.toCurrencySent = true;
+                            this.deleteState();
+                        });
+                } else {
+                    receipt = await this.provider!.ionBridgeRouter.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
+                        .on('transactionHash', () => {
+                            this.state.toCurrencySent = true;
+                            this.deleteState();
+                        });
+                }
             } catch (e) {
                 console.error(e);
                 return;
