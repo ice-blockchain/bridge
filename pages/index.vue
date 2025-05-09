@@ -617,12 +617,12 @@ export default Vue.extend({
         }
 
         if (this.$route.query.isV2Swap) {
-            this.isV2Swap =
-                (this.$route.query.isV2Swap as string).toLowerCase() === 'true'
+            // this.isV2Swap =
+            //     (this.$route.query.isV2Swap as string).toLowerCase() === 'true'
         } else {
-            // Set the `testnet` flag based on the domain
-            const hostname = window.location.hostname
-            this.isV2Swap = hostname.includes('isV2Swap')
+            // // Set the `testnet` flag based on the domain
+            // const hostname = window.location.hostname
+            // this.isV2Swap = hostname.includes('isV2Swap')
         }
 
         if (this.$route.query.recover || this.$route.query.recovery) {

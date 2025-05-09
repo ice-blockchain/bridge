@@ -398,6 +398,12 @@ export default Vue.extend({
             }
 
             if (this.isFromTon) {
+
+                console.log('Will be minting ION on BSC');
+
+                return true;
+
+                /*
                 // Check ICE1 balance when swapping from TON
                 const ice1Balance = await this.binanceProvider.ice1Contract.methods
                     .balanceOf(this.binanceProvider.ionSwap.options.address)
@@ -407,6 +413,7 @@ export default Vue.extend({
                 console.log('ICE v1 liquidity on swap:', ice1BalanceBN.toString());
                 const amountInWei = new BN(Web3.utils.toWei(amount.toString(), 'ether')); // Convert amount to Wei
                 return amountInWei.lte(ice1BalanceBN); // Check if amount <= liquidity
+                 */
             } else {
                 // Check WTON balance when swapping to TON
                 const wtonBalance = await this.binanceProvider.wtonContract.methods
@@ -813,11 +820,17 @@ export default Vue.extend({
         async mint(): Promise<any> {
             let receipt;
             try {
+                let contractForAllowance = null;
+                if (this.isV2Swap) {
+                    contractForAllowance = this.provider!.wtonContract;
+                } else {
+                    contractForAllowance = this.provider!.ionBridgeRouter;
+                }
 
                 // First check and set allowance for WTON
                 const currentWTONAllowance = await this.provider!.wtonContract.methods.allowance(
                     this.provider!.myEthAddress,
-                    this.provider!.ionBridgeRouter.options.address
+                    contractForAllowance.options.address
                 ).call();
 
                 // Convert to amount to the right decimals (from 10^9 to 10^18)
@@ -826,7 +839,7 @@ export default Vue.extend({
                 if (new BN(currentWTONAllowance).lt(amountForApproval)) {
                     console.log('Requesting WTON token approval...');
                     const approvalReceipt = await this.provider!.wtonContract.methods.approve(
-                        this.provider!.ionBridgeRouter.options.address,
+                        contractForAllowance.options.address,
                         amountForApproval
                     ).send({ from: this.provider!.myEthAddress });
 
