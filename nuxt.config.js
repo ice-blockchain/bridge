@@ -17,7 +17,7 @@ export default {
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: ' width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover' },
-            { hid: 'description', name: 'description', content: 'Bridge your ICE tokens from BSC to the ION Blockchain for a complete mainnet transition.' },
+            { hid: 'description', name: 'description', content: 'Bridge your tokens from BSC to the ION Blockchain for a complete mainnet transition.' },
             { hid: 'google', name: 'google', content: 'notranslate' },
             { name: 'format-detection', content: 'telephone=no' },
             // Open Graph tags
@@ -29,7 +29,7 @@ export default {
             {
                 hid: 'og:description',
                 property: 'og:description',
-                content: 'Bridge your ICE tokens from BSC to the ION Blockchain for a complete mainnet transition.'
+                content: 'Bridge your tokens from BSC to the ION Blockchain for a complete mainnet transition.'
             },
             {
                 hid: 'og:image',
@@ -47,7 +47,7 @@ export default {
             },
             {
                 name: 'twitter:description',
-                content: 'Bridge your ICE tokens from BSC to the ION Blockchain for a complete mainnet transition.'
+                content: 'Bridge your tokens from BSC to the ION Blockchain for a complete mainnet transition.'
             },
             {
                 name: 'twitter:image',

@@ -4,7 +4,7 @@
             <div class="Bridge-testnetWarning" v-if="isTestnet">
                 {{ $t('Bridge.testnet') }}
             </div>
-            <div class="Bridge-testnetWarning" v-if="isV2Swap">
+            <div class="Bridge-testnetWarning" v-if="false">
                 Swapping for V2 ONLY
             </div>
             <div class="menu">
@@ -88,7 +88,7 @@
                             <img
                                 src="~assets/pics/binance-icon.svg"
                                 class="token"
-                                alt="ICE"
+                                alt=""
                                 :style="{
                                     display: !isFromTon ? 'inline' : 'none',
                                 }"
@@ -112,15 +112,15 @@
                                         normal: true,
                                         initial: !isAmountInputVisible,
                                     }"
-                                    >Enter ICE amount</span
+                                    >Enter {{firstName}} amount</span
                                 >
                                 <span class="alert">{{
-                                    amountInnerBigEnough
-                                        ? (!isLiquidityEnough
-                                            ? (isFromTon ? 'Insufficient ICE v1 liquidity' : 'Insufficient ICE v2 liquidity')
-                                            : 'Insufficient ICE balance')
-                                        : 'Minimum amount is 10 ICE'
-                                }}</span>
+                                        amountInnerBigEnough
+                                            ? (!isLiquidityEnough
+                                                ? (isFromTon ? `Insufficient ${firstName} liquidity` : `Insufficient ${secondName} liquidity`)
+                                                : `Insufficient ${firstName} balance`)
+                                            : `Minimum amount is 10 ${firstName}`
+                                    }}</span>
                                 <thousands-number-input
                                     ref="amountInput"
                                     :initial-value="amountInner"
@@ -149,7 +149,6 @@
                             <img
                                 src="~assets/pics/binance-icon.svg"
                                 class="token"
-                                alt="ICE"
                                 :style="{
                                     display: isFromTon ? 'inline' : 'none',
                                 }"
@@ -173,7 +172,7 @@
                                         normal: true,
                                         initial: !shouldShowResultingAmount,
                                     }"
-                                    >You receive ICE</span
+                                    >You receive {{secondName}}</span
                                 >
                                 <thousands-number-input
                                     :initial-value="amountInnerMinusFee"
@@ -348,10 +347,7 @@
                         />
                         <div>
                             <h2>How does it work?</h2>
-                            <span
-                                >Follow our simple guide on how to bridge ICE
-                                between Binance Smart Chain and ION Chain.</span
-                            >
+                            <span>Follow our simple guide on how to bridge between Binance Smart Chain and ION Chain.</span>
                         </div>
                     </div>
                 </a>
@@ -444,7 +440,7 @@ export default Vue.extend({
             gasPrice: 0,
 
             isTestnet: false,
-            isV2Swap: false,
+            isV2Swap: true,
             isRecover: false,
             lt: 0,
             hash: '',
@@ -472,6 +468,20 @@ export default Vue.extend({
     },
 
     computed: {
+        firstName() {
+            if (this.isFromTon) {
+                return "ION";
+            } else {
+                return "ICE";
+            }
+        },
+        secondName() {
+            if (this.isFromTon) {
+                return "ION";
+            } else {
+                return "ION";
+            }
+        },
         shouldShowResultingAmount() {
             const value = this.amountInner as String
             return value.trim() !== '' && Number(value.replace(/,/g, '')) > 0
@@ -557,11 +567,11 @@ export default Vue.extend({
         },
         bridgeFee(): string {
             if (!isNaN(this.amount) && this.amount >= 10) {
-                return String(this.bridgeFeeNumeric) + ' ICE'
+                return String(this.bridgeFeeNumeric) + ` ${this.secondName}`
             } else if (0 < this.feeFactor) {
-                return `0.5 ICE + ${this.feeFactor}% of amount`
+                return `0.5 ${this.secondName} + ${this.feeFactor}% of amount`
             } else {
-                return `0.5 ICE`
+                return `0.5 ${this.secondName}`
             }
         },
         bridgeFeeNumeric(): number {
@@ -788,7 +798,7 @@ export default Vue.extend({
             this.amountInner = formattedValue.replace(',', '')
             this.calculateHasEnoughICE(this.amountInner).then(
                 (enough: boolean) => {
-                    console.log('Has enough ICE', enough)
+                    console.log(`Has enough ${this.firstName}`, enough)
                     this.hasEnoughICE = enough
                 }
             )
@@ -1160,7 +1170,7 @@ export default Vue.extend({
                 // Convert the entered value to Wei (assuming 18 decimals)
                 const balanceInEther: number =
                     Number(rawBalance) / Math.pow(10, decimals)
-                console.log(`Current ICE balance: ${balanceInEther}`)
+                console.log(`Current ${this.firstName} balance: ${balanceInEther}`)
 
                 // Set the input amount to the fetched balance
                 this.amount = balanceInEther
