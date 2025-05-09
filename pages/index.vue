@@ -1390,7 +1390,7 @@ export default Vue.extend({
         box-sizing: border-box;
 
         /* Auto layout */
-        display: flex;
+        display: none;
         flex-direction: row;
         justify-content: center;
         align-items: center;
