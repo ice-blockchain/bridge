@@ -68,7 +68,72 @@ These are accessed via HTTPS (REST) or SDK wrappers like **IonWeb**.
 
 ---
 
-## 2. Direction A: BSC → ION
+## 1. Direction A: Wrapped ICE on BSC → ION
+
+1. The bridge, which is moving Wrapped ICE from the BSC Chain will produce appropriate amount of ION to a given wallet each time,
+when it detects that Wrapped ICE is burnt in the BSC blockchain.
+
+Burning Wrapped ICE is done by the following method:
+```solidity
+    function burn(uint256 amount, TonAddress memory addr) external {
+      require(allowBurn, "Burn is currently disabled");
+      _burn(msg.sender, amount);
+      emit SwapEthToTon(msg.sender, addr.workchain, addr.address_hash, amount);
+    }
+```
+
+2. The ION tokens will be received by the address, which is defined by the following structure:
+```solidity
+    struct TonAddress {
+        int8 workchain;
+        bytes32 address_hash;
+    }
+```
+
+3. Workchain for most transactions is 0.
+
+4. Address hash is calculated the following way:
+
+```javascript
+const addressTon = new IonWeb.utils.Address(toAddress);
+const wc = addressTon.wc;
+const hashPart = IonWeb.utils.bytesToHex(addressTon.hashPart);
+```
+
+5. One of the production versions of the contract is available here: 
+https://bscscan.com/address/0x1B31606fcb91BaE1DFFD646061f6dD6FB35D0Bb5#code
+
+6. The ABI is available by the same link.
+
+---
+
+## 2. Direction B: ION -> Wrapped ICE on BSC
+
+1. The bridge mints Wrapped ION tokens in the BSC network when it detects a particular transaction on the ION chain.
+
+2. To build such a transaction, need to do the following transfer to the ION Bridge smart contract on the ION side.
+
+```ts
+const provider = window.ion;
+
+const accounts = await provider.send("ion_requestAccounts");
+const from = accounts[0];
+
+const tx = await provider.send("ion_sendTransaction", {
+    from,
+    to: ION_BRIDGE_ADDRESS,
+    value: toNano(amount),
+    data: `swapTo#${evmAddress}`
+});
+```
+
+3. When oracles detect this transaction - the appropriate amount of Wrapped ION is minted in BSC.
+
+4. The ION bridge smart contract is deployed here: https://explorer.ice.io/address/Ef8PSnTugXPqSS9HgrEWdrU1yOoy2wH4qCaqsZhCaV2HSNz1
+
+---
+
+## 3. Direction C: Old ICE on BSC → ION
 
 (User sends tokens on BSC, receives on ION)
 
@@ -207,7 +272,7 @@ POST /runGetMethod
 
 ---
 
-## 3. Direction B: ION → BSC
+## 4. Direction D: ION → Old ICE on BSC
 
 (User sends tokens on ION, receives ERC-20 on BSC)
 
