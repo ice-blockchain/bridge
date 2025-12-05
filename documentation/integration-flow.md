@@ -127,9 +127,16 @@ const tx = await provider.send("ion_sendTransaction", {
 });
 ```
 
-3. When oracles detect this transaction - the appropriate amount of Wrapped ION is minted in BSC.
+3. When oracles detect this transaction - they start gathering signatures for this vote.
 
 4. The ION bridge smart contract is deployed here: https://explorer.ice.io/address/Ef8PSnTugXPqSS9HgrEWdrU1yOoy2wH4qCaqsZhCaV2HSNz1
+
+6. After oracles have collected enough signatures to do a mint - it is possible to call `voteForMinting` to finalize the mint.
+`voteForMinting` can be called by anyone - either the user or any oracle.
+Not it must be called by the user to save gas.
+
+7. `voteForMinting` is described here:
+   [./integration-vote-for-minting.md](integration-vote-for-minting.md).
 
 ---
 
@@ -320,6 +327,9 @@ Oracles:
 3. Produce signatures.
 4. Submit to BSC router: `voteForMinting(...)`.
 5. Router mints ERC-20 tokens to user.
+
+`voteForMinting` is described here:
+[./integration-vote-for-minting.md](integration-vote-for-minting.md).
 
 ### 3.5 Mobile → BSC: Detect Mint Completion
 
