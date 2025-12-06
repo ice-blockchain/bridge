@@ -68,11 +68,19 @@ These are accessed via HTTPS (REST) or SDK wrappers like **IonWeb**.
 
 ---
 
-## 2. Direction A: BSC → ION
+## 2. For existing $ICE (old BSC contract) holders
+We should call the swap contract and swap $ICE for $ION on BSC.
+
+This flow is described at: [./ice-wrapped-ice-swap-flow.md](./ice-wrapped-ice-swap-flow.md).
+
+## For $ION (new BSC contract + ION chain) holders
+The $ION holders will be able to swap between BSC and ION chain their ION tokens.
+
+## 3. Direction A: BSC → ION
 
 (User sends tokens on BSC, receives on ION)
 
-### 2.1 User Story
+### 3.1 User Story
 
 1. User has ERC-20 tokens on **BSC**.
 2. User wants equivalent value on **ION**.
@@ -87,7 +95,7 @@ These are accessed via HTTPS (REST) or SDK wrappers like **IonWeb**.
         3. Oracle voting & ION mint.
         4. Tokens received on ION.
 
-### 2.2 Parameters
+### 3.2 Parameters
 
 User inputs:
 
@@ -99,7 +107,7 @@ Mobile derives:
 * `workchain` (usually 0 or -1)
 * `address_hash` (256-bit ION address hash)
 
-### 2.3 Burning Tokens on BSC
+### 3.3 Burning Tokens on BSC
 
 **1. Connect wallet**
 
@@ -171,7 +179,7 @@ You store:
 * `address_hash`
 * `amount`
 
-### 2.4 Oracle Minting (Infra)
+### 3.4 Oracle Minting (Infra)
 
 Oracles:
 
@@ -180,7 +188,7 @@ Oracles:
 3. Submit votes to ION Collector.
 4. Once threshold reached, `IonBridge` mints tokens to the ION address.
 
-### 2.5 Mobile → ION: Detect Mint Completion
+### 3.5 Mobile → ION: Detect Mint Completion
 
 #### Strategy 1 — Scan recipient address
 
@@ -207,11 +215,11 @@ POST /runGetMethod
 
 ---
 
-## 3. Direction B: ION → BSC
+## 4. Direction B: ION → BSC
 
 (User sends tokens on ION, receives ERC-20 on BSC)
 
-### 3.1 User Story
+### 4.1 User Story
 
 1. User has tokens on **ION**.
 2. Wants equivalent ERC-20 on **BSC**.
@@ -221,14 +229,14 @@ POST /runGetMethod
     * Sends ION transfer to `IonBridge`.
     * Polls BSC for mint confirmation.
 
-### 3.2 ION → BSC Payload
+### 4.2 ION → BSC Payload
 
 Encoded payload contains:
 
 * EVM address
 * Amount
 
-### 3.3 Sending a Bridge Transaction on ION
+### 4.3 Sending a Bridge Transaction on ION
 
 Using TonConnect-style provider:
 
@@ -246,7 +254,7 @@ const tx = await provider.send("ion_sendTransaction", {
 });
 ```
 
-### 3.4 Oracle Logic (Infra)
+### 4.4 Oracle Logic (Infra)
 
 Oracles:
 
@@ -256,7 +264,7 @@ Oracles:
 4. Submit to BSC router: `voteForMinting(...)`.
 5. Router mints ERC-20 tokens to user.
 
-### 3.5 Mobile → BSC: Detect Mint Completion
+### 4.5 Mobile → BSC: Detect Mint Completion
 
 #### Poll balance:
 
@@ -276,7 +284,7 @@ const filter = {
 
 ---
 
-## 4. UI State Mapping
+## 5. UI State Mapping
 
 ### BSC → ION steps
 
@@ -296,7 +304,7 @@ const filter = {
 
 ---
 
-## 5. Errors & Edge Cases
+## 6. Errors & Edge Cases
 
 * **Wrong networks** – verify chainId and ION API base URL.
 * **Insufficient balance/allowance** – check before sending.
@@ -305,7 +313,7 @@ const filter = {
 
 ---
 
-## 6. Mobile Responsibilities Summary
+## 7. Mobile Responsibilities Summary
 
 ### Must perform:
 
