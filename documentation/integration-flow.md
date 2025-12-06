@@ -68,19 +68,83 @@ These are accessed via HTTPS (REST) or SDK wrappers like **IonWeb**.
 
 ---
 
-## 2. For existing $ICE (old BSC contract) holders
-We should call the swap contract and swap $ICE for $ION on BSC.
+## 1. Direction A: Wrapped ICE on BSC → ION
 
-This flow is described at: [./ice-wrapped-ice-swap-flow.md](./ice-wrapped-ice-swap-flow.md).
+1. The bridge, which is moving Wrapped ICE from the BSC Chain will produce appropriate amount of ION to a given wallet each time,
+when it detects that Wrapped ICE is burnt in the BSC blockchain.
 
-## For $ION (new BSC contract + ION chain) holders
-The $ION holders will be able to swap between BSC and ION chain their ION tokens.
+Burning Wrapped ICE is done by the following method:
+```solidity
+    function burn(uint256 amount, TonAddress memory addr) external {
+      require(allowBurn, "Burn is currently disabled");
+      _burn(msg.sender, amount);
+      emit SwapEthToTon(msg.sender, addr.workchain, addr.address_hash, amount);
+    }
+```
 
-## 3. Direction A: BSC → ION
+2. The ION tokens will be received by the address, which is defined by the following structure:
+```solidity
+    struct TonAddress {
+        int8 workchain;
+        bytes32 address_hash;
+    }
+```
+
+3. Workchain for most transactions is 0.
+
+4. Address hash is calculated the following way:
+
+```javascript
+const addressTon = new IonWeb.utils.Address(toAddress);
+const wc = addressTon.wc;
+const hashPart = IonWeb.utils.bytesToHex(addressTon.hashPart);
+```
+
+5. One of the production versions of the contract is available here: 
+https://bscscan.com/address/0x1B31606fcb91BaE1DFFD646061f6dD6FB35D0Bb5#code
+
+6. The ABI is available by the same link.
+
+---
+
+## 2. Direction B: ION -> Wrapped ICE on BSC
+
+1. The bridge mints Wrapped ION tokens in the BSC network when it detects a particular transaction on the ION chain.
+
+2. To build such a transaction, need to do the following transfer to the ION Bridge smart contract on the ION side.
+
+```ts
+const provider = window.ion;
+
+const accounts = await provider.send("ion_requestAccounts");
+const from = accounts[0];
+
+const tx = await provider.send("ion_sendTransaction", {
+    from,
+    to: ION_BRIDGE_ADDRESS,
+    value: toNano(amount),
+    data: `swapTo#${evmAddress}`
+});
+```
+
+3. When oracles detect this transaction - they start gathering signatures for this vote.
+
+4. The ION bridge smart contract is deployed here: https://explorer.ice.io/address/Ef8PSnTugXPqSS9HgrEWdrU1yOoy2wH4qCaqsZhCaV2HSNz1
+
+6. After oracles have collected enough signatures to do a mint - it is possible to call `voteForMinting` to finalize the mint.
+`voteForMinting` can be called by anyone - either the user or any oracle.
+Not it must be called by the user to save gas.
+
+7. `voteForMinting` is described here:
+   [./integration-vote-for-minting.md](integration-vote-for-minting.md).
+
+---
+
+## 3. Direction C: Old ICE on BSC → ION
 
 (User sends tokens on BSC, receives on ION)
 
-### 3.1 User Story
+### 2.1 User Story
 
 1. User has ERC-20 tokens on **BSC**.
 2. User wants equivalent value on **ION**.
@@ -95,7 +159,7 @@ The $ION holders will be able to swap between BSC and ION chain their ION tokens
         3. Oracle voting & ION mint.
         4. Tokens received on ION.
 
-### 3.2 Parameters
+### 2.2 Parameters
 
 User inputs:
 
@@ -107,7 +171,7 @@ Mobile derives:
 * `workchain` (usually 0 or -1)
 * `address_hash` (256-bit ION address hash)
 
-### 3.3 Burning Tokens on BSC
+### 2.3 Burning Tokens on BSC
 
 **1. Connect wallet**
 
@@ -179,7 +243,7 @@ You store:
 * `address_hash`
 * `amount`
 
-### 3.4 Oracle Minting (Infra)
+### 2.4 Oracle Minting (Infra)
 
 Oracles:
 
@@ -188,7 +252,7 @@ Oracles:
 3. Submit votes to ION Collector.
 4. Once threshold reached, `IonBridge` mints tokens to the ION address.
 
-### 3.5 Mobile → ION: Detect Mint Completion
+### 2.5 Mobile → ION: Detect Mint Completion
 
 #### Strategy 1 — Scan recipient address
 
@@ -215,11 +279,11 @@ POST /runGetMethod
 
 ---
 
-## 4. Direction B: ION → BSC
+## 4. Direction D: ION → Old ICE on BSC
 
 (User sends tokens on ION, receives ERC-20 on BSC)
 
-### 4.1 User Story
+### 3.1 User Story
 
 1. User has tokens on **ION**.
 2. Wants equivalent ERC-20 on **BSC**.
@@ -229,14 +293,14 @@ POST /runGetMethod
     * Sends ION transfer to `IonBridge`.
     * Polls BSC for mint confirmation.
 
-### 4.2 ION → BSC Payload
+### 3.2 ION → BSC Payload
 
 Encoded payload contains:
 
 * EVM address
 * Amount
 
-### 4.3 Sending a Bridge Transaction on ION
+### 3.3 Sending a Bridge Transaction on ION
 
 Using TonConnect-style provider:
 
@@ -254,7 +318,7 @@ const tx = await provider.send("ion_sendTransaction", {
 });
 ```
 
-### 4.4 Oracle Logic (Infra)
+### 3.4 Oracle Logic (Infra)
 
 Oracles:
 
@@ -264,7 +328,10 @@ Oracles:
 4. Submit to BSC router: `voteForMinting(...)`.
 5. Router mints ERC-20 tokens to user.
 
-### 4.5 Mobile → BSC: Detect Mint Completion
+`voteForMinting` is described here:
+[./integration-vote-for-minting.md](integration-vote-for-minting.md).
+
+### 3.5 Mobile → BSC: Detect Mint Completion
 
 #### Poll balance:
 
@@ -284,7 +351,7 @@ const filter = {
 
 ---
 
-## 5. UI State Mapping
+## 4. UI State Mapping
 
 ### BSC → ION steps
 
@@ -304,7 +371,7 @@ const filter = {
 
 ---
 
-## 6. Errors & Edge Cases
+## 5. Errors & Edge Cases
 
 * **Wrong networks** – verify chainId and ION API base URL.
 * **Insufficient balance/allowance** – check before sending.
@@ -313,7 +380,7 @@ const filter = {
 
 ---
 
-## 7. Mobile Responsibilities Summary
+## 6. Mobile Responsibilities Summary
 
 ### Must perform:
 
