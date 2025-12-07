@@ -6,14 +6,17 @@ This document describes how a **mobile application** should interact with the
 The code in the legacy Vue component is only a reference.
 Below is a clean, implementation-agnostic flow that developers can follow.
 
+ION = ION Chain Native Coin
+wION = ION BSC on mainnet the token ticker is the same as on our chain "ION", we are just refering to wION in this document so it's easier to understand the steps.
+
 ---
 
 ## 0. Roles & Components
 
 ### Chains
 
-* **BSC (EVM)** – where wrapped tokens live (WION / ICE / ION ERC-20 versions).
-* **ION** – native chain on which ION contracts and the ION bridge contract live (a fork of TON).
+* **BSC (EVM)** – where wrapped tokens live (wION ERC-20 version).
+* **ION** – native chain on which the ION bridge contract lives (a fork of TON).
 
 ### Core contracts (conceptual)
 
@@ -23,7 +26,7 @@ On **BSC**:
 
     * Accepts burns/locks of ERC-20 tokens to move value to ION (`burn(...)`).
     * Accepts oracle signatures to mint tokens when value comes from ION (`voteForMinting(...)`).
-* `WION` / `ICE` / `ION` – ERC-20 tokens on BSC.
+* `wION` – ERC-20 tokens on BSC.
 
 On **ION**:
 
@@ -33,7 +36,7 @@ On **ION**:
     * Emits outbound messages that oracles use to mint on BSC.
 * `Collector / Multisig` contracts – used by oracles to vote on external events (BSC tx, ION tx).
 
-> **Important:** From the **mobile app** point of view, oracle logic is backend infrastructure.
+> **Important:** From the **mobile app** point of view, oracle logic is backend infrastructure and does not need to call it in any way.
 > The mobile app interacts only with **RPC / API nodes** and polls states.
 
 ---
@@ -54,34 +57,27 @@ Examples:
 * Testnet: `https://data-seed-prebsc-1-s1.binance.org:8545/`
 * Mainnet: `https://bsc-dataseed.binance.org/`
 
-### ION API
+### API
 
-Depending on available API providers:
+* **ION Indexer API**
 
-* **IonCenter / ionapi / custom ION API**
+    * `addressInformation`
+    * `transactions`
+    * `runGetMethod`
 
-    * `getAddressInfo(address)`
-    * `getTransactions(address, limit, lt, hash, to_lt)`
-    * `runGetMethod(address, method, stack)`
-
-These are accessed via HTTPS (REST) or SDK wrappers like **IonWeb**.
+API Swagger -> https://api.mainnet.ice.io/indexer/v3/index.html
 
 ---
 
-## 2. For existing $ICE (old BSC contract) holders
-We should call the swap contract and swap $ICE for $ION on BSC.
-
-This flow is described at: [./ice-wrapped-ice-swap-flow.md](./ice-wrapped-ice-swap-flow.md).
 
 ## For $ION (new BSC contract + ION chain) holders
 The $ION holders will be able to swap between BSC and ION chain their ION tokens.
 
-## 3. Direction A: Wrapped ICE on BSC → ION
+## 3. Direction A: wION on BSC → ION
 
-1. The bridge, which is moving Wrapped ICE from the BSC Chain will produce appropriate amount of ION to a given wallet each time,
-when it detects that Wrapped ICE is burnt in the BSC blockchain.
+1. The bridge moves wION from BSC chain to ION by burning the BSC wION and unlocking on the ION on our native chain and send it to the given wallet address.
 
-Burning Wrapped ICE is done by the following method:
+Burning wION is done by the following method:
 ```solidity
     function burn(uint256 amount, TonAddress memory addr) external {
       require(allowBurn, "Burn is currently disabled");
@@ -109,15 +105,15 @@ const hashPart = IonWeb.utils.bytesToHex(addressTon.hashPart);
 ```
 
 5. One of the production versions of the contract is available here: 
-https://bscscan.com/address/0x1B31606fcb91BaE1DFFD646061f6dD6FB35D0Bb5#code
+https://bscscan.com/address/0x1B31606fcb91BaE1DFFD646061f6dD6FB35D0Bb5#code (we will be deploying fresh contracts for everything, please check with Iulian for the new ones)
 
 6. The ABI is available by the same link.
 
 ---
 
-## 4. Direction B: ION -> Wrapped ICE on BSC
+## 4. Direction B: ION -> wION on BSC
 
-1. The bridge mints Wrapped ION tokens in the BSC network when it detects a particular transaction on the ION chain.
+1. The bridge mints wION tokens in the BSC network when it detects a particular transaction on the ION chain.
 
 2. To build such a transaction, need to do the following transfer to the ION Bridge smart contract on the ION side.
 
@@ -137,7 +133,7 @@ const tx = await provider.send("ion_sendTransaction", {
 
 3. When oracles detect this transaction - they start gathering signatures for this vote.
 
-4. The ION bridge smart contract is deployed here: https://explorer.ice.io/address/Ef8PSnTugXPqSS9HgrEWdrU1yOoy2wH4qCaqsZhCaV2HSNz1
+4. The ION bridge smart contract is deployed here: https://explorer.ice.io/address/Ef8PSnTugXPqSS9HgrEWdrU1yOoy2wH4qCaqsZhCaV2HSNz1 (we will be deploying fresh contracts for everything, please check with Iulian for the new ones)
 
 6. After oracles have collected enough signatures to do a mint - it is possible to call `voteForMinting` to finalize the mint.
 `voteForMinting` can be called by anyone - either the user or any oracle.
@@ -147,6 +143,68 @@ Not it must be called by the user to save gas.
    [./integration-vote-for-minting.md](integration-vote-for-minting.md).
 
 ---
+
+## 7. UI State Mapping
+
+### BSC → ION steps
+
+1. BSC burn tx submitted
+2. BSC confirmations
+3. Oracle confirmations
+4. Mint detected on ION
+5. Done
+
+### ION → BSC steps
+
+1. ION tx submitted
+2. ION confirmations
+3. Oracle confirmations
+4. Mint detected on BSC
+5. Done
+
+---
+
+## 8. Errors & Edge Cases
+
+* **Wrong networks** – verify chainId and ION API base URL.
+* **Insufficient balance/allowance** – check before sending.
+* **Timeouts** — show “Bridge is slow” and persist state.
+* **Duplicate sends** — track by `(direction, txHash)`.
+
+---
+
+## 9. Mobile Responsibilities Summary
+
+### Must perform:
+
+**BSC → ION**
+
+1. Approve + burn on BSC
+2. Parse burn event
+3. Poll ION for mint
+
+**ION → BSC**
+
+1. Send ION bridge tx
+2. Poll BSC for mint
+
+### Does NOT perform:
+
+* Oracle work
+* Signature aggregation
+* Query ID logic (optional; backend may compute it)
+* Validator operations
+
+
+
+
+-------------------------------------------------------
+
+
+
+### NOT NEEDING ANYTHING FROM BELOW BUT KEEPING IT HERE AS DOCUMENTATION
+
+
 
 ## 5. Direction C: Old ICE on BSC → ION
 
@@ -356,57 +414,3 @@ const filter = {
     topics: [ethers.id("MintFromIon(address,uint256)")]
 };
 ```
-
----
-
-## 7. UI State Mapping
-
-### BSC → ION steps
-
-1. BSC burn tx submitted
-2. BSC confirmations
-3. Oracle confirmations
-4. Mint detected on ION
-5. Done
-
-### ION → BSC steps
-
-1. ION tx submitted
-2. ION confirmations
-3. Oracle confirmations
-4. Mint detected on BSC
-5. Done
-
----
-
-## 8. Errors & Edge Cases
-
-* **Wrong networks** – verify chainId and ION API base URL.
-* **Insufficient balance/allowance** – check before sending.
-* **Timeouts** — show “Bridge is slow” and persist state.
-* **Duplicate sends** — track by `(direction, txHash)`.
-
----
-
-## 9. Mobile Responsibilities Summary
-
-### Must perform:
-
-**BSC → ION**
-
-1. Approve + burn on BSC
-2. Parse burn event
-3. Poll ION for mint
-
-**ION → BSC**
-
-1. Send ION bridge tx
-2. Poll BSC for mint
-
-### Does NOT perform:
-
-* Oracle work
-* Signature aggregation
-* Query ID logic (optional; backend may compute it)
-* Validator operations
-
