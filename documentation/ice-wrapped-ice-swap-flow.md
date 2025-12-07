@@ -1,11 +1,11 @@
-## ICE v1 ↔ Wrapped ICE (wICE) Swap via `IONSwap`
+## ICE v1 ↔ ION Swap via `IONSwap`
 
 This section describes how the mobile client should interact with the on-chain
 `IONSwap` contract that migrates **old ICE** (e.g. ICE v1, 18 decimals) to
 **wrapped / new ION** (ION, 9 decimals) and back.
 
 From the user’s perspective, the **numeric token amount stays the same**  
-(e.g. “1000 ICE” → “1000 wICE”), while the contract internally adjusts
+(e.g. “1000 ICE” → “1000 ION”), while the contract internally adjusts
 for different decimals.
 
 ---
