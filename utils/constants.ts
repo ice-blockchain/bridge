@@ -5,7 +5,7 @@ export const PARAMS: IParams = {
             "main": {
                 "getGasUrl": "https://gbsc.blockscan.com/gasapi.ashx?apikey=key&method=gasoracle",
                 "explorerUrl": "https://bscscan.com/token/<ADDRESS>",
-                "wTonAddress": "0x3626237e21cEf5A7C88834575Bb6F670a0121011",
+                "wTonAddress": "0xE1ab61f7b093435204dF32F5b3A405de55445Ea8",
                 "tonBridgeAddress": "Ef8PSnTugXPqSS9HgrEWdrU1yOoy2wH4qCaqsZhCaV2HSNz1",
                 "tonCollectorAddress": "EQDlW12QNTNlGp-t4mGd8mvv3XrRWGRj73oWdBcQlJP_zpoB",
                 "tonMultisigAddress": "kf876m_BZ0VacBr51rlq51XStwkAYpqEiwAkkW50XWR__s6E",
@@ -16,7 +16,7 @@ export const PARAMS: IParams = {
                 "coinsPerGweiTo": 0.0008,
                 "coinsPerGweiFrom": 0.0002,
                 "swapUri": "https://swap.ice.io",
-                "ionBridgeRouterAddress": "0x6C0921d47af0e2606D7C0cb03749793370317a64",
+                "ionBridgeRouterAddress": "0xe6932317C95395F8Df2e5Aa367Be9707Cac893e4",
                 "ice1TokenAddress": "0xc335Df7C25b72eEC661d5Aa32a7c2B7b2a1D1874",
                 "stakeUri": "https://stake.ice.io/"
             },

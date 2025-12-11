@@ -168,7 +168,8 @@ export default Vue.extend({
         },
         isV2Swap: {
           type: Boolean,
-          required: false
+          required: false,
+          default: true
         },
         isRecover: {
             type: Boolean,

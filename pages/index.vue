@@ -391,7 +391,6 @@ declare interface IComponentData {
     gasPrice: number
 
     isTestnet: boolean
-    isV2Swap: boolean
     isRecover: boolean
     lt: number
     hash: string
@@ -440,7 +439,6 @@ export default Vue.extend({
             gasPrice: 0,
 
             isTestnet: false,
-            isV2Swap: true,
             isRecover: false,
             lt: 0,
             hash: '',
@@ -667,9 +665,7 @@ export default Vue.extend({
         async checkLiquidity(amount: number) {
 
             // Liquidity is always enough while doing the Just-V2 Swap.
-            if (this.isV2Swap) {
-                return true;
-            }
+            return true;
 
             if (this.$refs.bridgeProcessor) {
                 return await (this.$refs.bridgeProcessor as any).validateSwapLiquidity(amount);
@@ -1390,7 +1386,7 @@ export default Vue.extend({
         box-sizing: border-box;
 
         /* Auto layout */
-        display: none;
+        display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
