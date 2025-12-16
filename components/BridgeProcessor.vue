@@ -865,11 +865,14 @@ export default Vue.extend({
 
                 // Whether ICE v2 is swapped (directly) instead of ICE v1 (through the router)
                 if (this.isV2Swap) {
-                    receipt = await this.provider!.wtonContract.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
-                        .on('transactionHash', () => {
-                            this.state.toCurrencySent = true;
-                            this.deleteState();
-                        });
+                    receipt = await this.provider!.wtonContract.methods.finishedVotings(this.state.swapId!).call()
+                    if (!receipt.status) {
+                        receipt = await this.provider!.wtonContract.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
+                            .on('transactionHash', () => {
+                                this.state.toCurrencySent = true;
+                                this.deleteState();
+                            });
+                    }
                 } else {
                     receipt = await this.provider!.ionBridgeRouter.methods.voteForMinting(this.state.swapData!, signatures).send({from: this.provider!.myEthAddress})
                         .on('transactionHash', () => {
